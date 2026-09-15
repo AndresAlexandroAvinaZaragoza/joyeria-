@@ -1,0 +1,713 @@
+/* =========================================================
+   JOYERIA LESA - LOGIN
+   ========================================================= */
+
+/* ---------- VARIABLES ---------- */
+:root {
+    --primary: #C5A059;
+    --secondary: #121212;
+    --tertiary: #8C6D37;
+    --neutral: #FAF9F5;
+
+    --input-bg: #F0EFEC;
+    --panel-bg: #F3F2EF;
+
+    --text-dark: #121212;
+    --text-gray: #6b6b6b;
+    --text-light: #FAF9F5;
+
+    --border-light: #e5e5e5;
+}
+
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--secondary);
+    color: var(--text-dark);
+    font-family: 'Manrope', sans-serif;
+}
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.login-container {
+    width: 100%;
+    min-height: 100vh;
+
+    background: var(--neutral);
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HERO / IMAGEN
+   ========================================================= */
+
+.login-hero {
+    position: relative;
+
+    height: 310px;
+
+    overflow: hidden;
+}
+
+.login-hero-image {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 60%;
+}
+
+
+/* Degradado sobre la fotografía */
+
+.login-hero-overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.45) 0%,
+            rgba(0, 0, 0, 0.15) 50%,
+            rgba(250, 249, 245, 0.95) 100%
+        );
+}
+
+
+/* =========================================================
+   ETIQUETAS SUPERIORES
+   ========================================================= */
+
+/* =========================================================
+   LOGO / NOMBRE SOBRE LA IMAGEN
+   ========================================================= */
+
+.login-hero-title {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+.login-eyebrow {
+    margin: 0 0 5px;
+
+    color: var(--tertiary);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+}
+
+.login-logo {
+    margin: 0;
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 36px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    color: white;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+
+/* FUNDADA EN */
+
+.login-founded {
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: white;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+}
+
+.login-founded::before,
+.login-founded::after {
+    content: "";
+
+    width: 48px;
+    height: 1px;
+
+    background: var(--primary);
+}
+
+
+/* =========================================================
+   SECCIÓN DEL FORMULARIO
+   ========================================================= */
+
+.login-content {
+    padding: 35px 60px 45px;
+
+    background: var(--neutral);
+}
+
+.login-form-wrapper {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.login-header {
+    margin-bottom: 30px;
+
+    text-align: center;
+}
+
+.login-header-label {
+    margin: 0;
+
+    color: var(--tertiary);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+}
+
+.login-header h2 {
+    margin: 4px 0 0;
+
+    color: var(--secondary);
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.login-description {
+    max-width: 450px;
+
+    margin: 7px auto 0;
+
+    color: #737373;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.login-group {
+    margin-bottom: 22px;
+}
+
+.login-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 7px;
+}
+
+.login-label {
+    color: #555;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-label-status {
+    color: var(--tertiary);
+
+    font-size: 9px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.login-forgot {
+    color: var(--tertiary);
+
+    font-size: 9px;
+    font-weight: 600;
+
+    text-decoration: underline;
+    text-underline-offset: 3px;
+
+    transition: color 0.2s ease;
+}
+
+.login-forgot:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.login-input-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+.login-input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding:
+        15px
+        48px
+        15px
+        48px;
+
+    border: 1px solid transparent;
+    border-radius: 0;
+
+    outline: none;
+
+    background: var(--input-bg);
+
+    color: var(--secondary);
+
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-input::placeholder {
+    color: #aaa;
+}
+
+.login-input:focus {
+    border-color: var(--primary);
+
+    background: white;
+
+    box-shadow:
+        0 0 0 1px var(--primary);
+}
+
+
+/* Icono izquierdo */
+
+.login-input-icon {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 19px;
+    height: 19px;
+
+    color: var(--tertiary);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   MOSTRAR CONTRASEÑA
+   ========================================================= */
+
+.password-toggle {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 16px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: var(--tertiary);
+}
+
+.password-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+
+/* =========================================================
+   ERRORES
+   ========================================================= */
+
+.login-error {
+    margin-top: 6px;
+
+    color: #b91c1c;
+
+    font-size: 11px;
+}
+
+.login-alert {
+    margin-bottom: 20px;
+
+    padding: 13px 16px;
+
+    border-left: 4px solid #b91c1c;
+
+    background: #fef2f2;
+
+    color: #991b1b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RECORDAR SESIÓN
+   ========================================================= */
+
+.login-remember {
+    display: flex;
+    align-items: center;
+
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+.login-remember label {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #666;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.login-remember input {
+    width: 15px;
+    height: 15px;
+
+    accent-color: var(--tertiary);
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BOTÓN PRINCIPAL
+   ========================================================= */
+
+.login-button {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 16px 25px;
+
+    border: none;
+
+    background: #292A27;
+
+    color: white;
+
+    font-family: 'Manrope', sans-serif;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.16);
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.login-button:hover {
+    background: var(--secondary);
+}
+
+.login-button:active {
+    transform: scale(0.995);
+}
+
+.login-button svg {
+    width: 17px;
+    height: 17px;
+
+    color: var(--primary);
+
+    transition: transform 0.25s ease;
+}
+
+.login-button:hover svg {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   REGISTRO
+   ========================================================= */
+
+.login-register {
+    margin-top: 30px;
+
+    padding: 20px;
+
+    border-top: 1px solid var(--border-light);
+
+    background: var(--panel-bg);
+
+    text-align: center;
+}
+
+.login-register-title {
+    margin: 0;
+
+    color: #777;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.login-register-text {
+    margin: 7px 0 0;
+
+    color: #666;
+
+    font-size: 11px;
+}
+
+.login-register-link {
+    display: inline-block;
+
+    margin-top: 7px;
+
+    color: var(--tertiary);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+
+    transition: color 0.2s ease;
+}
+
+.login-register-link:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   SESSION STATUS
+   ========================================================= */
+
+.login-session-status {
+    margin-bottom: 18px;
+
+    padding: 12px 15px;
+
+    background: #f0fdf4;
+
+    color: #166534;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .login-page {
+        padding: 10px;
+    }
+
+    .login-container {
+        border-width: 5px;
+        border-radius: 22px;
+    }
+
+    .login-hero {
+        height: 260px;
+    }
+
+    .login-content {
+        padding:
+            30px
+            30px
+            35px;
+    }
+
+    .login-logo {
+        font-size: 31px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - CELULAR
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .login-page {
+        padding: 0;
+
+        align-items: flex-start;
+
+        background: var(--neutral);
+    }
+
+    .login-container {
+        min-height: 100vh;
+
+        border: none;
+        border-radius: 0;
+
+        box-shadow: none;
+    }
+
+    .login-hero {
+        height: 235px;
+    }
+
+    .login-hero-image {
+        object-position: center;
+    }
+
+    .login-hero-title {
+        bottom: 20px;
+    }
+
+    .login-logo {
+        font-size: 28px;
+    }
+
+    .login-eyebrow {
+        font-size: 8px;
+    }
+
+    .login-founded {
+        font-size: 7px;
+    }
+
+    .login-founded::before,
+    .login-founded::after {
+        width: 30px;
+    }
+
+    .login-content {
+        padding:
+            28px
+            20px
+            30px;
+    }
+
+    .login-header {
+        margin-bottom: 25px;
+    }
+
+    .login-header h2 {
+        font-size: 23px;
+    }
+
+    .login-description {
+        font-size: 10px;
+    }
+
+    .login-label-row {
+        align-items: flex-end;
+    }
+
+    .login-input {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+}
