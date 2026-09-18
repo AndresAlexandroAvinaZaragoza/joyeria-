@@ -1,0 +1,728 @@
+/* =====================================================
+   PÁGINA USUARIOS
+===================================================== */
+
+.usuarios-page {
+    min-height: calc(100vh - 76px);
+    background: #f8f7f4;
+    padding: 55px 25px 80px;
+    color: #252525;
+}
+
+.usuarios-container {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+
+/* =====================================================
+   ENCABEZADO
+===================================================== */
+
+.usuarios-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 35px;
+}
+
+.usuarios-label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #9b741d;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 4px;
+}
+
+.usuarios-header h1 {
+    margin: 0 0 8px;
+
+    color: #171717;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 39px;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.usuarios-header h1 span {
+    color: #9b741d;
+}
+
+.usuarios-header p {
+    margin: 3px 0;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   BOTÓN NUEVO USUARIO
+===================================================== */
+
+.btn-nuevo-usuario {
+    min-width: 190px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 15px 23px;
+
+    border: none;
+
+    background: #272727;
+
+    color: white;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+
+    transition: all 0.2s ease;
+}
+
+.btn-nuevo-usuario span {
+    color: #d7ae52;
+
+    font-size: 22px;
+    font-weight: 300;
+
+    line-height: 12px;
+}
+
+.btn-nuevo-usuario:hover {
+    background: #9b741d;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 17px rgba(0, 0, 0, 0.16);
+}
+
+.btn-nuevo-usuario:hover span {
+    color: white;
+}
+
+
+/* =====================================================
+   FILTROS
+===================================================== */
+
+.usuarios-filtros {
+    display: grid;
+
+    grid-template-columns:
+        minmax(300px, 1fr)
+        300px
+        260px
+        55px;
+
+    gap: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #efede9;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
+}
+
+
+/* =====================================================
+   BUSCADOR
+===================================================== */
+
+.buscador {
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+
+    background: #f6f5f2;
+
+    padding: 0 18px;
+}
+
+.buscador svg {
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+
+    color: #242424;
+}
+
+.buscador input {
+    width: 100%;
+    height: 100%;
+
+    margin-left: 13px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #333;
+
+    font-size: 13px;
+}
+
+.buscador input::placeholder {
+    color: #999;
+}
+
+
+/* =====================================================
+   SELECT
+===================================================== */
+
+.filtro-select {
+    position: relative;
+}
+
+.filtro-select select {
+    width: 100%;
+    height: 50px;
+
+    padding: 0 40px 0 17px;
+
+    border: none;
+    outline: none;
+
+    background: #f6f5f2;
+
+    color: #444;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   BOTÓN FILTRO
+===================================================== */
+
+.btn-filtros {
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: #f6f5f2;
+
+    color: #333;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.btn-filtros svg {
+    width: 21px;
+    height: 21px;
+}
+
+.btn-filtros:hover {
+    background: #ece8df;
+    color: #9b741d;
+}
+
+
+/* =====================================================
+   CARD TABLA
+===================================================== */
+
+.usuarios-card {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #efede9;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =====================================================
+   INFORMACIÓN TABLA
+===================================================== */
+
+.tabla-info {
+    min-height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 25px;
+
+    border-bottom: 1px solid #efefef;
+}
+
+.tabla-info > div {
+    display: flex;
+    align-items: center;
+}
+
+.tabla-titulo {
+    color: #9b741d;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+.tabla-separador {
+    width: 1px;
+    height: 15px;
+
+    margin: 0 14px;
+
+    background: #d4d4d4;
+}
+
+.tabla-registros {
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   TABLA
+===================================================== */
+
+.tabla-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.usuarios-tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: white;
+}
+
+.usuarios-tabla thead {
+    background: #faf9f7;
+}
+
+.usuarios-tabla th {
+    padding: 16px 25px;
+
+    color: #555;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+
+    text-align: left;
+}
+
+.usuarios-tabla td {
+    padding: 16px 25px;
+
+    border-bottom: 1px solid #efefef;
+
+    color: #333;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+.usuarios-tabla tbody tr {
+    transition: background 0.2s ease;
+}
+
+.usuarios-tabla tbody tr:hover {
+    background: #fdfcf9;
+}
+
+.usuarios-tabla tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =====================================================
+   USUARIO
+===================================================== */
+
+.usuario-identidad {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+.avatar {
+    width: 43px;
+    height: 43px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #efeeeb;
+
+    color: #4a4a4a;
+
+    font-family: Georgia, serif;
+
+    font-size: 13px;
+}
+
+.avatar-dorado {
+    background: #9b741d;
+    color: white;
+}
+
+.avatar-claro {
+    background: #f8dda5;
+    color: #765713;
+}
+
+.usuario-identidad > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.usuario-identidad strong {
+    color: #222;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.usuario-identidad span {
+    margin-top: 4px;
+
+    color: #888;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   ROLES
+===================================================== */
+
+.rol-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.rol-badge {
+    display: inline-block;
+
+    padding: 5px 8px;
+
+    background: #eeeeeb;
+
+    color: #444;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+}
+
+.rol-badge.admin {
+    background: #333;
+    color: #e2bf6d;
+}
+
+.rol-info small {
+    margin-top: 5px;
+
+    color: #777;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   CONEXIÓN
+===================================================== */
+
+.conexion {
+    display: flex;
+    flex-direction: column;
+}
+
+.conexion > span {
+    color: #444;
+    font-size: 11px;
+}
+
+.conexion small {
+    margin-top: 4px;
+
+    color: #888;
+
+    font-size: 9px;
+}
+
+.conexion-online {
+    display: flex;
+    align-items: center;
+
+    color: #9b741d !important;
+}
+
+.conexion-online i {
+    width: 6px;
+    height: 6px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background: #d7ae52;
+}
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+.estado {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+}
+
+.estado.activo {
+    background: #f1efe9;
+    color: #98731c;
+}
+
+.estado.inactivo {
+    background: #eeeeee;
+    color: #888;
+}
+
+
+/* =====================================================
+   ACCIONES
+===================================================== */
+
+.acciones {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.acciones button {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: transparent;
+
+    color: #333;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.acciones button:hover {
+    background: #f4f1e9;
+    color: #9b741d;
+}
+
+.acciones svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =====================================================
+   PAGINACIÓN
+===================================================== */
+
+.paginacion {
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 0 25px;
+
+    border-top: 1px solid #efefef;
+}
+
+.paginacion button {
+    min-width: 35px;
+    height: 35px;
+
+    padding: 0 11px;
+
+    border: none;
+
+    background: #f6f5f2;
+
+    color: #555;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.paginacion button:hover:not(:disabled) {
+    background: #eae6dc;
+    color: #9b741d;
+}
+
+.paginacion button.pagina-activa {
+    background: #333;
+    color: white;
+}
+
+.paginacion button:disabled {
+    color: #bbb;
+    cursor: not-allowed;
+}
+
+.paginacion span {
+    padding: 0 5px;
+
+    color: #888;
+}
+
+
+/* =====================================================
+   RESPONSIVE 1100PX
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .usuarios-filtros {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .btn-filtros {
+        width: 100%;
+    }
+}
+
+
+/* =====================================================
+   RESPONSIVE TABLET
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .usuarios-page {
+        padding: 35px 18px 60px;
+    }
+
+    .usuarios-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .usuarios-header h1 {
+        font-size: 32px;
+    }
+
+    .btn-nuevo-usuario {
+        width: 100%;
+    }
+
+    .usuarios-filtros {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .usuarios-tabla {
+        min-width: 900px;
+    }
+
+    .tabla-info {
+        padding: 0 18px;
+    }
+
+    .paginacion {
+        overflow-x: auto;
+        padding: 15px 18px;
+    }
+}
+
+
+/* =====================================================
+   RESPONSIVE MÓVIL
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .usuarios-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .usuarios-header h1 {
+        font-size: 27px;
+    }
+
+    .usuarios-header p {
+        font-size: 12px;
+    }
+
+    .usuarios-label {
+        font-size: 9px;
+    }
+
+    .tabla-registros {
+        font-size: 10px;
+    }
+}

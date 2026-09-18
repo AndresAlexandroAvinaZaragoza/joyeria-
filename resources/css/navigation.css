@@ -1,0 +1,376 @@
+/* =========================
+   NAVBAR JOYERÍA
+========================= */
+
+.navbar-joyeria {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 50;
+}
+
+.navbar-container {
+    max-width: 1450px;
+    height: 76px;
+    margin: 0 auto;
+    padding: 0 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+
+/* =========================
+   MARCA
+========================= */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    text-decoration: none;
+    margin-right: 55px;
+}
+
+.brand-icon {
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #b78b43;
+}
+
+.brand-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #202020;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    color: #9a9a9a;
+}
+
+
+/* =========================
+   MENÚ
+========================= */
+
+.desktop-menu {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-item {
+    height: 100%;
+    padding: 0 17px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    position: relative;
+
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition: 0.2s ease;
+}
+
+.nav-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nav-item:hover {
+    color: #b78b43;
+}
+
+.nav-item.active {
+    color: #b78b43;
+}
+
+.nav-item.active::after {
+    content: "";
+    position: absolute;
+
+    bottom: 0;
+    left: 17px;
+    right: 17px;
+
+    height: 2px;
+
+    background: #b78b43;
+}
+
+
+/* =========================
+   USUARIO
+========================= */
+
+.desktop-user {
+    display: flex;
+    align-items: center;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border: none;
+    background: transparent;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.user-button:hover {
+    background: #faf8f4;
+}
+
+.user-avatar {
+    width: 37px;
+    height: 37px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f3eadc;
+
+    color: #a77a35;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.user-name {
+    max-width: 170px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.user-role {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #999;
+}
+
+.arrow {
+    width: 15px;
+    height: 15px;
+    color: #888;
+}
+
+
+/* =========================
+   DROPDOWN
+========================= */
+
+.dropdown-header {
+    display: flex;
+    flex-direction: column;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.dropdown-header strong {
+    font-size: 13px;
+    color: #333;
+}
+
+.dropdown-header span {
+    margin-top: 3px;
+
+    font-size: 11px;
+    color: #999;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-button {
+    display: none;
+}
+
+.mobile-button button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-button svg {
+    width: 25px;
+    height: 25px;
+}
+
+.mobile-menu {
+    display: none;
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 10px 20px 20px;
+}
+
+.mobile-menu > a,
+.logout-mobile {
+    width: 100%;
+
+    display: block;
+
+    padding: 12px 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: transparent;
+
+    text-align: left;
+
+    color: #555;
+    font-size: 14px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.mobile-menu > a:hover,
+.logout-mobile:hover {
+    background: #faf8f4;
+    color: #b78b43;
+}
+
+.mobile-menu > a.active {
+    background: #faf8f4;
+    color: #b78b43;
+    font-weight: 600;
+}
+
+.mobile-user {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 10px;
+    padding: 15px 10px;
+
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-user strong {
+    font-size: 14px;
+    color: #333;
+}
+
+.mobile-user span {
+    margin-top: 3px;
+
+    font-size: 12px;
+    color: #999;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .desktop-menu,
+    .desktop-user {
+        display: none;
+    }
+
+    .mobile-button {
+        display: block;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .navbar-container {
+        height: 68px;
+        padding: 0 20px;
+    }
+
+    .brand {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .brand-subtitle {
+        display: none;
+    }
+
+    .navbar-container {
+        padding: 0 15px;
+    }
+}
