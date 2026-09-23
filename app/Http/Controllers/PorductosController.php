@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
+use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
-use App\Models\Categoria;
-use App\Models\Producto;
 
 class PorductosController extends Controller
 {
@@ -36,6 +36,7 @@ class PorductosController extends Controller
 
         $productos = $productosQuery->paginate(10)->withQueryString();
         $categorias = Categoria::where('status', true)->get();
+
         return view('admin.productos.productos', compact('categorias', 'productos'));
     }
 
@@ -105,5 +106,16 @@ class PorductosController extends Controller
         Producto::findOrFail($producto)->delete();
 
         return redirect()->route('productos.index')->with('status', 'Producto eliminado correctamente.');
+    }
+
+    public function toggleStatus(int $producto): RedirectResponse
+    {
+        $productoModel = Producto::findOrFail($producto);
+        $productoModel->update(['status' => ! $productoModel->status]);
+
+        return redirect()->route('productos.index')->with(
+            'status',
+            $productoModel->status ? 'Producto activado correctamente.' : 'Producto desactivado correctamente.'
+        );
     }
 }

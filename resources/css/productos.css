@@ -259,6 +259,42 @@
     height: 16px;
 }
 
+.producto-switch {
+    position: relative;
+    width: 38px;
+    height: 21px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #c9c7c2;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.producto-switch span {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    transition: .2s ease;
+}
+
+.producto-switch.activo {
+    background: #9b741d;
+}
+
+.producto-switch.activo span {
+    left: 20px;
+}
+
+.producto-switch:hover {
+    filter: brightness(.94);
+}
+
 .productos-paginacion {
     min-height: 62px;
     display: flex;

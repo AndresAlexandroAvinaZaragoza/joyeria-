@@ -79,6 +79,7 @@
                                 <th>TALLA / MEDIDA</th>
                                 <th>P. COMPRA</th>
                                 <th>P. VENTA</th>
+                                <th>ESTADO</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -101,6 +102,20 @@
                                     <td>{{ $producto->talla_medida ?? '—' }}</td>
                                     <td class="producto-precio">${{ number_format($producto->precio_costo, 2) }} MXN</td>
                                     <td class="producto-precio">${{ number_format($producto->precio_venta, 2) }} MXN</td>
+                                    <td>
+                                        <form method="POST" action="{{ route('productos.toggle-status', $producto) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button
+                                                type="submit"
+                                                class="producto-switch {{ $producto->status ? 'activo' : 'inactivo' }}"
+                                                title="{{ $producto->status ? 'Desactivar producto' : 'Activar producto' }}"
+                                                aria-label="{{ $producto->status ? 'Desactivar producto' : 'Activar producto' }}"
+                                            >
+                                                <span></span>
+                                            </button>
+                                        </form>
+                                    </td>
                                     <td>
                                         <div class="productos-acciones">
                                             <button

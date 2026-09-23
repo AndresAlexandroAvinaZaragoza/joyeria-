@@ -101,6 +101,22 @@
                     Productos
                 </a>
 
+
+                <a href="{{ route('config.index') }}"
+                   class="nav-item {{ request()->routeIs('config.*') ? 'active' : '' }}">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 17a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 12a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V7h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 12a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15z"/>
+                    </svg>
+
+                    Configuración
+                </a>
+
             </div>
         </div>
 
@@ -223,16 +239,21 @@
            class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
             Usuarios
         </a>
-
+        <a href="{{ route('productos.index') }}"
+           class="{{ request()->routeIs('productos.*') ? 'active' : '' }}">
+            Productos
+        </a>
         <a href="{{ route('inventario.index') }}"
            class="{{ request()->routeIs('inventario.*') ? 'active' : '' }}">
             Inventario
         </a>
 
-        <a href="{{ route('productos.index') }}"
-           class="{{ request()->routeIs('productos.*') ? 'active' : '' }}">
-            Productos
+        <a href="{{ route('config.index') }}"
+           class="{{ request()->routeIs('config.*') ? 'active' : '' }}">
+            Configuración
         </a>
+
+
 
         <div class="mobile-user">
 

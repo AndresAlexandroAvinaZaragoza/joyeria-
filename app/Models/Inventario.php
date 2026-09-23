@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Inventario extends Model
 {
     protected $table = 'inventario';
@@ -16,6 +16,13 @@ class Inventario extends Model
         'stock_minimo',
         'updated_at',
         'producto_id',
+    ];
+
+    public $timestamps = false;
+
+    protected $casts = [
+        'stock_actual' => 'integer',
+        'stock_minimo' => 'integer',
     ];
 
     public function producto(): BelongsTo

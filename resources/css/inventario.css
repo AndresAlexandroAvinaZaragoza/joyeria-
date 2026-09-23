@@ -1,0 +1,36 @@
+.inventario-table {
+    min-width: 760px;
+}
+
+.inventario-table td strong {
+    color: #222;
+    font-size: 12px;
+}
+
+.stock-badge {
+    display: inline-flex;
+    min-width: 30px;
+    justify-content: center;
+    padding: 4px 8px;
+    background: #f1efe9;
+    color: #806116;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.stock-badge.stock-bajo {
+    background: #f8e8e5;
+    color: #a33b2d;
+}
+
+.inventario-vacio {
+    padding: 40px 20px !important;
+    color: #888 !important;
+    text-align: center;
+}
+
+.inventario-modal .productos-modal-header p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 11px;
+}
