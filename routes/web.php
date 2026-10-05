@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
 use App\Http\Controllers\PorductosController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +24,10 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);
 Route::resource('inventario', InventarioContoller::class)->only(['index', 'store', 'update'])->middleware(['auth', 'verified']);
+Route::resource('imagenes', ImgContoller::class)
+    ->only(['index', 'store', 'update', 'destroy'])
+    ->parameters(['imagenes' => 'imagen'])
+    ->middleware(['auth', 'verified']);
 Route::patch('productos/{producto}/status', [PorductosController::class, 'toggleStatus'])
     ->middleware(['auth', 'verified'])
     ->name('productos.toggle-status');

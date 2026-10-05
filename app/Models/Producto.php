@@ -37,7 +37,7 @@ class Producto extends Model
 
     public function imagenes(): HasMany
     {
-        return $this->hasMany(ProductoImg::class, 'producto_id', 'id_productos');
+        return $this->hasMany(Producto_img::class, 'producto_id', 'id_productos');
     }
 
     public function inventario(): HasOne

@@ -220,6 +220,50 @@
     text-overflow: ellipsis;
 }
 
+.imagenes-resumen {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 250px;
+}
+
+.imagenes-resumen img {
+    width: 42px;
+    height: 38px;
+    object-fit: cover;
+    background: #f3f1ed;
+}
+
+.imagenes-sin-fotos,
+.imagenes-vacias {
+    color: #999;
+    font-size: 10px;
+}
+
+.imagenes-contador {
+    color: #805d12;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.imagenes-administrar {
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d8c49a;
+    background: #fbf8f0;
+    color: #805d12;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.imagenes-administrar:hover {
+    border-color: #9b741d;
+    background: #f4eddd;
+}
+
 .producto-categoria {
     color: #777;
     font-size: 10px;
@@ -369,6 +413,93 @@
     font-weight: 500;
 }
 
+.productos-modal-header p {
+    margin: 7px 0 0;
+    color: #999;
+    font-size: 10px;
+}
+
+.imagenes-manage-modal {
+    max-width: 780px;
+}
+
+.imagenes-galeria {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    padding: 24px 26px;
+}
+
+.imagen-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e5e0d8;
+    background: #fcfbf9;
+}
+
+.imagen-card > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: #f3f1ed;
+}
+
+.imagen-card-principal,
+.imagen-card-orden {
+    position: absolute;
+    top: 8px;
+    padding: 4px 6px;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.imagen-card-principal {
+    left: 8px;
+    background: #9b741d;
+    color: #fff;
+}
+
+.imagen-card-orden {
+    right: 8px;
+    background: rgba(255, 255, 255, .9);
+    color: #555;
+}
+
+.imagen-card-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+}
+
+.imagen-card-actions button {
+    flex: 1;
+    min-height: 28px;
+    border: 0;
+    background: #f1eee8;
+    color: #555;
+    font-size: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.imagen-card-actions button:hover {
+    background: #e7dfcf;
+    color: #805d12;
+}
+
+.imagenes-manage-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 26px 24px;
+}
+
+.imagenes-manage-footer .productos-guardar {
+    min-height: 38px;
+    padding: 0 15px;
+    font-size: 10px;
+}
+
 .productos-modal-close {
     border: 0;
     background: transparent;
@@ -417,6 +548,79 @@
 .productos-form select:focus,
 .productos-form textarea:focus {
     border-color: #b08a35;
+}
+
+.imagen-principal-control {
+    min-height: 48px;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 11px;
+    border: 1px solid #ddd9d1;
+    background: #fcfbf9;
+    cursor: pointer;
+}
+
+.imagen-principal-control > input {
+    position: absolute;
+    width: 1px !important;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.imagen-principal-switch {
+    position: relative;
+    width: 38px;
+    height: 21px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: #c9c7c2;
+    transition: .2s ease;
+}
+
+.imagen-principal-switch span {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    transition: .2s ease;
+}
+
+.imagen-principal-control > input:checked + .imagen-principal-switch {
+    background: #9b741d;
+}
+
+.imagen-principal-control > input:checked + .imagen-principal-switch span {
+    left: 20px;
+}
+
+.imagen-principal-control > input:focus-visible + .imagen-principal-switch {
+    outline: 2px solid #b08a35;
+    outline-offset: 2px;
+}
+
+.imagen-principal-copy strong,
+.imagen-principal-copy small {
+    display: block;
+}
+
+.imagen-principal-copy strong {
+    color: #333;
+    font-size: 11px;
+}
+
+.imagen-principal-copy small {
+    margin-top: 2px;
+    color: #999;
+    font-size: 10px;
+    font-weight: 400;
 }
 
 .productos-error {
@@ -470,4 +674,6 @@
     .productos-actions, .productos-button { width: 100%; }
     .productos-filtros, .productos-form { grid-template-columns: 1fr; }
     .productos-form-group.full, .productos-form-actions { grid-column: auto; }
+    .imagenes-galeria { grid-template-columns: 1fr 1fr; padding: 18px; }
+    .imagenes-manage-footer { padding: 0 18px 18px; }
 }
