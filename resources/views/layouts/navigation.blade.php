@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="brand-text">
-                    <span class="brand-name">Joyería</span>
+                    <span class="brand-name">Lesa</span>
                     <span class="brand-subtitle">Administración</span>
                 </div>
             </a>
