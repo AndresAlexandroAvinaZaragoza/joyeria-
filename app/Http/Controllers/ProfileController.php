@@ -18,6 +18,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'direcciones' => $request->user()->direcciones()->orderByDesc('predeterminada')->latest()->get(),
         ]);
     }
 

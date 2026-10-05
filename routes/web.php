@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
 use App\Http\Controllers\PorductosController;
@@ -23,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/direcciones', [DireccionClienteController::class, 'store'])->name('profile.addresses.store');
+    Route::put('/profile/direcciones/{direccion}', [DireccionClienteController::class, 'update'])->whereNumber('direccion')->name('profile.addresses.update');
+    Route::delete('/profile/direcciones/{direccion}', [DireccionClienteController::class, 'destroy'])->whereNumber('direccion')->name('profile.addresses.destroy');
 });
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);
@@ -33,8 +37,12 @@ Route::resource('imagenes', ImgContoller::class)
     ->middleware(['auth', 'verified']);
 Route::patch('productos/{producto}/status', [PorductosController::class, 'toggleStatus'])
     ->middleware(['auth', 'verified'])
+    ->whereNumber('producto')
     ->name('productos.toggle-status');
-Route::resource('productos', PorductosController::class)->middleware(['auth', 'verified']);
+Route::resource('productos', PorductosController::class)
+    ->only(['index', 'store', 'update', 'destroy'])
+    ->middleware(['auth', 'verified'])
+    ->whereNumber('producto');
 Route::get('config', [ConfigController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('config.index');

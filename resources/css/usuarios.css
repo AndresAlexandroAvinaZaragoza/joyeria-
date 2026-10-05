@@ -4,7 +4,7 @@
 
 .usuarios-page {
     min-height: calc(100vh - 76px);
-    background: #f8f7f4;
+    background: #ffffff;
     padding: 55px 25px 80px;
     color: #252525;
 }
@@ -140,7 +140,7 @@
 
     background: #ffffff;
 
-    border: 1px solid #efede9;
+    border: 1px solid #e5e5e5;
 
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.025);
 }
@@ -156,7 +156,7 @@
     display: flex;
     align-items: center;
 
-    background: #f6f5f2;
+    background: #f7f7f7;
 
     padding: 0 18px;
 }
@@ -208,7 +208,7 @@
     border: none;
     outline: none;
 
-    background: #f6f5f2;
+    background: #f7f7f7;
 
     color: #444;
 
@@ -231,7 +231,7 @@
 
     border: none;
 
-    background: #f6f5f2;
+    background: #f7f7f7;
 
     color: #333;
 
@@ -246,7 +246,7 @@
 }
 
 .btn-filtros:hover {
-    background: #ece8df;
+    background: #ededed;
     color: #9b741d;
 }
 
@@ -260,7 +260,7 @@
 
     background: #ffffff;
 
-    border: 1px solid #efede9;
+    border: 1px solid #e5e5e5;
 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
@@ -330,7 +330,7 @@
 }
 
 .usuarios-tabla thead {
-    background: #faf9f7;
+    background: #fafafa;
 }
 
 .usuarios-tabla th {
@@ -363,7 +363,7 @@
 }
 
 .usuarios-tabla tbody tr:hover {
-    background: #fdfcf9;
+    background: #fafafa;
 }
 
 .usuarios-tabla tbody tr:last-child td {
@@ -392,7 +392,7 @@
     align-items: center;
     justify-content: center;
 
-    background: #efeeeb;
+    background: #f2f2f2;
 
     color: #4a4a4a;
 
@@ -569,7 +569,7 @@
 }
 
 .acciones button:hover {
-    background: #f4f1e9;
+    background: #f7f7f7;
     color: #9b741d;
 }
 
@@ -605,7 +605,7 @@
 
     border: none;
 
-    background: #f6f5f2;
+    background: #f7f7f7;
 
     color: #555;
 
@@ -622,7 +622,7 @@
 
 .paginacion button:hover:not(:disabled),
 .paginacion a:hover {
-    background: #eae6dc;
+    background: #eeeeee;
     color: #9b741d;
 }
 
@@ -828,7 +828,7 @@
 
 .usuarios-tabla th {
     padding: 14px 20px;
-    background: #faf9f7;
+    background: #fafafa;
     color: #9b741d;
     font-size: 9px;
     letter-spacing: 1px;

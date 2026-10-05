@@ -1,52 +1,71 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+    <div class="register-page">
+        <section class="register-visual">
+            <img src="{{ asset('images/login-joyeria.png') }}" alt="Lesa Joyería" class="register-visual__image">
+            <div class="register-visual__overlay"></div>
+            <div class="register-visual__content">
+                <p>Lesa Joyería</p>
+                <h1>Una pieza especial<br>comienza aquí.</h1>
+                <span>Descubre colecciones creadas para acompañar tus momentos importantes.</span>
+            </div>
+        </section>
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+        <section class="register-content">
+            <div class="register-header">
+                <p class="login-header-label">Bienvenido a Lesa</p>
+                <h2>Crear tu cuenta</h2>
+                <p>Regístrate como cliente para guardar tus datos y preparar tu próxima selección.</p>
+            </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+            @if ($errors->any())
+                <div class="login-alert">Revisa los campos marcados para continuar.</div>
+            @endif
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <form method="POST" action="{{ route('register') }}" class="register-form">
+                @csrf
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+                <div class="register-fields register-fields--two">
+                    <div class="register-field">
+                        <label for="name">Nombre</label>
+                        <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus autocomplete="given-name" placeholder="Tu nombre">
+                        @error('name')<span class="register-error">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="register-field">
+                        <label for="apellidos">Apellidos</label>
+                        <input id="apellidos" name="apellidos" type="text" value="{{ old('apellidos') }}" required autocomplete="family-name" placeholder="Tus apellidos">
+                        @error('apellidos')<span class="register-error">{{ $message }}</span>@enderror
+                    </div>
+                </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+                <div class="register-fields register-fields--two">
+                    <div class="register-field">
+                        <label for="telefono">Teléfono</label>
+                        <input id="telefono" name="telefono" type="tel" value="{{ old('telefono') }}" required autocomplete="tel" placeholder="55 0000 0000">
+                        @error('telefono')<span class="register-error">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="register-field">
+                        <label for="email">Correo electrónico</label>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" placeholder="cliente@correo.com">
+                        @error('email')<span class="register-error">{{ $message }}</span>@enderror
+                    </div>
+                </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                <div class="register-fields register-fields--two">
+                    <div class="register-field">
+                        <label for="password">Contraseña</label>
+                        <input id="password" name="password" type="password" required autocomplete="new-password" placeholder="Mínimo 8 caracteres">
+                        @error('password')<span class="register-error">{{ $message }}</span>@enderror
+                    </div>
+                    <div class="register-field">
+                        <label for="password_confirmation">Confirmar contraseña</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" placeholder="Repite tu contraseña">
+                    </div>
+                </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+                <button type="submit" class="login-button">Crear cuenta <span aria-hidden="true">→</span></button>
+            </form>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
+            <p class="register-login-link">¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
+        </section>
+    </div>
 </x-guest-layout>

@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'apellidos', 'telefono', 'email', 'password', 'status', 'rol_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -20,6 +21,8 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'apellidos',
+        'telefono',
         'email',
         'password',
         'status',
@@ -39,9 +42,13 @@ class User extends Authenticatable
         ];
     }
 
-
     public function rol(): BelongsTo
     {
         return $this->belongsTo(Rol::class, 'rol_id', 'id_rol');
+    }
+
+    public function direcciones(): HasMany
+    {
+        return $this->hasMany(DireccionCliente::class, 'user_id');
     }
 }

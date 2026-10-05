@@ -1,7 +1,7 @@
 .productos-page {
     min-height: calc(100vh - 76px);
     padding: 42px 25px 70px;
-    background: #f8f7f4;
+    background: #ffffff;
     color: #252525;
 }
 
@@ -66,6 +66,7 @@
     font-weight: 700;
     letter-spacing: .7px;
     cursor: pointer;
+    border-radius: 6px;
     box-shadow: 0 5px 12px rgba(0, 0, 0, .12);
     transition: .2s ease;
 }
@@ -88,7 +89,8 @@
     padding: 12px;
     margin-bottom: 28px;
     background: #fff;
-    border: 1px solid #efede9;
+    border: 1px solid #e5e5e5;
+    border-radius: 7px;
 }
 
 .productos-busqueda,
@@ -96,7 +98,8 @@
     height: 42px;
     display: flex;
     align-items: center;
-    background: #f6f5f2;
+    background: #f7f7f7;
+    border-radius: 5px;
 }
 
 .productos-busqueda {
@@ -139,7 +142,8 @@
 .productos-table-card {
     overflow: hidden;
     background: #fff;
-    border: 1px solid #efede9;
+    border: 1px solid #e5e5e5;
+    border-radius: 7px;
 }
 
 .productos-tabla-info {
@@ -164,7 +168,7 @@
 
 .productos-table th {
     padding: 14px 20px;
-    background: #faf9f7;
+    background: #fafafa;
     color: #9b741d;
     font-size: 9px;
     font-weight: 700;
@@ -357,7 +361,7 @@
     justify-content: center;
     padding: 0 11px;
     border: 0;
-    background: #f6f5f2;
+    background: #f7f7f7;
     color: #555;
     font-size: 9px;
     font-weight: 600;
@@ -476,7 +480,7 @@
     flex: 1;
     min-height: 28px;
     border: 0;
-    background: #f1eee8;
+    background: #f7f7f7;
     color: #555;
     font-size: 8px;
     font-weight: 700;
