@@ -5,12 +5,15 @@ use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
 use App\Http\Controllers\PorductosController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TiendaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TiendaController::class, 'index'])->name('home');
+Route::get('/carrito', [TiendaController::class, 'cart'])->name('cart.index');
+Route::post('/carrito/{producto}', [TiendaController::class, 'addToCart'])->name('cart.add');
+Route::patch('/carrito', [TiendaController::class, 'updateCart'])->name('cart.update');
+Route::delete('/carrito/{producto}', [TiendaController::class, 'removeFromCart'])->name('cart.remove');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

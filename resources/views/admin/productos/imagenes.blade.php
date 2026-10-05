@@ -53,7 +53,7 @@
                                     <td>
                                         <div class="imagenes-resumen">
                                             @forelse ($producto->imagenes->take(5) as $imagen)
-                                                <img src="{{ Storage::url($imagen->url_img) }}" alt="Imagen de {{ $producto->nombre }}">
+                                                <img src="{{ Storage::disk('public')->url($imagen->url_img) }}" alt="Imagen de {{ $producto->nombre }}">
                                             @empty
                                                 <span class="imagenes-sin-fotos">Sin imágenes</span>
                                             @endforelse
@@ -88,7 +88,7 @@
                     <div class="imagenes-galeria">
                         @forelse ($producto->imagenes as $imagen)
                             <article class="imagen-card">
-                                <img src="{{ Storage::url($imagen->url_img) }}" alt="Imagen de {{ $producto->nombre }}">
+                                <img src="{{ Storage::disk('public')->url($imagen->url_img) }}" alt="Imagen de {{ $producto->nombre }}">
                                 @if ($imagen->es_principal)<span class="imagen-card-principal">PRINCIPAL</span>@endif
                                 <span class="imagen-card-orden">Orden {{ $imagen->orden }}</span>
                                 <div class="imagen-card-actions">

@@ -1,295 +1,68 @@
-<nav x-data="{ open: false }" class="navbar-joyeria">
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <div class="navbar-container">
+<nav x-data="{ open: false, cartOpen: false }" class="store-nav">
+    <div class="store-nav__inner">
+        <a href="{{ route('home') }}" class="store-brand" aria-label="Ir al inicio">
+            <span class="store-brand__mark">A</span>
+            <span><strong>AURA</strong><small>Alta joyeria</small></span>
+        </a>
 
-        {{-- =========================
-             LOGO + NAVEGACIÓN
-        ========================== --}}
-        <div class="navbar-left">
-
-            {{-- Logo --}}
-            <a href="{{ route('dashboard') }}" class="brand">
-                <div class="brand-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.7">
-                        <path d="M6 3h12l4 6-10 12L2 9l4-6z"/>
-                        <path d="M2 9h20"/>
-                        <path d="M6 3l3 6 3-6 3 6 3-6"/>
-                        <path d="M9 9l3 12 3-12"/>
-                    </svg>
-                </div>
-
-                <div class="brand-text">
-                    <span class="brand-name">Lesa</span>
-                    <span class="brand-subtitle">Administración</span>
-                </div>
-            </a>
-
-
-            {{-- Links escritorio --}}
-            <div class="desktop-menu">
-
-                <a href="{{ route('dashboard') }}"
-                   class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                    </svg>
-
-                    Dashboard
-                </a>
-
-
-                <a href="{{ route('usuarios.index') }}"
-                   class="nav-item {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-
-                    Usuarios
-                </a>
-
-
-                <a href="{{ route('inventario.index') }}"
-                   class="nav-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                        <line x1="12" y1="22.08" x2="12" y2="12"/>
-                    </svg>
-
-                    Inventario
-                </a>
-
-
-                <a href="{{ route('productos.index') }}"
-                   class="nav-item {{ request()->routeIs('productos.*') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <path d="M20 7h-4V5a4 4 0 0 0-8 0v2H4a2 2 0 0 0-2 2l1 11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2l1-11a2 2 0 0 0-2-2z"/>
-                        <path d="M8 7V5a4 4 0 0 1 8 0v2"/>
-                    </svg>
-
-                    Productos
-                </a>
-
-                <a href="{{ route('imagenes.index') }}"
-                   class="nav-item {{ request()->routeIs('imagenes.*') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <path d="m21 15-5-5L5 21"/>
-                    </svg>
-
-                    Imágenes
-                </a>
-
-
-                <a href="{{ route('config.index') }}"
-                   class="nav-item {{ request()->routeIs('config.*') ? 'active' : '' }}">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V22h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.46 17a1.7 1.7 0 0 0-1.56-1.03H6.7v-2.4h.2A1.7 1.7 0 0 0 8.46 12a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V7h2.4v.2a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 19.4 12a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15z"/>
-                    </svg>
-
-                    Configuración
-                </a>
-
-            </div>
+        <div class="store-links">
+            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && ! request('categoria') ? 'is-active' : '' }}">Inicio</a>
+            @if (isset($categorias))
+                @foreach ($categorias as $categoria)
+                    <a href="{{ route('home', ['categoria' => $categoria->slug]) }}" class="{{ request('categoria') === $categoria->slug ? 'is-active' : '' }}">{{ $categoria->nombre }}</a>
+                @endforeach
+            @endif
         </div>
 
+        <div class="store-actions">
+            @if (request()->routeIs('home'))
+                <button type="button" class="store-action store-action-button" aria-label="Abrir carrito" @click="cartOpen = true"><span class="store-icon">&#9825;</span><span>Carrito</span>@if (($cartCount ?? 0) > 0)<b class="store-badge">{{ $cartCount }}</b>@endif</button>
+            @else
+                <a href="{{ route('cart.index') }}" class="store-action" aria-label="Ver carrito"><span class="store-icon">&#9825;</span><span>Carrito</span>@if (($cartCount ?? 0) > 0)<b class="store-badge">{{ $cartCount }}</b>@endif</a>
+            @endif
+            @auth
+                @php($roleName = Auth::user()->rol?->nombre ?? 'Cliente')
+                <div class="store-account"><span class="store-account__avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span><span class="store-account__text"><strong>{{ Auth::user()->name }}</strong><small>{{ $roleName }}</small></span><a href="{{ route('profile.edit') }}" class="store-account__link">Mi cuenta</a></div>
+                @if (in_array(strtolower($roleName), ['admin', 'administrador', 'empleado'], true))<a href="{{ route('dashboard') }}" class="store-admin-link">Panel</a>@endif
+                <form method="POST" action="{{ route('logout') }}" class="store-logout-form">@csrf<button type="submit" class="store-login-link">Salir</button></form>
+            @else
+                <a href="{{ route('login') }}" class="store-login-link">Iniciar sesion</a>
+                @if (Route::has('register'))<a href="{{ route('register') }}" class="store-register-link">Crear cuenta</a>@endif
+            @endauth
+        </div>
 
-        {{-- =========================
-             USUARIO
-        ========================== --}}
-        <div class="desktop-user">
+        <button type="button" class="store-menu-button" @click="open = !open" aria-label="Abrir menu"><span></span><span></span><span></span></button>
+    </div>
 
-            <x-dropdown align="right" width="48">
+    <div class="store-search-row">
+        <form method="GET" action="{{ route('home') }}" class="store-search"><span aria-hidden="true">&#9906;</span><input type="search" name="search" value="{{ request('search') }}" placeholder="Buscar joyas, metal, corte o quilataje..."><button type="submit">Buscar</button></form>
+    </div>
 
-                <x-slot name="trigger">
+    <div class="store-mobile-menu" x-show="open" x-transition>
+        <a href="{{ route('home') }}">Inicio</a>
+        @if (isset($categorias))
+            @foreach ($categorias as $categoria)<a href="{{ route('home', ['categoria' => $categoria->slug]) }}">{{ $categoria->nombre }}</a>@endforeach
+        @endif
+        <a href="{{ route('cart.index') }}">Carrito ({{ $cartCount ?? 0 }})</a>
+        @guest<a href="{{ route('login') }}">Iniciar sesion</a>@else<a href="{{ route('profile.edit') }}">Mi cuenta · {{ Auth::user()->rol?->nombre ?? 'Cliente' }}</a>@endguest
+    </div>
 
-                    <button class="user-button">
-
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </div>
-
-                        <div class="user-info">
-                            <span class="user-name">
-                                {{ Auth::user()->name }}
-                            </span>
-
-                            <span class="user-role">
-                                Administrador
-                            </span>
-                        </div>
-
-                        <svg class="arrow"
-                             xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 20 20"
-                             fill="currentColor">
-                            <path fill-rule="evenodd"
-                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-
-                    </button>
-
-                </x-slot>
-
-
-                <x-slot name="content">
-
-                    <div class="dropdown-header">
-                        <strong>{{ Auth::user()->name }}</strong>
-                        <span>{{ Auth::user()->email }}</span>
+    @if (request()->routeIs('home'))
+        <div x-cloak x-show="cartOpen" x-transition.opacity class="cart-drawer-backdrop" @click="cartOpen = false">
+            <aside class="cart-drawer" @click.stop role="dialog" aria-modal="true" aria-label="Carrito de compras">
+                <div class="cart-drawer__header"><div><p class="eyebrow">Tu seleccion AURA</p><h2>Carrito</h2></div><button type="button" class="cart-drawer__close" aria-label="Cerrar carrito" @click="cartOpen = false">&times;</button></div>
+                @if (($cartItems ?? collect())->isEmpty())
+                    <div class="cart-drawer__empty"><span class="store-icon">&#9825;</span><p>Tu carrito esta esperando una pieza especial.</p></div>
+                @else
+                    <div class="cart-drawer__items">
+                        @foreach ($cartItems ?? [] as $item)
+                            @php($drawerImage = $item['producto']->imagenes->first()?->url_img)
+                            <article class="cart-drawer__item"><div class="cart-drawer__image">@if ($drawerImage)<img src="{{ str_starts_with($drawerImage, 'http') ? $drawerImage : Storage::disk('public')->url($drawerImage) }}" alt="{{ $item['producto']->nombre }}">@else<span>AURA</span>@endif</div><div><p>{{ $item['producto']->nombre }}</p><small>{{ $item['quantity'] }} × ${{ number_format($item['producto']->precio_venta, 2) }}</small></div><form method="POST" action="{{ route('cart.remove', $item['producto']) }}">@csrf @method('DELETE')<button type="submit" aria-label="Quitar {{ $item['producto']->nombre }}">&times;</button></form></article>
+                        @endforeach
                     </div>
-
-                    <x-dropdown-link :href="route('profile.edit')">
-                        Mi perfil
-                    </x-dropdown-link>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-
-                        <x-dropdown-link
-                            :href="route('logout')"
-                            onclick="event.preventDefault();
-                            this.closest('form').submit();">
-
-                            Cerrar sesión
-
-                        </x-dropdown-link>
-                    </form>
-
-                </x-slot>
-
-            </x-dropdown>
-
+                    <div class="cart-drawer__footer"><div><span>Total</span><strong>${{ number_format($cartItems->sum('subtotal'), 2) }}</strong></div><a href="{{ route('cart.index') }}" class="primary-button">Ver carrito completo</a></div>
+                @endif
+            </aside>
         </div>
-
-
-        {{-- =========================
-             BOTÓN MÓVIL
-        ========================== --}}
-        <div class="mobile-button">
-
-            <button @click="open = !open">
-
-                <svg x-show="!open"
-                     xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-
-                <svg x-show="open"
-                     xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-    {{-- =========================
-         MENÚ MÓVIL
-    ========================== --}}
-    <div x-show="open"
-         x-transition
-         class="mobile-menu">
-
-        <a href="{{ route('dashboard') }}"
-           class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            Dashboard
-        </a>
-
-        <a href="{{ route('usuarios.index') }}"
-           class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
-            Usuarios
-        </a>
-        <a href="{{ route('productos.index') }}"
-           class="{{ request()->routeIs('productos.*') ? 'active' : '' }}">
-            Productos
-        </a>
-        <a href="{{ route('inventario.index') }}"
-           class="{{ request()->routeIs('inventario.*') ? 'active' : '' }}">
-            Inventario
-        </a>
-
-        <a href="{{ route('config.index') }}"
-           class="{{ request()->routeIs('config.*') ? 'active' : '' }}">
-            Configuración
-        </a>
-
-
-
-        <div class="mobile-user">
-
-            <strong>{{ Auth::user()->name }}</strong>
-            <span>{{ Auth::user()->email }}</span>
-
-        </div>
-
-        <a href="{{ route('profile.edit') }}">
-            Mi perfil
-        </a>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit" class="logout-mobile">
-                Cerrar sesión
-            </button>
-        </form>
-
-    </div>
-
+    @endif
 </nav>
