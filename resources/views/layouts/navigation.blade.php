@@ -15,7 +15,7 @@
             @if (isset($categorias))
                 @foreach ($categorias as $categoria)
                     <a href="{{ route('home', ['categoria' => $categoria->slug]) }}" class="{{ request('categoria') === $categoria->slug ? 'is-active' : '' }}">{{ $categoria->nombre }}</a>
-                @endforeach
+                @endforeach 
             @endif
             @if ($isStaff)
                 <div class="store-admin-links">
