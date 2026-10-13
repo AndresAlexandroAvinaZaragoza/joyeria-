@@ -70,7 +70,7 @@
         </div>
     @endif
 
-    <div class="store-mobile-menu" x-show="open" x-transition>
+    <div x-cloak class="store-mobile-menu" x-show="open" x-transition>
         <a href="{{ route('home') }}">Inicio</a>
         @if (isset($categorias))
             @foreach ($categorias as $categoria)<a href="{{ route('home', ['categoria' => $categoria->slug]) }}">{{ $categoria->nombre }}</a>@endforeach
