@@ -23,6 +23,8 @@
                     <a href="{{ route('productos.index') }}" class="{{ request()->routeIs('productos.*') ? 'is-active' : '' }}">Productos</a>
                     <a href="{{ route('inventario.index') }}" class="{{ request()->routeIs('inventario.*') ? 'is-active' : '' }}">Inventario</a>
                     <a href="{{ route('imagenes.index') }}" class="{{ request()->routeIs('imagenes.*') ? 'is-active' : '' }}">Imagenes</a>
+                    <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}">Pedidos</a>
+                    <a href="{{ route('admin.shipments.index') }}" class="{{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}">Envios</a>
                     @if ($isAdmin)
                         <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'is-active' : '' }}">Usuarios</a>
                         <a href="{{ route('config.index') }}" class="{{ request()->routeIs('config.*') ? 'is-active' : '' }}">Configuracion</a>
@@ -49,6 +51,7 @@
                     <x-slot name="content">
                         <div class="store-dropdown-header"><strong>{{ Auth::user()->name }}</strong><span>{{ Auth::user()->email }}</span></div>
                         <x-dropdown-link :href="route('profile.edit')">Perfil</x-dropdown-link>
+                        <x-dropdown-link :href="route('orders.index')">Mis pedidos</x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Salir</x-dropdown-link>
@@ -80,6 +83,8 @@
             <a href="{{ route('productos.index') }}">Productos</a>
             <a href="{{ route('inventario.index') }}">Inventario</a>
             <a href="{{ route('imagenes.index') }}">Imagenes</a>
+            <a href="{{ route('admin.orders.index') }}">Pedidos</a>
+            <a href="{{ route('admin.shipments.index') }}">Envios</a>
             @if ($isAdmin)
                 <a href="{{ route('usuarios.index') }}">Usuarios</a>
                 <a href="{{ route('config.index') }}">Configuracion</a>
@@ -87,6 +92,7 @@
         @endif
         <a href="{{ route('cart.index') }}">Carrito ({{ $cartCount ?? 0 }})</a>
         @guest<a href="{{ route('login') }}">Iniciar sesion</a>@else<a href="{{ route('profile.edit') }}">Mi cuenta · {{ Auth::user()->rol?->nombre ?? 'Cliente' }}</a>@endguest
+        @auth<a href="{{ route('orders.index') }}">Mis pedidos</a>@endauth
     </div>
 
     @if (request()->routeIs('home'))

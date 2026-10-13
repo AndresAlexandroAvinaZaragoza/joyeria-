@@ -4,6 +4,8 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
+use App\Http\Controllers\PagosController;
+use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\PorductosController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TiendaController;
@@ -21,12 +23,21 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/pago', [PagosController::class, 'create'])->name('payments.create');
+    Route::post('/pago', [PagosController::class, 'store'])->name('payments.store');
+    Route::get('/pedidos', [PedidosController::class, 'index'])->name('orders.index');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/direcciones', [DireccionClienteController::class, 'store'])->name('profile.addresses.store');
     Route::put('/profile/direcciones/{direccion}', [DireccionClienteController::class, 'update'])->whereNumber('direccion')->name('profile.addresses.update');
     Route::delete('/profile/direcciones/{direccion}', [DireccionClienteController::class, 'destroy'])->whereNumber('direccion')->name('profile.addresses.destroy');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/pedidos', [PedidosController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::get('/admin/envios', [PedidosController::class, 'shipments'])->name('admin.shipments.index');
+    Route::patch('/admin/envios/{envio}', [PedidosController::class, 'updateShipment'])->name('admin.shipments.update');
 });
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);

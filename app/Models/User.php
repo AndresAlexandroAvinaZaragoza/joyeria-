@@ -3,15 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'apellidos', 'telefono', 'email', 'password', 'status', 'rol_id'])]
 #[Hidden(['password', 'remember_token'])]
@@ -51,5 +52,15 @@ class User extends Authenticatable
     public function direcciones(): HasMany
     {
         return $this->hasMany(DireccionCliente::class, 'user_id');
+    }
+
+    public function carrito(): HasOne
+    {
+        return $this->hasOne(Carrito::class, 'user_id');
+    }
+
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class, 'user_id');
     }
 }
