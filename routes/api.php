@@ -19,6 +19,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/productos', [ProductoController::class, 'index']);
     Route::get('/productos/{producto}', [ProductoController::class, 'show']);
     Route::post('/productos', [ProductoController::class, 'store']);
+    Route::put('/productos/{producto}', [ProductoController::class, 'update']);
+    Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
 
     Route::post('/productos/{producto}/imagenes',[ProductoImagenController::class, 'store']);
+    Route::post(
+    '/productos/{producto}/imagenes/{imagen}',
+    [ProductoImagenController::class, 'update']
+    );
+
+    Route::delete(
+        '/productos/{producto}/imagenes/{imagen}',
+        [ProductoImagenController::class, 'destroy']
+    );
 });

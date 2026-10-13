@@ -93,4 +93,41 @@ class ProductoController extends Controller
             'producto' => $producto,
         ]);
     }
+
+    public function update(Request $request, Producto $producto)
+    {
+        $datos = $request->validate([
+            'sku' => 'required|string|max:100|unique:productos,sku,' .
+                    $producto->getKey() . ',id_productos',
+
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'material' => 'nullable|string|max:100',
+            'peso_gr' => 'nullable|numeric|min:0',
+            'talla_medida' => 'nullable|string|max:100',
+            'precio_costo' => 'required|numeric|min:0',
+            'precio_venta' => 'required|numeric|min:0',
+            'status' => 'required|boolean',
+            'id_categoria' => 'required|exists:categorias,id_categorias',
+        ]);
+
+        $producto->update($datos);
+
+        return response()->json(
+            $producto->fresh()->load([
+                'categoria',
+                'inventario',
+                'imagenes'
+            ])
+        );
+    }
+
+    public function destroy(Producto $producto)
+    {
+        $producto->delete();
+
+        return response()->json([
+            'message' => 'Producto eliminado correctamente.',
+        ]);
+    }
 }
