@@ -1,5 +1,6 @@
 <?php
-
+use App\Http\Controllers\Api\EnvioController;
+use App\Http\Controllers\Api\PedidoController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductoImagenController;
 use App\Http\Controllers\Api\ProductoController;
@@ -32,4 +33,19 @@ Route::middleware('auth:sanctum')->group(function () {
         '/productos/{producto}/imagenes/{imagen}',
         [ProductoImagenController::class, 'destroy']
     );
-});
+
+    // Consultar todos los pedidos
+    Route::get('/pedidos', [PedidoController::class, 'index']);
+
+    // Consultar un pedido específico
+    Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
+
+    // Consultar todos los envíos
+    Route::get('/envios', [EnvioController::class, 'index']);
+
+    // Consultar un envío específico
+    Route::get('/envios/{envio}', [EnvioController::class, 'show']);
+
+    // Actualizar un envío
+    Route::patch('/envios/{envio}', [EnvioController::class, 'update']);
+}); 
