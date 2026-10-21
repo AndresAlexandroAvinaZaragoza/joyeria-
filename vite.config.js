@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/css/productos.css',
                 'resources/css/inventario.css',
                 'resources/css/usuarios.css',
+                'resources/css/dashboard.css',
                 'resources/js/app.js',
             ],
             refresh: true,

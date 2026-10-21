@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
@@ -18,9 +19,9 @@ Route::post('/carrito/{producto}', [TiendaController::class, 'addToCart'])->name
 Route::patch('/carrito', [TiendaController::class, 'updateCart'])->name('cart.update');
 Route::delete('/carrito/{producto}', [TiendaController::class, 'removeFromCart'])->name('cart.remove');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/pago', [PagosController::class, 'create'])->name('payments.create');
