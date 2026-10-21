@@ -9,7 +9,7 @@
                 <div class="productos-tabla-info">{{ $pedidos->count() }} pedidos registrados</div>
                 <div class="productos-table-wrap">
                     <table class="productos-table">
-                        <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>FECHA</th><th>PRODUCTOS</th><th>TOTAL</th><th>PAGO</th><th>ENVÍO</th></tr></thead>
+                        <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>FECHA</th><th>PRODUCTOS</th><th>TOTAL</th><th>PAGO</th><th>ENVÍO</th><th>ACCIONES</th></tr></thead>
                         <tbody>
                             @forelse ($pedidos as $pedido)
                                 <tr>
@@ -20,9 +20,10 @@
                                     <td class="producto-precio">${{ number_format($pedido->total, 2) }} MXN</td>
                                     <td><span class="stock-badge">{{ ucfirst($pedido->pago?->estado ?? 'pendiente') }}</span></td>
                                     <td>{{ ucfirst(str_replace('_', ' ', $pedido->envio?->estado ?? 'pendiente')) }}</td>
+                                    <td>@if (! in_array($pedido->estado, ['cancelado', 'enviado', 'entregado'], true))<form method="POST" action="{{ route('admin.orders.cancel', $pedido) }}">@csrf @method('PATCH')<button type="submit" class="productos-limpiar">CANCELAR</button></form>@else — @endif</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="7" class="inventario-vacio">Aún no hay pedidos.</td></tr>
+                                <tr><td colspan="8" class="inventario-vacio">Aún no hay pedidos.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

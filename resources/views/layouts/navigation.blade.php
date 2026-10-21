@@ -22,6 +22,8 @@
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'is-active' : '' }}">Panel</a>
                     <a href="{{ route('productos.index') }}" class="{{ request()->routeIs('productos.*') ? 'is-active' : '' }}">Productos</a>
                     <a href="{{ route('inventario.index') }}" class="{{ request()->routeIs('inventario.*') ? 'is-active' : '' }}">Inventario</a>
+                    <a href="{{ route('admin.purchases.index') }}" class="{{ request()->routeIs('admin.purchases.*') ? 'is-active' : '' }}">Compras</a>
+                    <a href="{{ route('admin.kardex.index') }}" class="{{ request()->routeIs('admin.kardex.*') ? 'is-active' : '' }}">Kardex</a>
                     <a href="{{ route('imagenes.index') }}" class="{{ request()->routeIs('imagenes.*') ? 'is-active' : '' }}">Imagenes</a>
                     <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}">Pedidos</a>
                     <a href="{{ route('admin.shipments.index') }}" class="{{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}">Envios</a>
@@ -82,6 +84,8 @@
             <a href="{{ route('dashboard') }}">Panel</a>
             <a href="{{ route('productos.index') }}">Productos</a>
             <a href="{{ route('inventario.index') }}">Inventario</a>
+            <a href="{{ route('admin.purchases.index') }}">Compras</a>
+            <a href="{{ route('admin.kardex.index') }}">Kardex</a>
             <a href="{{ route('imagenes.index') }}">Imagenes</a>
             <a href="{{ route('admin.orders.index') }}">Pedidos</a>
             <a href="{{ route('admin.shipments.index') }}">Envios</a>

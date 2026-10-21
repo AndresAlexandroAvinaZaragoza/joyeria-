@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MovimientoInventario;
 use App\Models\Pago;
 use App\Models\Pedido;
 use Illuminate\Http\RedirectResponse;
@@ -71,6 +72,13 @@ class PagosController extends Controller
                     'cantidad' => $item->cantidad,
                     'importe' => $importe,
                     'producto_id' => $producto->getKey(),
+                ]);
+                MovimientoInventario::create([
+                    'tipo_movimiento' => 'SALIDA',
+                    'cantidad' => $item->cantidad,
+                    'created_at' => now(),
+                    'producto_id' => $producto->getKey(),
+                    'user_id' => $request->user()->getKey(),
                 ]);
             }
 

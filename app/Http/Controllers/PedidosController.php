@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Envio;
 use App\Models\Pedido;
+use App\Services\JoyeriaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -55,6 +56,14 @@ class PedidosController extends Controller
         }
 
         return back()->with('status', 'El envío se actualizó correctamente.');
+    }
+
+    public function cancel(Request $request, Pedido $pedido, JoyeriaService $service): RedirectResponse
+    {
+        $this->ensureStaff($request);
+        $service->cancelOrder($pedido, $request->user()->getKey());
+
+        return back()->with('status', 'El pedido fue cancelado y el inventario fue restaurado.');
     }
 
     private function ensureStaff(Request $request): void

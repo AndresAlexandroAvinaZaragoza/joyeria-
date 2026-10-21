@@ -6,6 +6,7 @@ use App\Models\Carrito;
 use App\Models\CarritoItem;
 use App\Models\Categoria;
 use App\Models\Producto;
+use App\Services\JoyeriaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -17,7 +18,7 @@ class TiendaController extends Controller
     public function index(Request $request): View
     {
         $productosQuery = Producto::query()
-            ->with(['categoria', 'imagenes' => fn ($query) => $query->orderByDesc('es_principal')->orderBy('orden')])
+            ->with(['categoria', 'inventario', 'imagenes' => fn ($query) => $query->orderByDesc('es_principal')->orderBy('orden')])
             ->where('status', true);
 
         if ($request->filled('search')) {
@@ -64,23 +65,18 @@ class TiendaController extends Controller
         ]);
     }
 
-    public function addToCart(Request $request, int $producto): RedirectResponse
+    public function addToCart(Request $request, int $producto, JoyeriaService $service): RedirectResponse
     {
         $productoModel = Producto::where('status', true)->findOrFail($producto);
 
-        DB::transaction(function () use ($request, $productoModel): void {
-            $cart = $this->getOrCreateCart($request);
-            $item = $cart->items()->where('producto_id', $productoModel->getKey())->first();
-
-            if ($item) {
-                $item->update(['cantidad' => min($item->cantidad + 1, 99)]);
-            } else {
-                $cart->items()->create([
-                    'producto_id' => $productoModel->getKey(),
-                    'cantidad' => 1,
-                ]);
-            }
-        });
+        try {
+            DB::transaction(function () use ($request, $productoModel, $service): void {
+                $cart = $this->getOrCreateCart($request);
+                $service->addCartItem($cart, $productoModel, 1);
+            });
+        } catch (\DomainException $exception) {
+            return back()->with('cart_status', $exception->getMessage());
+        }
 
         return back()->with('cart_status', 'La pieza se agregó al carrito.');
     }
@@ -100,6 +96,19 @@ class TiendaController extends Controller
         $cart = $this->findCart($request);
 
         if ($cart) {
+            $products = Producto::with('inventario')
+                ->whereIn('id_productos', $validProductIds)
+                ->get()
+                ->keyBy('id_productos');
+
+            foreach ($validProductIds as $productId) {
+                $stock = (int) ($products[$productId]->inventario?->stock_actual ?? 0);
+
+                if ((int) $quantities[$productId] > $stock) {
+                    return back()->with('cart_status', "Solo hay {$stock} pieza(s) disponibles de {$products[$productId]->nombre}.");
+                }
+            }
+
             DB::transaction(function () use ($cart, $validProductIds, $quantities): void {
                 $cart->items()->whereNotIn('producto_id', $validProductIds)->delete();
 
@@ -140,12 +149,13 @@ class TiendaController extends Controller
         }
 
         return $cart->items()
-            ->with(['producto.categoria', 'producto.imagenes'])
+            ->with(['producto.categoria', 'producto.inventario', 'producto.imagenes'])
             ->get()
             ->map(fn (CarritoItem $item): array => [
                 'producto' => $item->producto,
                 'quantity' => $item->cantidad,
                 'subtotal' => $item->producto->precio_venta * $item->cantidad,
+                'stock' => (int) ($item->producto->inventario?->stock_actual ?? 0),
             ]);
     }
 
@@ -185,15 +195,26 @@ class TiendaController extends Controller
             return;
         }
 
-        $productIds = Producto::query()
+        $products = Producto::query()
             ->whereIn('id_productos', array_keys($sessionCart))
             ->where('status', true)
-            ->pluck('id_productos');
+            ->with('inventario')
+            ->get();
 
-        foreach ($productIds as $productId) {
+        foreach ($products as $product) {
+            $quantity = min(
+                (int) $sessionCart[$product->getKey()],
+                (int) ($product->inventario?->stock_actual ?? 0),
+                99
+            );
+
+            if ($quantity < 1) {
+                continue;
+            }
+
             $cart->items()->create([
-                'producto_id' => $productId,
-                'cantidad' => min((int) $sessionCart[$productId], 99),
+                'producto_id' => $product->getKey(),
+                'cantidad' => $quantity,
             ]);
         }
 

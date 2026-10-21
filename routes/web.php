@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\ComprasController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
+use App\Http\Controllers\KardexController;
 use App\Http\Controllers\PagosController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\PorductosController;
@@ -39,6 +41,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/pedidos', [PedidosController::class, 'adminIndex'])->name('admin.orders.index');
     Route::get('/admin/envios', [PedidosController::class, 'shipments'])->name('admin.shipments.index');
     Route::patch('/admin/envios/{envio}', [PedidosController::class, 'updateShipment'])->name('admin.shipments.update');
+    Route::patch('/admin/pedidos/{pedido}/cancelar', [PedidosController::class, 'cancel'])->name('admin.orders.cancel');
+    Route::get('/admin/compras', [ComprasController::class, 'index'])->name('admin.purchases.index');
+    Route::post('/admin/compras', [ComprasController::class, 'store'])->name('admin.purchases.store');
+    Route::get('/admin/kardex', [KardexController::class, 'index'])->name('admin.kardex.index');
 });
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);
