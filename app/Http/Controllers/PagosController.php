@@ -72,7 +72,6 @@ class PagosController extends Controller
                     'importe' => $importe,
                     'producto_id' => $producto->getKey(),
                 ]);
-                $producto->inventario->decrement('stock_actual', $item->cantidad);
             }
 
             Pago::create([
