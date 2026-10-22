@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/pedidos', [PedidosController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::get('/admin/pedidos/{pedido}/pdf', [PedidosController::class, 'print'])->name('admin.orders.print');
     Route::get('/admin/envios', [PedidosController::class, 'shipments'])->name('admin.shipments.index');
     Route::patch('/admin/envios/{envio}', [PedidosController::class, 'updateShipment'])->name('admin.shipments.update');
     Route::patch('/admin/pedidos/{pedido}/cancelar', [PedidosController::class, 'cancel'])->name('admin.orders.cancel');

@@ -6,7 +6,7 @@
         <title>Carrito | Lesa Joyería</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="store-page">
@@ -54,12 +54,13 @@
                                     min="1"
                                     max="{{ min(99, $item['stock']) }}"
                                     required
-                                    @input="
+                                    @change="
                                         const maximum = {{ min(99, $item['stock']) }};
                                         const entered = Number($event.target.value);
                                         quantities['{{ $item['producto']->getKey() }}'] = Math.min(Math.max(Number.isFinite(entered) && entered > 0 ? entered : 1, 1), maximum);
                                         $event.target.value = quantities['{{ $item['producto']->getKey() }}'];
                                     "
+                                    @blur="$event.target.dispatchEvent(new Event('change', { bubbles: true }))"
                                 >
                             </label>
                             <div class="cart-item__actions">

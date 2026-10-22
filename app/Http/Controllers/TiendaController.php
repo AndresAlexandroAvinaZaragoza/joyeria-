@@ -7,6 +7,7 @@ use App\Models\CarritoItem;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Services\JoyeriaService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -65,7 +66,7 @@ class TiendaController extends Controller
         ]);
     }
 
-    public function addToCart(Request $request, int $producto, JoyeriaService $service): RedirectResponse
+    public function addToCart(Request $request, int $producto, JoyeriaService $service): RedirectResponse|JsonResponse
     {
         $productoModel = Producto::where('status', true)->findOrFail($producto);
 
@@ -75,7 +76,18 @@ class TiendaController extends Controller
                 $service->addCartItem($cart, $productoModel, 1);
             });
         } catch (\DomainException $exception) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $exception->getMessage()], 422);
+            }
+
             return back()->with('cart_status', $exception->getMessage());
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'La pieza se agregó al carrito.',
+                'cartCount' => $this->cartCount($request),
+            ]);
         }
 
         return back()->with('cart_status', 'La pieza se agregó al carrito.');

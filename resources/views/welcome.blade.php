@@ -7,7 +7,7 @@
         <title>Lesa Joyería | Alta joyeria</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="store-page">
@@ -26,7 +26,7 @@
                                 @if ($image)<img src="{{ str_starts_with($image, 'http') ? $image : Storage::disk('public')->url($image) }}" alt="{{ $producto->nombre }}">@else<div class="product-placeholder" aria-hidden="true">Lesa</div>@endif
                                 <span class="product-tag">Pieza de autor</span>
                             </div>
-                            <div class="product-card__body"><p class="product-category">{{ $producto->categoria?->nombre ?? 'Alta joyeria' }}</p><h3>{{ $producto->nombre }}</h3><p class="product-description">{{ $producto->descripcion ?: 'Una pieza de presencia serena y acabado impecable.' }}</p><div class="product-specs">@if ($producto->material)<span><small>Material</small>{{ $producto->material }}</span>@endif @if ($producto->peso_gr)<span><small>Peso</small>{{ number_format($producto->peso_gr, 2) }} g</span>@endif @if ($producto->talla_medida)<span><small>Talla</small>{{ $producto->talla_medida }}</span>@endif <span class="product-stock"><small>Disponibles</small>{{ $producto->inventario?->stock_actual ?? 0 }}</span></div><div class="product-card__footer"><strong>${{ number_format($producto->precio_venta, 2) }}</strong><form method="POST" action="{{ route('cart.add', $producto) }}">@csrf<button type="submit" class="add-button" @disabled(($producto->inventario?->stock_actual ?? 0) < 1)>{{ ($producto->inventario?->stock_actual ?? 0) > 0 ? '+ Anadir' : 'Agotado' }}</button></form></div></div>
+                            <div class="product-card__body"><p class="product-category">{{ $producto->categoria?->nombre ?? 'Alta joyeria' }}</p><h3>{{ $producto->nombre }}</h3><p class="product-description">{{ $producto->descripcion ?: 'Una pieza de presencia serena y acabado impecable.' }}</p><div class="product-specs">@if ($producto->material)<span><small>Material</small>{{ $producto->material }}</span>@endif @if ($producto->peso_gr)<span><small>Peso</small>{{ number_format($producto->peso_gr, 2) }} g</span>@endif @if ($producto->talla_medida)<span><small>Talla</small>{{ $producto->talla_medida }}</span>@endif <span class="product-stock"><small>Disponibles</small>{{ $producto->inventario?->stock_actual ?? 0 }}</span></div><div class="product-card__footer"><strong>${{ number_format($producto->precio_venta, 2) }}</strong><form method="POST" action="{{ route('cart.add', $producto) }}" class="add-to-cart-form">@csrf<button type="submit" class="add-button" @disabled(($producto->inventario?->stock_actual ?? 0) < 1)>{{ ($producto->inventario?->stock_actual ?? 0) > 0 ? '+ Anadir' : 'Agotado' }}</button></form></div></div>
                         </article>
                     @empty
                         <div class="empty-products"><h3>No encontramos esa pieza</h3><p>Prueba con otro termino o vuelve a ver toda la coleccion.</p><a href="{{ route('home') }}" class="primary-button">Ver catalogo</a></div>
@@ -38,5 +38,67 @@
         </main>
 
         <footer class="store-footer"><div class="footer-brand"><strong>Lesa Joyería</strong><p>Alta joyeria creada con oficio, calma y atencion al detalle.</p></div><div><span class="footer-title">Maison &amp; creacion</span><p>Grandes colecciones<br>Piezas unicas<br>Ediciones privadas</p></div><div><span class="footer-title">Asistencia</span><p>Consulta de certificados<br>Cita privada<br>Cuidado de joyas</p></div><div><span class="footer-title">La Gazette Privee</span><p>Proximamente: novedades y piezas de temporada.</p></div></footer>
+        <script>
+            document.querySelectorAll('.add-to-cart-form').forEach((form) => {
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const button = form.querySelector('button[type="submit"]');
+                const originalText = button.textContent;
+                button.disabled = true;
+                button.textContent = 'Agregando...';
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            Accept: 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.message || 'No se pudo agregar la pieza.');
+                    }
+
+                    document.querySelectorAll('.store-badge').forEach((badge) => {
+                        badge.textContent = result.cartCount;
+                    });
+
+                    if (!document.querySelector('.store-badge')) {
+                        const cartButton = document.querySelector('.store-cart-button');
+                        const badge = document.createElement('b');
+                        badge.className = 'store-badge';
+                        badge.textContent = result.cartCount;
+                        cartButton?.appendChild(badge);
+                    }
+
+                    let notice = document.querySelector('.store-notice[data-cart-notice]');
+
+                    if (!notice) {
+                    notice = document.createElement('div');
+                    notice.className = 'store-notice';
+                    notice.dataset.cartNotice = 'true';
+                    notice.setAttribute('role', 'status');
+                    document.body.insertBefore(notice, document.querySelector('main'));
+                    }
+
+                    notice.textContent = result.message;
+                    button.textContent = 'Agregado';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }, 900);
+                } catch (error) {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    window.alert(error.message);
+                }
+            });
+        });
+
+        </script>
     </body>
 </html>

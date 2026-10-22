@@ -14,7 +14,7 @@ class PedidosController extends Controller
     public function index(Request $request): View
     {
         return view('client.pedidos', [
-            'pedidos' => $request->user()->pedidos()->with(['detalles.producto', 'envio', 'pago'])->latest()->get(),
+            'pedidos' => $request->user()->pedidos()->with(['detalles.producto.imagenes', 'envio', 'pago'])->latest()->get(),
         ]);
     }
 
@@ -23,8 +23,16 @@ class PedidosController extends Controller
         $this->ensureStaff($request);
 
         return view('admin.productos.pedidos', [
-            'pedidos' => Pedido::with(['usuario', 'detalles.producto', 'envio', 'pago'])->latest()->get(),
+            'pedidos' => Pedido::with(['usuario', 'detalles.producto.imagenes', 'envio', 'pago'])->latest()->get(),
         ]);
+    }
+
+    public function print(Request $request, Pedido $pedido): View
+    {
+        $this->ensureStaff($request);
+        $pedido->load(['usuario', 'detalles.producto.imagenes', 'envio', 'pago']);
+
+        return view('admin.productos.pedido-print', compact('pedido'));
     }
 
     public function shipments(Request $request): View
