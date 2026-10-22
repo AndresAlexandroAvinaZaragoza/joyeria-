@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>Carrito | Lesa Joyería</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,13 +23,70 @@
                     x-data="{
                         quantities: @js($items->mapWithKeys(fn ($item) => [$item['producto']->getKey() => $item['quantity']])->all()),
                         prices: @js($items->mapWithKeys(fn ($item) => [$item['producto']->getKey() => (float) $item['producto']->precio_venta])->all()),
+                        saving: false,
+                        saveQueued: false,
+                        savePromise: null,
                         subtotal() {
                             return Object.keys(this.quantities).reduce((total, id) => total + (Number(this.prices[id]) * Number(this.quantities[id] || 0)), 0);
                         },
                         money(value) {
                             return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
+                        },
+                        async saveCart() {
+                            if (this.saving) {
+                                this.saveQueued = true;
+                                return this.savePromise;
+                            }
+
+                            this.saving = true;
+                            this.savePromise = (async () => {
+                                try {
+                                    do {
+                                        this.saveQueued = false;
+                                        const payload = {
+                                            quantities: Object.fromEntries(
+                                                Object.entries(this.quantities).map(([productId, quantity]) => [
+                                                    productId,
+                                                    Number(quantity),
+                                                ])
+                                            ),
+                                        };
+
+                                        const response = await fetch($refs.form.action, {
+                                            method: 'PATCH',
+                                            body: JSON.stringify(payload),
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                Accept: 'application/json',
+                                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                            },
+                                        });
+                                        const result = await response.json();
+
+                                        if (!response.ok) {
+                                            throw new Error(result.message || 'No se pudo actualizar el carrito.');
+                                        }
+
+                                        document.querySelectorAll('.store-badge').forEach((badge) => {
+                                            badge.textContent = result.cartCount;
+                                        });
+                                    } while (this.saveQueued);
+                                    return true;
+                                } catch (error) {
+                                    window.alert(error.message);
+                                    return false;
+                                } finally {
+                                    this.saving = false;
+                                    this.savePromise = null;
+                                }
+                            })();
+
+                            return this.savePromise;
                         }
                     }"
+                    x-ref="form"
+                    @submit.prevent="saveCart()"
                 >
                     @csrf
                     @method('PATCH')
@@ -54,13 +112,13 @@
                                     min="1"
                                     max="{{ min(99, $item['stock']) }}"
                                     required
-                                    @change="
+                                    @input="
                                         const maximum = {{ min(99, $item['stock']) }};
                                         const entered = Number($event.target.value);
                                         quantities['{{ $item['producto']->getKey() }}'] = Math.min(Math.max(Number.isFinite(entered) && entered > 0 ? entered : 1, 1), maximum);
                                         $event.target.value = quantities['{{ $item['producto']->getKey() }}'];
+                                        saveCart();
                                     "
-                                    @blur="$event.target.dispatchEvent(new Event('change', { bubbles: true }))"
                                 >
                             </label>
                             <div class="cart-item__actions">
@@ -69,8 +127,7 @@
                             </div>
                         </article>
                     @endforeach
-                    <button type="submit" class="secondary-button">Actualizar carrito</button>
-                </div><aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>Custodia de tu seleccion</h2><div><span>Subtotal</span><strong x-text="money(subtotal())"></strong></div>@auth<a href="{{ route('payments.create') }}" class="primary-button">Proceder al pago</a>@else<a href="{{ route('login') }}" class="primary-button">Inicia sesión para pagar</a>@endauth<small>Pago ficticio seguro para completar tu pedido.</small></aside></div></form>
+                </div><aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>Custodia de tu seleccion</h2><div><span>Subtotal</span><strong x-text="money(subtotal())"></strong></div>@auth<a href="{{ route('payments.create') }}" class="primary-button" @click.prevent="saveCart().then((saved) => { if (saved) window.location.href = $el.href; })">Proceder al pago</a>@else<a href="{{ route('login') }}" class="primary-button" @click.prevent="saveCart().then((saved) => { if (saved) window.location.href = $el.href; })">Inicia sesión para pagar</a>@endauth<small>Pago ficticio seguro para completar tu pedido.</small></aside></div></form>
             @endif
         </main>
         <footer class="store-footer"><div class="footer-brand"><strong>Lesa Joyería</strong><p>Alta joyeria creada con oficio y atencion al detalle.</p></div><div><span class="footer-title">Asistencia</span><p>Consulta de certificados<br>Cita privada</p></div><div><span class="footer-title">La Gazette Privee</span><p>Proximamente: novedades y piezas de temporada.</p></div></footer>

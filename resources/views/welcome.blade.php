@@ -63,6 +63,11 @@
                         throw new Error(result.message || 'No se pudo agregar la pieza.');
                     }
 
+                    const cartContent = document.querySelector('#cart-drawer-content');
+                    if (cartContent && result.cartHtml) {
+                        cartContent.innerHTML = result.cartHtml;
+                    }
+
                     document.querySelectorAll('.store-badge').forEach((badge) => {
                         badge.textContent = result.cartCount;
                     });

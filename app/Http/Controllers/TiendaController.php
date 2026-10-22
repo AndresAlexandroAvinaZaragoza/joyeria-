@@ -87,16 +87,19 @@ class TiendaController extends Controller
             return response()->json([
                 'message' => 'La pieza se agregó al carrito.',
                 'cartCount' => $this->cartCount($request),
+                'cartHtml' => view('store.partials.cart-drawer-content', [
+                    'cartItems' => $this->cartItems($request),
+                ])->render(),
             ]);
         }
 
         return back()->with('cart_status', 'La pieza se agregó al carrito.');
     }
 
-    public function updateCart(Request $request): RedirectResponse
+    public function updateCart(Request $request): RedirectResponse|JsonResponse
     {
         $quantities = $request->validate([
-            'quantities' => ['array'],
+            'quantities' => ['required', 'array', 'min:1'],
             'quantities.*' => ['integer', 'min:1', 'max:99'],
         ])['quantities'] ?? [];
 
@@ -117,7 +120,13 @@ class TiendaController extends Controller
                 $stock = (int) ($products[$productId]->inventario?->stock_actual ?? 0);
 
                 if ((int) $quantities[$productId] > $stock) {
-                    return back()->with('cart_status', "Solo hay {$stock} pieza(s) disponibles de {$products[$productId]->nombre}.");
+                    $message = "Solo hay {$stock} pieza(s) disponibles de {$products[$productId]->nombre}.";
+
+                    if ($request->expectsJson()) {
+                        return response()->json(['message' => $message], 422);
+                    }
+
+                    return back()->with('cart_status', $message);
                 }
             }
 
@@ -131,6 +140,13 @@ class TiendaController extends Controller
                     );
                 }
             });
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'El carrito se actualizó.',
+                'cartCount' => $this->cartCount($request),
+            ]);
         }
 
         return back()->with('cart_status', 'El carrito se actualizó.');
