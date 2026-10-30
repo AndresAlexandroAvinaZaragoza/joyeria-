@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Api\EnvioController;
-use App\Http\Controllers\Api\PedidoController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProductoImagenController;
+use App\Http\Controllers\Api\EnvioController;
+use App\Http\Controllers\Api\InventarioController;
+use App\Http\Controllers\Api\PedidoController;
 use App\Http\Controllers\Api\ProductoController;
+use App\Http\Controllers\Api\ProductoImagenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,16 +25,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/productos/{producto}', [ProductoController::class, 'update']);
     Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
 
-    Route::post('/productos/{producto}/imagenes',[ProductoImagenController::class, 'store']);
+    Route::post('/productos/{producto}/imagenes', [ProductoImagenController::class, 'store']);
     Route::post(
-    '/productos/{producto}/imagenes/{imagen}',
-    [ProductoImagenController::class, 'update']
+        '/productos/{producto}/imagenes/{imagen}',
+        [ProductoImagenController::class, 'update']
     );
 
     Route::delete(
         '/productos/{producto}/imagenes/{imagen}',
         [ProductoImagenController::class, 'destroy']
     );
+    //ruta de inventario 
+    Route::get('/inventario', [InventarioController::class, 'index']);
+    Route::get('/inventario/{inventario}', [InventarioController::class, 'show']);
+    Route::post('/inventario', [InventarioController::class, 'store']);
+    Route::put('/inventario/{inventario}', [InventarioController::class, 'update']);
 
     // Consultar todos los pedidos
     Route::get('/pedidos', [PedidoController::class, 'index']);
@@ -49,4 +55,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Actualizar un envío
     Route::patch('/envios/{envio}', [EnvioController::class, 'update']);
-}); 
+});
