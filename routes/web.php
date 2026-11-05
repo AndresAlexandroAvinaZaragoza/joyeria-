@@ -6,11 +6,13 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
+use App\Http\Controllers\InventoryReportController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\PagosController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\PorductosController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\TiendaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +49,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/compras', [ComprasController::class, 'index'])->name('admin.purchases.index');
     Route::post('/admin/compras', [ComprasController::class, 'store'])->name('admin.purchases.store');
     Route::get('/admin/kardex', [KardexController::class, 'index'])->name('admin.kardex.index');
+    Route::get('/admin/reportes', fn () => redirect()->route('admin.reports.sales'))->name('admin.reports');
+    Route::get('/admin/reportes/ventas', [SalesReportController::class, 'index'])->name('admin.reports.sales');
+    Route::get('/admin/reportes/ventas/pdf', [SalesReportController::class, 'pdf'])->name('admin.reports.sales.pdf');
+    Route::get('/admin/reportes/ventas/excel', [SalesReportController::class, 'excel'])->name('admin.reports.sales.excel');
+    Route::get('/admin/reportes/inventario', [InventoryReportController::class, 'index'])->name('admin.reports.inventory');
+    Route::get('/admin/reportes/inventario/pdf', [InventoryReportController::class, 'pdf'])->name('admin.reports.inventory.pdf');
+    Route::get('/admin/reportes/inventario/excel', [InventoryReportController::class, 'excel'])->name('admin.reports.inventory.excel');
 });
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);

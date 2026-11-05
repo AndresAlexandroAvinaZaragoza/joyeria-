@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/inventario.css',
                 'resources/css/usuarios.css',
                 'resources/css/dashboard.css',
+                'resources/css/reportes.css',
                 'resources/js/app.js',
             ],
             refresh: true,

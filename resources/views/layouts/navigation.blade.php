@@ -28,6 +28,7 @@
                     <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}">Pedidos</a>
                     <a href="{{ route('admin.orders.history') }}" class="{{ request()->routeIs('admin.orders.history') ? 'is-active' : '' }}">Historial</a>
                     <a href="{{ route('admin.shipments.index') }}" class="{{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}">Envios</a>
+                    <a href="{{ route('admin.reports') }}" class="{{ request()->routeIs('admin.reports.*') || request()->routeIs('admin.reports') ? 'is-active' : '' }}">Reportes</a>
                     @if ($isAdmin)
                         <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'is-active' : '' }}">Usuarios</a>
                         <a href="{{ route('config.index') }}" class="{{ request()->routeIs('config.*') ? 'is-active' : '' }}">Configuracion</a>
@@ -91,6 +92,7 @@
             <a href="{{ route('admin.orders.index') }}">Pedidos</a>
             <a href="{{ route('admin.orders.history') }}">Historial</a>
             <a href="{{ route('admin.shipments.index') }}">Envios</a>
+            <a href="{{ route('admin.reports') }}">Reportes</a>
             @if ($isAdmin)
                 <a href="{{ route('usuarios.index') }}">Usuarios</a>
                 <a href="{{ route('config.index') }}">Configuracion</a>

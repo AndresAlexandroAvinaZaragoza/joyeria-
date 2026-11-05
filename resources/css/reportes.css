@@ -1,0 +1,51 @@
+@import url('https://fonts.bunny.net/css?family=figtree:400,500,600,700');
+
+.reportes-page { min-height: calc(100vh - 80px); background: #f7f5f2; padding: 48px 24px 80px; color: #282421; }
+.reportes-container { max-width: 1240px; margin: auto; }
+.reportes-header, .reportes-card__heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.reportes-eyebrow { color: #aa7d3b; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
+.reportes-header h1 { margin: 8px 0; font-size: clamp(30px, 4vw, 46px); font-weight: 500; letter-spacing: -.04em; }
+.reportes-header h1 span { color: #aa7d3b; }
+.reportes-header p { color: #766f69; margin: 0; }
+.reportes-header-actions { display: flex; align-items: center; gap: 14px; align-self: end; }
+.reportes-actions { display: flex; gap: 8px; }
+.reportes-actions a, .reportes-filters button { background: #282421; color: #fff; padding: 11px 16px; font-size: 11px; letter-spacing: .1em; font-weight: 700; }
+.reportes-actions a:last-child { background: #aa7d3b; }
+.reportes-type-switch { display: flex; align-self: end; gap: 4px; padding: 4px; border: 1px solid #e3dbd2; background: #fff; }
+.reportes-type-switch a { padding: 8px 12px; color: #766f69; font-size: 11px; font-weight: 700; }
+.reportes-type-switch a.is-active { background: #aa7d3b; color: #fff; }
+.reportes-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 34px 0 22px; }
+.reportes-filters label { color: #766f69; font-size: 12px; font-weight: 600; }
+.reportes-filters input { display: block; margin-top: 6px; border: 1px solid #ddd6cf; background: #fff; padding: 10px 12px; color: #282421; }
+.reportes-filters button { border: 0; cursor: pointer; }
+.reportes-filters > a { color: #8d672f; font-size: 11px; font-weight: 700; padding: 12px 4px; }
+.reportes-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.reportes-inventory-metrics { grid-template-columns: repeat(5, 1fr); }
+.reportes-metrics article, .reportes-card { background: #fff; border: 1px solid #ece6df; box-shadow: 0 8px 25px rgba(48, 36, 24, .04); }
+.reportes-metrics article { padding: 22px; }
+.reportes-metrics span { display: block; color: #8d672f; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+.reportes-metrics strong { display: block; margin: 8px 0 4px; font-size: 28px; font-weight: 500; }
+.reportes-metrics small, .reportes-card__heading > span { color: #938b84; font-size: 12px; }
+.reportes-card { padding: 24px; }
+.reportes-chart-card { margin-bottom: 20px; }
+.reportes-card h2 { margin: 6px 0 0; font-size: 21px; font-weight: 500; }
+.reportes-chart { height: 300px; margin-top: 25px; }
+.reportes-columns { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+.reportes-table-wrap { overflow-x: auto; margin-top: 20px; }
+.reportes-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.reportes-table th { color: #938b84; font-size: 10px; letter-spacing: .1em; text-align: left; }
+.reportes-table th, .reportes-table td { border-bottom: 1px solid #eee9e4; padding: 13px 10px; white-space: nowrap; }
+.reportes-table td:last-child, .reportes-table th:last-child { text-align: right; }
+.reportes-table td strong { font-weight: 600; }
+.reportes-empty { color: #938b84; text-align: center !important; padding: 30px !important; }
+.reportes-badge { display: inline-block; border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 700; }
+.reportes-badge--normal { background: #e7f2e7; color: #397044; }
+.reportes-badge--stock_minimo { background: #fff1d7; color: #96651d; }
+.reportes-badge--agotado { background: #f9e1df; color: #a9433d; }
+@media (max-width: 760px) {
+    .reportes-page { padding: 30px 14px 60px; }
+    .reportes-header, .reportes-card__heading { display: block; }
+    .reportes-header-actions { margin-top: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .reportes-metrics, .reportes-columns { grid-template-columns: 1fr; }
+    .reportes-card__heading > span { display: block; margin-top: 12px; }
+}
