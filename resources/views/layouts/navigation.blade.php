@@ -26,6 +26,7 @@
                     <a href="{{ route('admin.kardex.index') }}" class="{{ request()->routeIs('admin.kardex.*') ? 'is-active' : '' }}">Kardex</a>
                     <a href="{{ route('imagenes.index') }}" class="{{ request()->routeIs('imagenes.*') ? 'is-active' : '' }}">Imagenes</a>
                     <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}">Pedidos</a>
+                    <a href="{{ route('admin.orders.history') }}" class="{{ request()->routeIs('admin.orders.history') ? 'is-active' : '' }}">Historial</a>
                     <a href="{{ route('admin.shipments.index') }}" class="{{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}">Envios</a>
                     @if ($isAdmin)
                         <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'is-active' : '' }}">Usuarios</a>
@@ -88,6 +89,7 @@
             <a href="{{ route('admin.kardex.index') }}">Kardex</a>
             <a href="{{ route('imagenes.index') }}">Imagenes</a>
             <a href="{{ route('admin.orders.index') }}">Pedidos</a>
+            <a href="{{ route('admin.orders.history') }}">Historial</a>
             <a href="{{ route('admin.shipments.index') }}">Envios</a>
             @if ($isAdmin)
                 <a href="{{ route('usuarios.index') }}">Usuarios</a>

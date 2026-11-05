@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Envio;
+use App\Models\PedidoHistorial;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +34,7 @@ class EnvioController extends Controller
 
         return response()->json([
             'message' => 'Envíos obtenidos correctamente.',
-            'envios' => $envios
+            'envios' => $envios,
         ]);
     }
 
@@ -46,7 +48,7 @@ class EnvioController extends Controller
 
         return response()->json([
             'message' => 'Envío obtenido correctamente.',
-            'envio' => $envioModel
+            'envio' => $envioModel,
         ]);
     }
 
@@ -66,14 +68,19 @@ class EnvioController extends Controller
                     'enviado',
                     'en_transito',
                     'entregado',
-                    'cancelado'
-                ])
+                ]),
             ],
             'paqueteria' => ['nullable', 'string', 'max:50'],
             'numero_guia' => ['nullable', 'string', 'max:100'],
         ]);
 
-        DB::transaction(function () use ($envioModel, $data) {
+        abort_if(
+            in_array($envioModel->pedido->estado, ['cancelado', 'entregado'], true),
+            422,
+            'Este pedido ya está en el historial y no se puede modificar.'
+        );
+
+        DB::transaction(function () use ($envioModel, $data, $request) {
             $estado = $data['estado'];
 
             $envioModel->update([
@@ -81,23 +88,29 @@ class EnvioController extends Controller
                 'paqueteria' => $data['paqueteria'] ?? null,
                 'numero_guia' => $data['numero_guia'] ?? null,
                 'fecha_envio' => (
-                    $estado === 'enviado' && !$envioModel->fecha_envio
+                    $estado === 'enviado' && ! $envioModel->fecha_envio
                 ) ? now() : $envioModel->fecha_envio,
                 'fecha_entrega' => (
-                    $estado === 'entregado' && !$envioModel->fecha_entrega
+                    $estado === 'entregado' && ! $envioModel->fecha_entrega
                 ) ? now() : $envioModel->fecha_entrega,
             ]);
 
             if ($estado === 'entregado') {
                 $envioModel->pedido()->update([
-                    'estado' => 'entregado'
+                    'estado' => 'entregado',
+                ]);
+                PedidoHistorial::create([
+                    'pedido_id' => $envioModel->pedido->getKey(),
+                    'estado' => 'entregado',
+                    'user_id' => $request->user()->getKey(),
+                    'motivo' => 'Pedido marcado como entregado.',
                 ]);
             }
         });
 
         return response()->json([
             'message' => 'Envío actualizado correctamente.',
-            'envio' => $envioModel->fresh(['pedido.usuario'])
+            'envio' => $envioModel->fresh(['pedido.usuario']),
         ]);
     }
 }

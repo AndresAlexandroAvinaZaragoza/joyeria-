@@ -42,4 +42,9 @@ class Pedido extends Model
     {
         return $this->hasOne(Envio::class, 'pedido_id', 'id_pedidos');
     }
+
+    public function historial(): HasMany
+    {
+        return $this->hasMany(PedidoHistorial::class, 'pedido_id', 'id_pedidos');
+    }
 }

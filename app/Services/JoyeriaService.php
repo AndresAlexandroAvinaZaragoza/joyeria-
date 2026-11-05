@@ -6,6 +6,7 @@ use App\Models\Carrito;
 use App\Models\CarritoItem;
 use App\Models\MovimientoInventario;
 use App\Models\Pedido;
+use App\Models\PedidoHistorial;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -106,6 +107,13 @@ class JoyeriaService
             }
 
             $order->update(['estado' => 'cancelado']);
+            $order->envio()->update(['estado' => 'cancelado']);
+            PedidoHistorial::create([
+                'pedido_id' => $order->getKey(),
+                'estado' => 'cancelado',
+                'user_id' => $userId,
+                'motivo' => 'Pedido cancelado por personal autorizado.',
+            ]);
         });
     }
 }

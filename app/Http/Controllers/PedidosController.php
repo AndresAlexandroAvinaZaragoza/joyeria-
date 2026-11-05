@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Envio;
 use App\Models\Pedido;
+use App\Models\PedidoHistorial;
 use App\Services\JoyeriaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,7 +24,27 @@ class PedidosController extends Controller
         $this->ensureStaff($request);
 
         return view('admin.productos.pedidos', [
-            'pedidos' => Pedido::with(['usuario', 'detalles.producto.imagenes', 'envio', 'pago'])->latest()->get(),
+            'pedidos' => Pedido::whereNotIn('estado', ['cancelado', 'entregado'])
+                ->with(['usuario', 'detalles.producto.imagenes', 'envio', 'pago'])
+                ->latest()
+                ->get(),
+        ]);
+    }
+
+    public function history(Request $request): View
+    {
+        $this->ensureStaff($request);
+
+        return view('admin.productos.historial-pedidos', [
+            'historial' => PedidoHistorial::with([
+                'pedido.usuario',
+                'pedido.detalles.producto.imagenes',
+                'pedido.envio',
+                'pedido.pago',
+                'usuario',
+            ])
+                ->latest()
+                ->get(),
         ]);
     }
 
@@ -40,7 +61,10 @@ class PedidosController extends Controller
         $this->ensureStaff($request);
 
         return view('admin.productos.envios', [
-            'envios' => Envio::with('pedido.usuario')->latest()->get(),
+            'envios' => Envio::whereHas('pedido', fn ($query) => $query->whereNotIn('estado', ['cancelado', 'entregado']))
+                ->with('pedido.usuario')
+                ->latest()
+                ->get(),
         ]);
     }
 
@@ -49,10 +73,16 @@ class PedidosController extends Controller
         $this->ensureStaff($request);
 
         $data = $request->validate([
-            'estado' => ['required', 'in:pendiente,preparando,enviado,en_transito,entregado,cancelado'],
+            'estado' => ['required', 'in:pendiente,preparando,enviado,en_transito,entregado'],
             'paqueteria' => ['nullable', 'string', 'max:50'],
             'numero_guia' => ['nullable', 'string', 'max:100'],
         ]);
+
+        abort_if(
+            in_array($envio->pedido->estado, ['cancelado', 'entregado'], true),
+            422,
+            'Este pedido ya está en el historial y no se puede modificar.'
+        );
 
         $envio->update($data + [
             'fecha_envio' => $data['estado'] === 'enviado' && ! $envio->fecha_envio ? now() : $envio->fecha_envio,
@@ -61,6 +91,12 @@ class PedidosController extends Controller
 
         if ($data['estado'] === 'entregado') {
             $envio->pedido()->update(['estado' => 'entregado']);
+            PedidoHistorial::create([
+                'pedido_id' => $envio->pedido->getKey(),
+                'estado' => 'entregado',
+                'user_id' => $request->user()->getKey(),
+                'motivo' => 'Pedido marcado como entregado.',
+            ]);
         }
 
         return back()->with('status', 'El envío se actualizó correctamente.');

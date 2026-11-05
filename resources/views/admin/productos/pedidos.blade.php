@@ -24,7 +24,7 @@
                                         <button type="button" class="productos-button productos-button--small" @click="openOrder = {{ $pedido->id_pedidos }}">DETALLES</button>
                                         <a href="{{ route('admin.orders.print', $pedido) }}" target="_blank" rel="noopener" class="productos-button productos-button--small">PDF</a>
                                         @if (! in_array($pedido->estado, ['cancelado', 'enviado', 'entregado'], true))
-                                            <form method="POST" action="{{ route('admin.orders.cancel', $pedido) }}">@csrf @method('PATCH')<button type="submit" class="productos-limpiar">CANCELAR</button></form>
+                                            <form method="POST" action="{{ route('admin.orders.cancel', $pedido) }}" onsubmit="return confirm('¿Estás seguro de que quieres cancelar esta compra? El stock será restaurado y el pedido pasará al historial.');">@csrf @method('PATCH')<button type="submit" class="productos-limpiar">CANCELAR</button></form>
                                         @endif
                                     </td>
                                 </tr>
