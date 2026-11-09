@@ -20,7 +20,7 @@ class ProductoImagenController extends Controller
         $request->validate([
             'imagen' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'es_principal' => ['nullable', 'boolean'],
-            'orden' => ['nullable', 'integer', 'min:0'],
+            'orden' => ['nullable', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $ruta = $request->file('imagen')->store('productos', 'public');
@@ -29,7 +29,7 @@ class ProductoImagenController extends Controller
             DB::transaction(function () use ($request, $productoModel, $ruta) {
                 $esPrincipal = $request->boolean('es_principal');
 
-                if (!$productoModel->imagenes()->exists()) {
+                if (! $productoModel->imagenes()->exists()) {
                     $esPrincipal = true;
                 }
 
@@ -76,7 +76,7 @@ class ProductoImagenController extends Controller
         $validated = $request->validate([
             'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'es_principal' => ['required', 'boolean'],
-            'orden' => ['required', 'integer', 'min:0'],
+            'orden' => ['required', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $rutaAnterior = $imagenModel->url_img;

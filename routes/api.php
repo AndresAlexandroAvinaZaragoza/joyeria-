@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
         '/productos/{producto}/imagenes/{imagen}',
         [ProductoImagenController::class, 'destroy']
     );
-    //ruta de inventario 
+    // ruta de inventario
     Route::get('/inventario', [InventarioController::class, 'index']);
     Route::get('/inventario/{inventario}', [InventarioController::class, 'show']);
     Route::post('/inventario', [InventarioController::class, 'store']);

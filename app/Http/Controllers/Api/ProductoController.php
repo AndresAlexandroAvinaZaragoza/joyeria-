@@ -39,7 +39,7 @@ class ProductoController extends Controller
             'sku' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9-]+$/', 'unique:productos,sku'],
             'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'descripcion' => ['nullable', 'string', 'max:1000', $this->descriptionWordLimitRule()],
-            'id_categoria' => ['required', 'exists:categorias,id_categorias'],
+            'id_categoria' => ['required', 'integer', 'exists:categorias,id_categorias'],
             'material' => ['required', 'string', 'max:100', 'regex:/^[\pL0-9\s]+$/u'],
             'peso_gr' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
             'talla_medida' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
@@ -107,8 +107,8 @@ class ProductoController extends Controller
             'talla_medida' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
             'precio_costo' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'precio_venta' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
-            'status' => 'required|boolean',
-            'id_categoria' => 'required|exists:categorias,id_categorias',
+            'status' => ['required', 'boolean'],
+            'id_categoria' => ['required', 'integer', 'exists:categorias,id_categorias'],
         ]);
 
         $producto->update($datos);

@@ -62,6 +62,7 @@ class EnvioController extends Controller
         $data = $request->validate([
             'estado' => [
                 'required',
+                'string',
                 Rule::in([
                     'pendiente',
                     'preparando',
@@ -70,8 +71,8 @@ class EnvioController extends Controller
                     'entregado',
                 ]),
             ],
-            'paqueteria' => ['nullable', 'string', 'max:50'],
-            'numero_guia' => ['nullable', 'string', 'max:100'],
+            'paqueteria' => ['nullable', 'string', 'max:50', 'regex:/^[\pL0-9\s.-]+$/u'],
+            'numero_guia' => ['nullable', 'string', 'max:100', 'regex:/^[A-Za-z0-9\s-]+$/'],
         ]);
 
         abort_if(

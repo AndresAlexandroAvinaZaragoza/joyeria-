@@ -47,9 +47,9 @@ class InventarioController extends Controller
     public function store(Request $request, JoyeriaService $service): JsonResponse
     {
         $datos = $request->validate([
-            'producto_id' => ['required', 'exists:productos,id_productos'],
-            'cantidad' => ['required', 'integer', 'min:1'],
-            'stock_minimo' => ['nullable', 'integer', 'min:0'],
+            'producto_id' => ['required', 'integer', 'exists:productos,id_productos'],
+            'cantidad' => ['required', 'integer', 'min:1', 'max:2147483647'],
+            'stock_minimo' => ['nullable', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $producto = Producto::findOrFail($datos['producto_id']);
@@ -92,8 +92,8 @@ class InventarioController extends Controller
         JoyeriaService $service
     ): JsonResponse {
         $datos = $request->validate([
-            'stock_actual' => ['required', 'integer', 'min:0'],
-            'stock_minimo' => ['nullable', 'integer', 'min:0'],
+            'stock_actual' => ['required', 'integer', 'min:0', 'max:2147483647'],
+            'stock_minimo' => ['nullable', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $inventarioModel = Inventario::with('producto')->findOrFail($inventario);

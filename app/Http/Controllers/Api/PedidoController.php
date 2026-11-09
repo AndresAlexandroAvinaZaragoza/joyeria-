@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -29,14 +30,14 @@ class PedidoController extends Controller
             'usuario',
             'detalles.producto',
             'pago',
-            'envio'
+            'envio',
         ])
-        ->latest()
-        ->get();
+            ->latest()
+            ->get();
 
         return response()->json([
             'message' => 'Pedidos obtenidos correctamente.',
-            'pedidos' => $pedidos
+            'pedidos' => $pedidos,
         ]);
     }
 
@@ -48,12 +49,12 @@ class PedidoController extends Controller
             'usuario',
             'detalles.producto',
             'pago',
-            'envio'
+            'envio',
         ])->findOrFail($pedido);
 
         return response()->json([
             'message' => 'Detalle del pedido obtenido correctamente.',
-            'pedido' => $pedidoModel
+            'pedido' => $pedidoModel,
         ]);
     }
 }
