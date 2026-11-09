@@ -30,8 +30,8 @@ class ComprasController extends Controller
         $data = $request->validate([
             'numero_compra' => ['nullable', 'string', 'max:30', 'unique:compras,numero_compra'],
             'producto_id' => ['required', 'exists:productos,id_productos'],
-            'cantidad' => ['required', 'integer', 'min:1'],
-            'costo_unitario' => ['required', 'numeric', 'min:0'],
+            'cantidad' => ['required', 'integer', 'min:1', 'max:2147483647'],
+            'costo_unitario' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
         ]);
 
         DB::transaction(function () use ($request, $data): void {

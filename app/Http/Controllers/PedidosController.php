@@ -6,6 +6,7 @@ use App\Models\Envio;
 use App\Models\Pedido;
 use App\Models\PedidoHistorial;
 use App\Services\JoyeriaService;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,29 +23,85 @@ class PedidosController extends Controller
     public function adminIndex(Request $request): View
     {
         $this->ensureStaff($request);
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'period' => ['nullable', 'in:today,yesterday,this_week,last_month'],
+        ]);
+
+        $pedidosQuery = Pedido::whereNotIn('estado', ['cancelado', 'entregado'])
+            ->with(['usuario', 'detalles.producto.imagenes', 'envio', 'pago']);
+
+        if (! empty($filters['search'])) {
+            $search = trim($filters['search']);
+            $pedidosQuery->where(function ($query) use ($search) {
+                $query->where('numero_pedido', 'like', "%{$search}%")
+                    ->orWhere('estado', 'like', "%{$search}%")
+                    ->orWhereHas('usuario', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $today = CarbonImmutable::now();
+        [$from, $to] = match ($filters['period'] ?? null) {
+            'today' => [$today->startOfDay(), $today->endOfDay()],
+            'yesterday' => [$today->subDay()->startOfDay(), $today->subDay()->endOfDay()],
+            'this_week' => [$today->startOfWeek(), $today->endOfWeek()],
+            'last_month' => [$today->subMonth()->startOfMonth(), $today->subMonth()->endOfMonth()],
+            default => [null, null],
+        };
+
+        if ($from && $to) {
+            $pedidosQuery->whereBetween('created_at', [$from, $to]);
+        }
 
         return view('admin.productos.pedidos', [
-            'pedidos' => Pedido::whereNotIn('estado', ['cancelado', 'entregado'])
-                ->with(['usuario', 'detalles.producto.imagenes', 'envio', 'pago'])
-                ->latest()
-                ->get(),
+            'pedidos' => $pedidosQuery->latest()->get(),
+            'period' => $filters['period'] ?? null,
         ]);
     }
 
     public function history(Request $request): View
     {
         $this->ensureStaff($request);
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'period' => ['nullable', 'in:today,yesterday,this_week,last_month'],
+        ]);
+
+        $historialQuery = PedidoHistorial::with([
+            'pedido.usuario',
+            'pedido.detalles.producto.imagenes',
+            'pedido.envio',
+            'pedido.pago',
+            'usuario',
+        ]);
+
+        if (! empty($filters['search'])) {
+            $search = trim($filters['search']);
+            $historialQuery->where(function ($query) use ($search) {
+                $query->where('estado', 'like', "%{$search}%")
+                    ->orWhere('motivo', 'like', "%{$search}%")
+                    ->orWhereHas('pedido', function ($pedidoQuery) use ($search) {
+                        $pedidoQuery->where('numero_pedido', 'like', "%{$search}%")
+                            ->orWhereHas('usuario', function ($userQuery) use ($search) {
+                                $userQuery->where('name', 'like', "%{$search}%")
+                                    ->orWhere('email', 'like', "%{$search}%");
+                            });
+                    })
+                    ->orWhereHas('usuario', fn ($userQuery) => $userQuery->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        [$from, $to] = $this->periodBounds($filters['period'] ?? null);
+        if ($from && $to) {
+            $historialQuery->whereBetween('created_at', [$from, $to]);
+        }
 
         return view('admin.productos.historial-pedidos', [
-            'historial' => PedidoHistorial::with([
-                'pedido.usuario',
-                'pedido.detalles.producto.imagenes',
-                'pedido.envio',
-                'pedido.pago',
-                'usuario',
-            ])
-                ->latest()
-                ->get(),
+            'historial' => $historialQuery->latest()->get(),
+            'period' => $filters['period'] ?? null,
         ]);
     }
 
@@ -59,12 +116,38 @@ class PedidosController extends Controller
     public function shipments(Request $request): View
     {
         $this->ensureStaff($request);
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'period' => ['nullable', 'in:today,yesterday,this_week,last_month'],
+        ]);
+
+        $enviosQuery = Envio::whereHas('pedido', fn ($query) => $query->whereNotIn('estado', ['cancelado', 'entregado']))
+            ->with('pedido.usuario');
+
+        if (! empty($filters['search'])) {
+            $search = trim($filters['search']);
+            $enviosQuery->where(function ($query) use ($search) {
+                $query->where('paqueteria', 'like', "%{$search}%")
+                    ->orWhere('numero_guia', 'like', "%{$search}%")
+                    ->orWhere('estado', 'like', "%{$search}%")
+                    ->orWhereHas('pedido', function ($pedidoQuery) use ($search) {
+                        $pedidoQuery->where('numero_pedido', 'like', "%{$search}%")
+                            ->orWhereHas('usuario', function ($userQuery) use ($search) {
+                                $userQuery->where('name', 'like', "%{$search}%")
+                                    ->orWhere('email', 'like', "%{$search}%");
+                            });
+                    });
+            });
+        }
+
+        [$from, $to] = $this->periodBounds($filters['period'] ?? null);
+        if ($from && $to) {
+            $enviosQuery->whereBetween('created_at', [$from, $to]);
+        }
 
         return view('admin.productos.envios', [
-            'envios' => Envio::whereHas('pedido', fn ($query) => $query->whereNotIn('estado', ['cancelado', 'entregado']))
-                ->with('pedido.usuario')
-                ->latest()
-                ->get(),
+            'envios' => $enviosQuery->latest()->get(),
+            'period' => $filters['period'] ?? null,
         ]);
     }
 
@@ -114,5 +197,19 @@ class PedidosController extends Controller
     {
         $role = strtolower((string) $request->user()->rol?->nombre);
         abort_unless(in_array($role, ['admin', 'administrador', 'empleado'], true), 403);
+    }
+
+    /** @return array{0: CarbonImmutable|null, 1: CarbonImmutable|null} */
+    private function periodBounds(?string $period): array
+    {
+        $today = CarbonImmutable::now();
+
+        return match ($period) {
+            'today' => [$today->startOfDay(), $today->endOfDay()],
+            'yesterday' => [$today->subDay()->startOfDay(), $today->subDay()->endOfDay()],
+            'this_week' => [$today->startOfWeek(), $today->endOfWeek()],
+            'last_month' => [$today->subMonth()->startOfMonth(), $today->subMonth()->endOfMonth()],
+            default => [null, null],
+        };
     }
 }

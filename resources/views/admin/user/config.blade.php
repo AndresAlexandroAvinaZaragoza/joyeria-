@@ -570,6 +570,9 @@
                         <input
                             id="role-name"
                             name="nombre"
+                            maxlength="30"
+                            pattern="[\p{L}\s]+"
+                            title="Solo se permiten letras y espacios."
                             value="{{ old('form') === 'role' ? old('nombre') : '' }}"
                             required
                         >
@@ -586,6 +589,7 @@
                         <textarea
                             id="role-description"
                             name="descripcion"
+                            maxlength="65535"
                         >{{ old('form') === 'role' ? old('descripcion') : '' }}</textarea>
                     </div>
                     <div class="productos-form-actions">
@@ -650,6 +654,9 @@
                         <input
                             id="category-name"
                             name="nombre"
+                            maxlength="100"
+                            pattern="[\p{L}\s]+"
+                            title="Solo se permiten letras y espacios."
                             value="{{ old('form') === 'category' ? old('nombre') : '' }}"
                             required
                         >
@@ -666,6 +673,9 @@
                         <input
                             id="category-slug"
                             name="slug"
+                            maxlength="255"
+                            pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                            title="Usa letras minúsculas, números y guiones."
                             value="{{ old('form') === 'category' ? old('slug') : '' }}"
                             placeholder="Se genera automáticamente"
                         >
@@ -682,6 +692,7 @@
                         <textarea
                             id="category-description"
                             name="descripcion"
+                            maxlength="65535"
                         >{{ old('form') === 'category' ? old('descripcion') : '' }}</textarea>
                     </div>
                     <div class="productos-form-group">
@@ -753,6 +764,9 @@
                         <input
                             id="edit-role-name"
                             name="nombre"
+                            maxlength="30"
+                            pattern="[\p{L}\s]+"
+                            title="Solo se permiten letras y espacios."
                             x-model="editRoleName"
                             required
                         >
@@ -764,6 +778,7 @@
                         <textarea
                             id="edit-role-description"
                             name="descripcion"
+                            maxlength="65535"
                             x-model="editRoleDescription"
                         ></textarea>
                     </div>
@@ -825,6 +840,9 @@
                         <input
                             id="edit-category-name"
                             name="nombre"
+                            maxlength="100"
+                            pattern="[\p{L}\s]+"
+                            title="Solo se permiten letras y espacios."
                             x-model="editCategoryName"
                             required
                         >
@@ -836,6 +854,9 @@
                         <input
                             id="edit-category-slug"
                             name="slug"
+                            maxlength="255"
+                            pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                            title="Usa letras minúsculas, números y guiones."
                             x-model="editCategorySlug"
                         >
                     </div>
@@ -846,6 +867,7 @@
                         <textarea
                             id="edit-category-description"
                             name="descripcion"
+                            maxlength="65535"
                             x-model="editCategoryDescription"
                         ></textarea>
                     </div>

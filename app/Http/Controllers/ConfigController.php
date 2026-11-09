@@ -49,9 +49,9 @@ class ConfigController extends Controller
     public function storeRole(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:30', 'unique:rol,nombre'],
-            'descripcion' => ['nullable', 'string'],
-        ]);
+            'nombre' => ['required', 'string', 'max:30', 'regex:/^[\pL\s]+$/u', 'unique:rol,nombre'],
+            'descripcion' => ['nullable', 'string', 'max:65535'],
+        ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
 
         Rol::create($validated);
 
@@ -61,9 +61,9 @@ class ConfigController extends Controller
     public function updateRole(Request $request, Rol $rol): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:30', Rule::unique('rol', 'nombre')->ignore($rol->id_rol, 'id_rol')],
-            'descripcion' => ['nullable', 'string'],
-        ]);
+            'nombre' => ['required', 'string', 'max:30', 'regex:/^[\pL\s]+$/u', Rule::unique('rol', 'nombre')->ignore($rol->id_rol, 'id_rol')],
+            'descripcion' => ['nullable', 'string', 'max:65535'],
+        ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
 
         $rol->update($validated);
 
@@ -88,10 +88,10 @@ class ConfigController extends Controller
         ]);
 
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:100'],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'slug' => ['required', 'string', 'max:255', 'unique:categorias,slug'],
-            'descripcion' => ['nullable', 'string'],
-        ]);
+            'descripcion' => ['nullable', 'string', 'max:65535'],
+        ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
 
         $validated['status'] = $request->boolean('status');
         Categoria::create($validated);
@@ -106,10 +106,10 @@ class ConfigController extends Controller
         ]);
 
         $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:100'],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('categorias', 'slug')->ignore($categoria->id_categorias, 'id_categorias')],
-            'descripcion' => ['nullable', 'string'],
-        ]);
+            'descripcion' => ['nullable', 'string', 'max:65535'],
+        ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
 
         $validated['status'] = $request->boolean('status');
         $categoria->update($validated);

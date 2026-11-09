@@ -72,8 +72,8 @@
                 <div class="productos-modal-header"><div><span class="productos-label">INVENTARIO</span><h2>Agregar stock</h2></div><button type="button" class="productos-modal-close" @click="addModalOpen = false">&times;</button></div>
                 <form method="POST" action="{{ route('inventario.store') }}" class="productos-form">@csrf
                     <div class="productos-form-group full"><label for="producto_id">Producto</label><select id="producto_id" name="producto_id" required><option value="">Selecciona un producto</option>@foreach ($productos as $producto)<option value="{{ $producto->id_productos }}" @selected(old('producto_id') == $producto->id_productos)>{{ $producto->sku }} - {{ $producto->nombre }}</option>@endforeach</select>@error('producto_id')<div class="productos-error">{{ $message }}</div>@enderror</div>
-                    <div class="productos-form-group"><label for="cantidad">Cantidad a agregar</label><input id="cantidad" name="cantidad" type="number" min="1" required value="{{ old('cantidad') }}">@error('cantidad')<div class="productos-error">{{ $message }}</div>@enderror</div>
-                    <div class="productos-form-group"><label for="stock_minimo">Stock mínimo</label><input id="stock_minimo" name="stock_minimo" type="number" min="0" value="{{ old('stock_minimo', 0) }}"></div>
+                    <div class="productos-form-group"><label for="cantidad">Cantidad a agregar</label><input id="cantidad" name="cantidad" type="number" min="1" max="2147483647" required value="{{ old('cantidad') }}">@error('cantidad')<div class="productos-error">{{ $message }}</div>@enderror</div>
+                    <div class="productos-form-group"><label for="stock_minimo">Stock mínimo</label><input id="stock_minimo" name="stock_minimo" type="number" min="0" max="2147483647" value="{{ old('stock_minimo', 0) }}">@error('stock_minimo')<div class="productos-error">{{ $message }}</div>@enderror</div>
                     <div class="productos-form-actions"><button type="button" class="productos-cancelar" @click="addModalOpen = false">Cancelar</button><button type="submit" class="productos-guardar">AGREGAR STOCK</button></div>
                 </form>
             </div>
@@ -83,8 +83,8 @@
             <div class="productos-modal inventario-modal">
                 <div class="productos-modal-header"><div><span class="productos-label">INVENTARIO</span><h2>Editar stock</h2><p x-text="editProductName"></p></div><button type="button" class="productos-modal-close" @click="editModalOpen = false">&times;</button></div>
                 <form method="POST" :action="editAction" class="productos-form">@csrf @method('PUT')
-                    <div class="productos-form-group"><label for="edit-stock">Stock actual</label><input id="edit-stock" name="stock_actual" type="number" min="0" x-model="editStock" required></div>
-                    <div class="productos-form-group"><label for="edit-minimum">Stock mínimo</label><input id="edit-minimum" name="stock_minimo" type="number" min="0" x-model="editMinimum"></div>
+                    <div class="productos-form-group"><label for="edit-stock">Stock actual</label><input id="edit-stock" name="stock_actual" type="number" min="0" max="2147483647" x-model="editStock" required>@error('stock_actual')<div class="productos-error">{{ $message }}</div>@enderror</div>
+                    <div class="productos-form-group"><label for="edit-minimum">Stock mínimo</label><input id="edit-minimum" name="stock_minimo" type="number" min="0" max="2147483647" x-model="editMinimum">@error('stock_minimo')<div class="productos-error">{{ $message }}</div>@enderror</div>
                     <div class="productos-form-actions"><button type="button" class="productos-cancelar" @click="editModalOpen = false">Cancelar</button><button type="submit" class="productos-guardar">GUARDAR CAMBIOS</button></div>
                 </form>
             </div>

@@ -61,12 +61,17 @@ class DireccionClienteController extends Controller
     {
         $data = $request->validateWithBag('addresses', [
             'calle_numero' => ['required', 'string', 'max:50'],
-            'colonia' => ['required', 'string', 'max:50'],
-            'ciudad' => ['required', 'string', 'max:50'],
-            'estado' => ['required', 'string', 'max:50'],
-            'cp' => ['required', 'string', 'max:20'],
+            'colonia' => ['required', 'string', 'max:50', 'regex:/^[\pL\s.-]+$/u'],
+            'ciudad' => ['required', 'string', 'max:50', 'regex:/^[\pL\s.-]+$/u'],
+            'estado' => ['required', 'string', 'max:50', 'regex:/^[\pL\s.-]+$/u'],
+            'cp' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z0-9\s-]+$/'],
             'referencias' => ['nullable', 'string', 'max:100'],
             'predeterminada' => ['nullable', 'boolean'],
+        ], [
+            'colonia.regex' => 'La colonia solo debe contener letras, espacios, puntos y guiones.',
+            'ciudad.regex' => 'La ciudad solo debe contener letras, espacios, puntos y guiones.',
+            'estado.regex' => 'El estado solo debe contener letras, espacios, puntos y guiones.',
+            'cp.regex' => 'El código postal solo puede contener letras, números, espacios y guiones.',
         ]);
 
         $data['predeterminada'] = (bool) ($data['predeterminada'] ?? false);

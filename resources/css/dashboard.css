@@ -3,7 +3,7 @@
     --dashboard-muted: #817b72;
     --dashboard-line: #e6e2db;
     --dashboard-gold: #9b7534;
-    --dashboard-paper: #fbfaf8;
+    --dashboard-paper: #f7f5f2;
 }
 
 .dashboard-page { min-height: calc(100vh - 78px); background: var(--dashboard-paper); color: var(--dashboard-ink); font-family: "DM Sans", sans-serif; }

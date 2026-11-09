@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-
-//Importar el modelo User
 use App\Models\Rol;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+// Importar el modelo User
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class UsuarioController extends Controller
 {
@@ -47,10 +46,12 @@ class UsuarioController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'rol_id' => ['required', 'exists:rol,id_rol'],
+        ], [
+            'name.regex' => 'El nombre solo debe contener letras y espacios.',
         ]);
 
         User::create([
@@ -63,16 +64,17 @@ class UsuarioController extends Controller
         return redirect()->route('usuarios.index')->with('status', 'Usuario creado correctamente.');
     }
 
-
     public function update(Request $request, $id): RedirectResponse
     {
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'rol_id' => ['required', 'exists:rol,id_rol'],
+        ], [
+            'name.regex' => 'El nombre solo debe contener letras y espacios.',
         ]);
 
         $user->name = $request->name;
@@ -93,6 +95,4 @@ class UsuarioController extends Controller
 
         return redirect()->route('usuarios.index')->with('status', 'Usuario eliminado correctamente.');
     }
-
-
 }

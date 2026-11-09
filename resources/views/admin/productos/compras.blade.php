@@ -11,10 +11,10 @@
             <section class="productos-table-card" style="margin-bottom: 25px;">
                 <form method="POST" action="{{ route('admin.purchases.store') }}" class="productos-form">
                     @csrf
-                    <div class="productos-form-group"><label for="numero_compra">Folio (opcional)</label><input id="numero_compra" name="numero_compra" value="{{ old('numero_compra') }}" placeholder="Se genera automáticamente"></div>
-                    <div class="productos-form-group"><label for="producto_id">Producto</label><select id="producto_id" name="producto_id" required><option value="">Selecciona un producto</option>@foreach ($productos as $producto)<option value="{{ $producto->id_productos }}" @selected(old('producto_id') == $producto->id_productos)>{{ $producto->sku }} - {{ $producto->nombre }}</option>@endforeach</select></div>
-                    <div class="productos-form-group"><label for="cantidad">Cantidad</label><input id="cantidad" name="cantidad" type="number" min="1" value="{{ old('cantidad', 1) }}" required></div>
-                    <div class="productos-form-group"><label for="costo_unitario">Costo unitario</label><input id="costo_unitario" name="costo_unitario" type="number" min="0" step="0.01" value="{{ old('costo_unitario') }}" required></div>
+                    <div class="productos-form-group"><label for="numero_compra">Folio (opcional)</label><input id="numero_compra" name="numero_compra" maxlength="30" value="{{ old('numero_compra') }}" placeholder="Se genera automáticamente">@error('numero_compra')<div class="productos-error">{{ $message }}</div>@enderror</div>
+                    <div class="productos-form-group"><label for="producto_id">Producto</label><select id="producto_id" name="producto_id" required><option value="">Selecciona un producto</option>@foreach ($productos as $producto)<option value="{{ $producto->id_productos }}" @selected(old('producto_id') == $producto->id_productos)>{{ $producto->sku }} - {{ $producto->nombre }}</option>@endforeach</select>@error('producto_id')<div class="productos-error">{{ $message }}</div>@enderror</div>
+                    <div class="productos-form-group"><label for="cantidad">Cantidad</label><input id="cantidad" name="cantidad" type="number" min="1" max="2147483647" value="{{ old('cantidad', 1) }}" required>@error('cantidad')<div class="productos-error">{{ $message }}</div>@enderror</div>
+                    <div class="productos-form-group"><label for="costo_unitario">Costo unitario</label><input id="costo_unitario" name="costo_unitario" type="number" min="0" max="99999999.99" step="0.01" value="{{ old('costo_unitario') }}" required>@error('costo_unitario')<div class="productos-error">{{ $message }}</div>@enderror</div>
                     <div class="productos-form-actions"><button class="productos-guardar" type="submit">REGISTRAR COMPRA</button></div>
                 </form>
             </section>

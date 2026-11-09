@@ -45,8 +45,8 @@ class InventarioContoller extends Controller
     {
         $request->validate([
             'producto_id' => ['required', 'exists:productos,id_productos'],
-            'cantidad' => ['required', 'integer', 'min:1'],
-            'stock_minimo' => ['nullable', 'integer', 'min:0'],
+            'cantidad' => ['required', 'integer', 'min:1', 'max:2147483647'],
+            'stock_minimo' => ['nullable', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $product = Producto::findOrFail($request->producto_id);
@@ -66,8 +66,8 @@ class InventarioContoller extends Controller
     public function update(Request $request, int $inventario, JoyeriaService $service): RedirectResponse
     {
         $request->validate([
-            'stock_actual' => ['required', 'integer', 'min:0'],
-            'stock_minimo' => ['nullable', 'integer', 'min:0'],
+            'stock_actual' => ['required', 'integer', 'min:0', 'max:2147483647'],
+            'stock_minimo' => ['nullable', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $registro = Inventario::findOrFail($inventario);

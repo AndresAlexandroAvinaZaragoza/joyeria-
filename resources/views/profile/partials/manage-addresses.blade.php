@@ -29,32 +29,32 @@
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <x-input-label for="calle_numero_{{ $direccion->getKey() }}" :value="__('Calle y número')" />
-                        <x-text-input id="calle_numero_{{ $direccion->getKey() }}" name="calle_numero" type="text" class="mt-1 block w-full" :value="old('calle_numero', $direccion->calle_numero)" required />
+                        <x-text-input id="calle_numero_{{ $direccion->getKey() }}" name="calle_numero" type="text" maxlength="50" class="mt-1 block w-full" :value="old('calle_numero', $direccion->calle_numero)" required />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('calle_numero')" />
                     </div>
                     <div>
                         <x-input-label for="colonia_{{ $direccion->getKey() }}" :value="__('Colonia')" />
-                        <x-text-input id="colonia_{{ $direccion->getKey() }}" name="colonia" type="text" class="mt-1 block w-full" :value="old('colonia', $direccion->colonia)" required />
+                        <x-text-input id="colonia_{{ $direccion->getKey() }}" name="colonia" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('colonia', $direccion->colonia)" required />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('colonia')" />
                     </div>
                     <div>
                         <x-input-label for="ciudad_{{ $direccion->getKey() }}" :value="__('Ciudad')" />
-                        <x-text-input id="ciudad_{{ $direccion->getKey() }}" name="ciudad" type="text" class="mt-1 block w-full" :value="old('ciudad', $direccion->ciudad)" required />
+                        <x-text-input id="ciudad_{{ $direccion->getKey() }}" name="ciudad" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('ciudad', $direccion->ciudad)" required />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('ciudad')" />
                     </div>
                     <div>
                         <x-input-label for="estado_{{ $direccion->getKey() }}" :value="__('Estado')" />
-                        <x-text-input id="estado_{{ $direccion->getKey() }}" name="estado" type="text" class="mt-1 block w-full" :value="old('estado', $direccion->estado)" required />
+                        <x-text-input id="estado_{{ $direccion->getKey() }}" name="estado" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('estado', $direccion->estado)" required />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('estado')" />
                     </div>
                     <div>
                         <x-input-label for="cp_{{ $direccion->getKey() }}" :value="__('Código postal')" />
-                        <x-text-input id="cp_{{ $direccion->getKey() }}" name="cp" type="text" class="mt-1 block w-full" :value="old('cp', $direccion->cp)" required />
+                        <x-text-input id="cp_{{ $direccion->getKey() }}" name="cp" type="text" maxlength="20" pattern="[A-Za-z0-9\s-]+" title="Solo letras, números, espacios y guiones." class="mt-1 block w-full" :value="old('cp', $direccion->cp)" required />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('cp')" />
                     </div>
                     <div>
                         <x-input-label for="referencias_{{ $direccion->getKey() }}" :value="__('Referencias')" />
-                        <x-text-input id="referencias_{{ $direccion->getKey() }}" name="referencias" type="text" class="mt-1 block w-full" :value="old('referencias', $direccion->referencias)" />
+                        <x-text-input id="referencias_{{ $direccion->getKey() }}" name="referencias" type="text" maxlength="100" class="mt-1 block w-full" :value="old('referencias', $direccion->referencias)" />
                         <x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('referencias')" />
                     </div>
                 </div>
@@ -82,12 +82,12 @@
             <form method="POST" action="{{ route('profile.addresses.store') }}" class="mt-4 space-y-4">
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <div><x-input-label for="new_calle_numero" :value="__('Calle y número')" /><x-text-input id="new_calle_numero" name="calle_numero" type="text" class="mt-1 block w-full" :value="old('calle_numero')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('calle_numero')" /></div>
-                    <div><x-input-label for="new_colonia" :value="__('Colonia')" /><x-text-input id="new_colonia" name="colonia" type="text" class="mt-1 block w-full" :value="old('colonia')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('colonia')" /></div>
-                    <div><x-input-label for="new_ciudad" :value="__('Ciudad')" /><x-text-input id="new_ciudad" name="ciudad" type="text" class="mt-1 block w-full" :value="old('ciudad')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('ciudad')" /></div>
-                    <div><x-input-label for="new_estado" :value="__('Estado')" /><x-text-input id="new_estado" name="estado" type="text" class="mt-1 block w-full" :value="old('estado')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('estado')" /></div>
-                    <div><x-input-label for="new_cp" :value="__('Código postal')" /><x-text-input id="new_cp" name="cp" type="text" class="mt-1 block w-full" :value="old('cp')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('cp')" /></div>
-                    <div><x-input-label for="new_referencias" :value="__('Referencias')" /><x-text-input id="new_referencias" name="referencias" type="text" class="mt-1 block w-full" :value="old('referencias')" /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('referencias')" /></div>
+                    <div><x-input-label for="new_calle_numero" :value="__('Calle y número')" /><x-text-input id="new_calle_numero" name="calle_numero" type="text" maxlength="50" class="mt-1 block w-full" :value="old('calle_numero')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('calle_numero')" /></div>
+                    <div><x-input-label for="new_colonia" :value="__('Colonia')" /><x-text-input id="new_colonia" name="colonia" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('colonia')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('colonia')" /></div>
+                    <div><x-input-label for="new_ciudad" :value="__('Ciudad')" /><x-text-input id="new_ciudad" name="ciudad" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('ciudad')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('ciudad')" /></div>
+                    <div><x-input-label for="new_estado" :value="__('Estado')" /><x-text-input id="new_estado" name="estado" type="text" maxlength="50" pattern="[\p{L}\s.-]+" title="Solo letras, espacios, puntos y guiones." class="mt-1 block w-full" :value="old('estado')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('estado')" /></div>
+                    <div><x-input-label for="new_cp" :value="__('Código postal')" /><x-text-input id="new_cp" name="cp" type="text" maxlength="20" pattern="[A-Za-z0-9\s-]+" title="Solo letras, números, espacios y guiones." class="mt-1 block w-full" :value="old('cp')" required /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('cp')" /></div>
+                    <div><x-input-label for="new_referencias" :value="__('Referencias')" /><x-text-input id="new_referencias" name="referencias" type="text" maxlength="100" class="mt-1 block w-full" :value="old('referencias')" /><x-input-error class="mt-2" :messages="$errors->getBag('addresses')->get('referencias')" /></div>
                 </div>
                 <label class="flex items-center gap-2 text-sm text-gray-600"><input type="checkbox" name="predeterminada" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" @checked($direcciones->isEmpty())> Usar como dirección predeterminada</label>
                 <x-primary-button>Agregar dirección</x-primary-button>

@@ -3,7 +3,7 @@
 
     <div
         class="productos-page"
-        x-data="{ modalOpen: {{ $errors->any() ? 'true' : 'false' }}, editModalOpen: false, editAction: '', editSku: '', editName: '', editDescription: '', editCategory: '', editMaterial: '', editWeight: '', editSize: '', editCost: '', editPrice: '' }"
+        x-data="{ modalOpen: {{ $errors->any() && old('_method') !== 'PUT' ? 'true' : 'false' }}, editModalOpen: {{ $errors->any() && old('_method') === 'PUT' ? 'true' : 'false' }}, editAction: '', editSku: '', editName: '', editDescription: '', editCategory: '', editMaterial: '', editWeight: '', editSize: '', editCost: '', editPrice: '' }"
         @keydown.escape.window="modalOpen = false; editModalOpen = false"
     >
         @if (session('status'))
@@ -187,17 +187,17 @@
                     @csrf
                     <div class="productos-form-group">
                         <label for="sku">SKU</label>
-                        <input id="sku" name="sku" value="{{ old('sku') }}" required placeholder="Ej. JL-AN-014">
+                        <input id="sku" name="sku" value="{{ old('sku') }}" required maxlength="50" pattern="[A-Za-z0-9-]+" title="Solo letras, números y guiones." placeholder="Ej. JL-AN-014">
                         @error('sku') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="nombre">Nombre del producto</label>
-                        <input id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+                        <input id="nombre" name="nombre" value="{{ old('nombre') }}" required maxlength="100" pattern="[\p{L}\s]+" title="Solo se permiten letras y espacios.">
                         @error('nombre') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group full">
                         <label for="descripcion">Descripción</label>
-                        <textarea id="descripcion" name="descripcion">{{ old('descripcion') }}</textarea>
+                        <textarea id="descripcion" name="descripcion" maxlength="1000" x-on:input="const words = $event.target.value.trim() ? $event.target.value.trim().split(/\s+/).length : 0; $event.target.setCustomValidity(words > 150 ? 'La descripción no puede superar 150 palabras.' : '')">{{ old('descripcion') }}</textarea>
                         @error('descripcion') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
@@ -212,27 +212,27 @@
                     </div>
                     <div class="productos-form-group">
                         <label for="material">Material</label>
-                        <input id="material" name="material" value="{{ old('material') }}" required placeholder="Ej. Oro Blanco 18k">
+                        <input id="material" name="material" value="{{ old('material') }}" required maxlength="100" pattern="[\p{L}0-9\s]+" title="Solo letras, números y espacios." placeholder="Ej. Oro Blanco 18k">
                         @error('material') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="peso_gr">Peso (gramos)</label>
-                        <input id="peso_gr" name="peso_gr" type="number" step="0.01" min="0" value="{{ old('peso_gr') }}">
+                        <input id="peso_gr" name="peso_gr" type="number" step="0.01" min="0" max="99999999.99" value="{{ old('peso_gr') }}">
                         @error('peso_gr') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="talla">Talla / medida</label>
-                        <input id="talla" name="talla" value="{{ old('talla') }}" placeholder="Ej. Talla 6.5">
+                        <input id="talla" name="talla" value="{{ old('talla') }}" maxlength="30" pattern="[\p{L}0-9.\s-]+" title="Usa solo letras, números, espacios, puntos o guiones." placeholder="Ej. Talla 6.5">
                         @error('talla') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="precio_compra">Precio de compra</label>
-                        <input id="precio_costo" name="precio_costo" type="number" step="0.01" min="0" value="{{ old('precio_costo') }}" required>
+                        <input id="precio_costo" name="precio_costo" type="number" step="0.01" min="0" max="99999999.99" value="{{ old('precio_costo') }}" required>
                         @error('precio_costo') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="precio_venta">Precio de venta</label>
-                        <input id="precio_venta" name="precio_venta" type="number" step="0.01" min="0" value="{{ old('precio_venta') }}" required>
+                        <input id="precio_venta" name="precio_venta" type="number" step="0.01" min="0" max="99999999.99" value="{{ old('precio_venta') }}" required>
                         @error('precio_venta') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-actions">
@@ -267,15 +267,18 @@
                     @method('PUT')
                     <div class="productos-form-group">
                         <label for="edit-sku">SKU</label>
-                        <input id="edit-sku" name="sku" x-model="editSku" required>
+                        <input id="edit-sku" name="sku" x-model="editSku" required maxlength="50" pattern="[A-Za-z0-9-]+" title="Solo letras, números y guiones.">
+                        @error('sku') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-nombre">Nombre del producto</label>
-                        <input id="edit-nombre" name="nombre" x-model="editName" required>
+                        <input id="edit-nombre" name="nombre" x-model="editName" required maxlength="100" pattern="[\p{L}\s]+" title="Solo se permiten letras y espacios.">
+                        @error('nombre') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group full">
                         <label for="edit-descripcion">Descripción</label>
-                        <textarea id="edit-descripcion" name="descripcion" x-model="editDescription"></textarea>
+                        <textarea id="edit-descripcion" name="descripcion" maxlength="150 x-model="editDescription" x-on:input="const words = $event.target.value.trim() ? $event.target.value.trim().split(/\s+/).length : 0; $event.target.setCustomValidity(words > 150 ? 'La descripción no puede superar 150 palabras".' : '')"></textarea>
+                        @error('descripcion') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-categoria">Categoría</label>
@@ -285,26 +288,32 @@
                                 <option value="{{ $categoria->id_categorias }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
+                        @error('categoria') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-material">Material</label>
-                        <input id="edit-material" name="material" x-model="editMaterial" required>
+                        <input id="edit-material" name="material" x-model="editMaterial" required maxlength="100" pattern="[\p{L}0-9\s]+" title="Solo letras, números y espacios.">
+                        @error('material') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-peso">Peso (gramos)</label>
-                        <input id="edit-peso" name="peso_gr" type="number" step="0.01" min="0" x-model="editWeight">
+                        <input id="edit-peso" name="peso_gr" type="number" step="0.01" min="0" max="99999999.99" x-model="editWeight">
+                        @error('peso_gr') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-talla">Talla / medida</label>
-                        <input id="edit-talla" name="talla" x-model="editSize">
+                        <input id="edit-talla" name="talla" maxlength="30" pattern="[\p{L}0-9.\s-]+" title="Usa solo letras, números, espacios, puntos o guiones." x-model="editSize">
+                        @error('talla') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-precio-costo">Precio de compra</label>
-                        <input id="edit-precio-costo" name="precio_costo" type="number" step="0.01" min="0" x-model="editCost" required>
+                        <input id="edit-precio-costo" name="precio_costo" type="number" step="0.01" min="0" max="99999999.99" x-model="editCost" required>
+                        @error('precio_costo') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-group">
                         <label for="edit-precio-venta">Precio de venta</label>
-                        <input id="edit-precio-venta" name="precio_venta" type="number" step="0.01" min="0" x-model="editPrice" required>
+                        <input id="edit-precio-venta" name="precio_venta" type="number" step="0.01" min="0" max="99999999.99" x-model="editPrice" required>
+                        @error('precio_venta') <div class="productos-error">{{ $message }}</div> @enderror
                     </div>
                     <div class="productos-form-actions">
                         <button type="button" class="productos-cancelar" @click="editModalOpen = false">Cancelar</button>

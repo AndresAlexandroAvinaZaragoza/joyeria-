@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use App\Models\Producto;
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -43,16 +44,16 @@ class PorductosController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'sku' => ['required', 'string', 'max:50', 'unique:productos,sku'],
-            'nombre' => ['required', 'string', 'max:100'],
-            'descripcion' => ['nullable', 'string', 'max:1000'],
+            'sku' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9-]+$/', 'unique:productos,sku'],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'descripcion' => ['nullable', 'string', 'max:1000', $this->descriptionWordLimitRule()],
             'categoria' => ['required', 'exists:categorias,id_categorias'],
-            'material' => ['required', 'string', 'max:100'],
+            'material' => ['required', 'string', 'max:100', 'regex:/^[\pL0-9\s]+$/u'],
             'peso_gr' => ['nullable', 'numeric', 'min:0'],
-            'talla' => ['nullable', 'string', 'max:30'],
+            'talla' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
             'precio_costo' => ['required', 'numeric', 'min:0'],
             'precio_venta' => ['required', 'numeric', 'min:0'],
-        ]);
+        ], $this->productValidationMessages());
 
         Producto::create([
             'sku' => $request->sku,
@@ -75,16 +76,16 @@ class PorductosController extends Controller
         $productoModel = Producto::findOrFail($producto);
 
         $request->validate([
-            'sku' => ['required', 'string', 'max:50', Rule::unique('productos', 'sku')->ignore($productoModel->id_productos, 'id_productos')],
-            'nombre' => ['required', 'string', 'max:100'],
-            'descripcion' => ['nullable', 'string', 'max:1000'],
+            'sku' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9-]+$/', Rule::unique('productos', 'sku')->ignore($productoModel->id_productos, 'id_productos')],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'descripcion' => ['nullable', 'string', 'max:1000', $this->descriptionWordLimitRule()],
             'categoria' => ['required', 'exists:categorias,id_categorias'],
-            'material' => ['required', 'string', 'max:100'],
+            'material' => ['required', 'string', 'max:100', 'regex:/^[\pL0-9\s]+$/u'],
             'peso_gr' => ['nullable', 'numeric', 'min:0'],
-            'talla' => ['nullable', 'string', 'max:30'],
+            'talla' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
             'precio_costo' => ['required', 'numeric', 'min:0'],
             'precio_venta' => ['required', 'numeric', 'min:0'],
-        ]);
+        ], $this->productValidationMessages());
 
         $productoModel->update([
             'sku' => $request->sku,
@@ -117,5 +118,33 @@ class PorductosController extends Controller
             'status',
             $productoModel->status ? 'Producto activado correctamente.' : 'Producto desactivado correctamente.'
         );
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function productValidationMessages(): array
+    {
+        return [
+            'sku.regex' => 'El SKU solo puede contener letras, números y guiones.',
+            'nombre.regex' => 'El nombre del producto solo debe contener letras y espacios.',
+            'material.regex' => 'El material solo puede contener letras, números y espacios.',
+            'talla.regex' => 'La talla o medida contiene caracteres no válidos.',
+        ];
+    }
+
+    private function descriptionWordLimitRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if ($value === null || $value === '') {
+                return;
+            }
+
+            preg_match_all('/[\p{L}\p{N}]+/u', $value, $matches);
+
+            if (count($matches[0]) > 150) {
+                $fail('La descripción no puede superar 150 palabras.')->translate();
+            }
+        };
     }
 }

@@ -1,12 +1,26 @@
 <x-app-layout>
-    @vite(['resources/css/productos.css'])
+    @vite(['resources/css/productos.css', 'resources/css/reportes.css'])
     <div class="productos-page">
         <div class="productos-container">
             <section class="productos-header">
                 <div><span class="productos-label">OPERACIÓN</span><h1>Gestión de <span>Pedidos</span></h1><p>Consulta los pedidos y el estado de pago de tus clientes.</p></div>
             </section>
+            <form method="GET" action="{{ route('admin.orders.index') }}" class="productos-filtros" x-data>
+                <div class="productos-busqueda">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 6.05 6.05a7.5 7.5 0 0 0 10.6 10.6Z" /></svg>
+                    <input type="search" name="search" value="{{ request('search') }}" placeholder="Buscar por pedido, cliente o correo..." @input.debounce.400ms="$event.target.form.requestSubmit()">
+                </div>
+                <button type="button" class="productos-limpiar" @click="window.location = '{{ route('admin.orders.index') }}'">LIMPIAR</button>
+            </form>
+            <div class="reportes-quick-filters" aria-label="Periodos rápidos">
+                <span>PEDIDOS CREADOS:</span>
+                <a href="{{ route('admin.orders.index', array_merge(request()->except('period'), ['period' => 'today'])) }}" class="{{ $period === 'today' ? 'is-active' : '' }}">Hoy</a>
+                <a href="{{ route('admin.orders.index', array_merge(request()->except('period'), ['period' => 'yesterday'])) }}" class="{{ $period === 'yesterday' ? 'is-active' : '' }}">Ayer</a>
+                <a href="{{ route('admin.orders.index', array_merge(request()->except('period'), ['period' => 'this_week'])) }}" class="{{ $period === 'this_week' ? 'is-active' : '' }}">Esta semana</a>
+                <a href="{{ route('admin.orders.index', array_merge(request()->except('period'), ['period' => 'last_month'])) }}" class="{{ $period === 'last_month' ? 'is-active' : '' }}">Último mes</a>
+            </div>
             <section class="productos-table-card" x-data="{ openOrder: null }">
-                <div class="productos-tabla-info">{{ $pedidos->count() }} pedidos registrados</div>
+                <div class="productos-tabla-info">{{ $pedidos->count() }} pedidos encontrados</div>
                 <div class="productos-table-wrap">
                     <table class="productos-table">
                         <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>FECHA</th><th>PRODUCTOS</th><th>TOTAL</th><th>PAGO</th><th>ENVÍO</th><th>ACCIONES</th></tr></thead>

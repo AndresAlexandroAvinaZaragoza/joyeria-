@@ -269,12 +269,12 @@
 
                             <div>
                                 <x-input-label for="modal-name" :value="__('Name')" />
-                                <x-text-input id="modal-name" class="mt-1 block w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                                <x-text-input id="modal-name" class="mt-1 block w-full" type="text" name="name" maxlength="255" pattern="[\p{L}\s]+" title="Solo se permiten letras y espacios." :value="old('name')" required autofocus autocomplete="name" />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="modal-email" :value="__('Email')" />
-                                <x-text-input id="modal-email" class="mt-1 block w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                                <x-text-input id="modal-email" class="mt-1 block w-full" type="email" name="email" maxlength="255" :value="old('email')" required autocomplete="username" />
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
                             <div>
@@ -341,12 +341,12 @@
 
                             <div>
                                 <x-input-label for="modal-name" :value="__('Name')" />
-                                <x-text-input id="edit-modal-name" class="mt-1 block w-full" type="text" name="name" x-model="editName" required autocomplete="name" />
+                                <x-text-input id="edit-modal-name" class="mt-1 block w-full" type="text" name="name" maxlength="255" pattern="[\p{L}\s]+" title="Solo se permiten letras y espacios." x-model="editName" required autocomplete="name" />
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
                             <div>
                                 <x-input-label for="modal-email" :value="__('Email')" />
-                                <x-text-input id="edit-modal-email" class="mt-1 block w-full" type="email" name="email" x-model="editEmail" required autocomplete="username" />
+                                <x-text-input id="edit-modal-email" class="mt-1 block w-full" type="email" name="email" maxlength="255" x-model="editEmail" required autocomplete="username" />
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
                             <div>

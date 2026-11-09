@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
+use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductoController extends Controller
 {
@@ -17,10 +19,10 @@ class ProductoController extends Controller
         $productos = Producto::with([
             'categoria',
             'inventario',
-            'imagenes'
+            'imagenes',
         ])
-        ->orderByDesc('id_productos')
-        ->get();
+            ->orderByDesc('id_productos')
+            ->get();
 
         return response()->json([
             'message' => 'Productos obtenidos correctamente.',
@@ -34,18 +36,18 @@ class ProductoController extends Controller
     public function store(Request $request): JsonResponse
     {
         $datos = $request->validate([
-            'sku' => ['required', 'string', 'max:50', 'unique:productos,sku'],
-            'nombre' => ['required', 'string', 'max:100'],
-            'descripcion' => ['nullable', 'string', 'max:1000'],
+            'sku' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9-]+$/', 'unique:productos,sku'],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'descripcion' => ['nullable', 'string', 'max:1000', $this->descriptionWordLimitRule()],
             'id_categoria' => ['required', 'exists:categorias,id_categorias'],
-            'material' => ['required', 'string', 'max:100'],
-            'peso_gr' => ['nullable', 'numeric', 'min:0'],
-            'talla_medida' => ['nullable', 'string', 'max:30'],
-            'precio_costo' => ['required', 'numeric', 'min:0'],
-            'precio_venta' => ['required', 'numeric', 'min:0'],
+            'material' => ['required', 'string', 'max:100', 'regex:/^[\pL0-9\s]+$/u'],
+            'peso_gr' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'talla_medida' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
+            'precio_costo' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
+            'precio_venta' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
 
-            'stock_actual' => ['required', 'integer', 'min:0'],
-            'stock_minimo' => ['required', 'integer', 'min:0'],
+            'stock_actual' => ['required', 'integer', 'min:0', 'max:2147483647'],
+            'stock_minimo' => ['required', 'integer', 'min:0', 'max:2147483647'],
         ]);
 
         $producto = Producto::create([
@@ -69,7 +71,7 @@ class ProductoController extends Controller
         $producto->load([
             'categoria',
             'inventario',
-            'imagenes'
+            'imagenes',
         ]);
 
         return response()->json([
@@ -86,7 +88,7 @@ class ProductoController extends Controller
         $producto = Producto::with([
             'categoria',
             'inventario',
-            'imagenes'
+            'imagenes',
         ])->findOrFail($producto);
 
         return response()->json([
@@ -97,16 +99,14 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         $datos = $request->validate([
-            'sku' => 'required|string|max:100|unique:productos,sku,' .
-                    $producto->getKey() . ',id_productos',
-
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'material' => 'nullable|string|max:100',
-            'peso_gr' => 'nullable|numeric|min:0',
-            'talla_medida' => 'nullable|string|max:100',
-            'precio_costo' => 'required|numeric|min:0',
-            'precio_venta' => 'required|numeric|min:0',
+            'sku' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9-]+$/', Rule::unique('productos', 'sku')->ignore($producto->getKey(), 'id_productos')],
+            'nombre' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'descripcion' => ['nullable', 'string', 'max:1000', $this->descriptionWordLimitRule()],
+            'material' => ['required', 'string', 'max:100', 'regex:/^[\pL0-9\s]+$/u'],
+            'peso_gr' => ['nullable', 'numeric', 'min:0', 'max:99999999.99'],
+            'talla_medida' => ['nullable', 'string', 'max:30', 'regex:/^[\pL0-9.\s-]+$/u'],
+            'precio_costo' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
+            'precio_venta' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'status' => 'required|boolean',
             'id_categoria' => 'required|exists:categorias,id_categorias',
         ]);
@@ -117,7 +117,7 @@ class ProductoController extends Controller
             $producto->fresh()->load([
                 'categoria',
                 'inventario',
-                'imagenes'
+                'imagenes',
             ])
         );
     }
@@ -129,5 +129,20 @@ class ProductoController extends Controller
         return response()->json([
             'message' => 'Producto eliminado correctamente.',
         ]);
+    }
+
+    private function descriptionWordLimitRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if ($value === null || $value === '') {
+                return;
+            }
+
+            preg_match_all('/[\p{L}\p{N}]+/u', $value, $matches);
+
+            if (count($matches[0]) > 150) {
+                $fail('La descripción no puede superar 150 palabras.');
+            }
+        };
     }
 }
