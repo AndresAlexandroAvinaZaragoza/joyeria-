@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Inventario;
+use Carbon\CarbonImmutable;
 
 class InventoryReportService
 {
@@ -16,11 +17,30 @@ class InventoryReportService
      *     items: array<int, array{product_id: int, name: string, sku: string, category: string, stock: int, minimum: int, unit_cost: float, value: float, status: string}>
      * }
      */
-    public function generate(): array
+    /**
+     * @param  array{category_id?: int|null, status?: string|null, recent?: bool, from?: CarbonImmutable|null, to?: CarbonImmutable|null}  $filters
+     */
+    public function generate(array $filters = []): array
     {
         $inventory = Inventario::query()
             ->with('producto.categoria')
             ->whereHas('producto', fn ($query) => $query->where('status', true))
+            ->when($filters['category_id'] ?? null, fn ($query, $categoryId) => $query->whereHas(
+                'producto',
+                fn ($productQuery) => $productQuery->where('id_categoria', $categoryId)
+            ))
+            ->when(($filters['recent'] ?? false), fn ($query) => $query->whereHas(
+                'producto',
+                fn ($productQuery) => $productQuery->where('productos.created_at', '>=', now()->subDays(30))
+            ))
+            ->when(($filters['from'] ?? null) && ($filters['to'] ?? null), fn ($query) => $query->whereHas(
+                'producto',
+                fn ($productQuery) => $productQuery->whereBetween('productos.created_at', [$filters['from'], $filters['to']])
+            ))
+            ->when(($filters['status'] ?? null) === 'agotados', fn ($query) => $query->where('stock_actual', 0))
+            ->when(($filters['status'] ?? null) === 'minimos', fn ($query) => $query
+                ->where('stock_actual', '>', 0)
+                ->whereColumn('stock_actual', '<=', 'stock_minimo'))
             ->get();
 
         $items = $inventory->map(fn (Inventario $record): array => $this->formatItem($record))->all();

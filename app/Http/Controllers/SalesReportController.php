@@ -51,23 +51,33 @@ class SalesReportController extends Controller
     }
 
     /**
-     * @return array{from: CarbonImmutable, to: CarbonImmutable}
+     * @return array{from: CarbonImmutable, to: CarbonImmutable, period: string|null}
      */
     private function validatedFilters(Request $request): array
     {
         $data = $request->validate([
             'start_date' => ['nullable', 'date_format:Y-m-d'],
             'end_date' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            'period' => ['nullable', 'in:today,yesterday,last_week,last_month'],
         ]);
 
-        $from = isset($data['start_date'])
-            ? CarbonImmutable::createFromFormat('!Y-m-d', $data['start_date'])->startOfDay()
-            : CarbonImmutable::now()->startOfMonth();
-        $to = isset($data['end_date'])
-            ? CarbonImmutable::createFromFormat('!Y-m-d', $data['end_date'])->endOfDay()
-            : CarbonImmutable::now()->endOfDay();
+        $today = CarbonImmutable::now();
+        [$from, $to] = match ($data['period'] ?? null) {
+            'today' => [$today->startOfDay(), $today->endOfDay()],
+            'yesterday' => [$today->subDay()->startOfDay(), $today->subDay()->endOfDay()],
+            'last_week' => [$today->subWeek()->startOfWeek(), $today->subWeek()->endOfWeek()],
+            'last_month' => [$today->subMonth()->startOfMonth(), $today->subMonth()->endOfMonth()],
+            default => [
+                isset($data['start_date'])
+                    ? CarbonImmutable::createFromFormat('!Y-m-d', $data['start_date'])->startOfDay()
+                    : $today->startOfMonth(),
+                isset($data['end_date'])
+                    ? CarbonImmutable::createFromFormat('!Y-m-d', $data['end_date'])->endOfDay()
+                    : $today->endOfDay(),
+            ],
+        };
 
-        return ['from' => $from, 'to' => $to];
+        return ['from' => $from, 'to' => $to, 'period' => $data['period'] ?? null];
     }
 
     private function ensureStaff(Request $request): void

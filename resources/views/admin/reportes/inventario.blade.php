@@ -13,13 +13,45 @@
                     <div class="reportes-type-switch" aria-label="Tipo de reporte">
                         <a href="{{ route('admin.reports.sales') }}">Ventas</a>
                         <a href="{{ route('admin.reports.inventory') }}" class="is-active">Inventario</a>
+                        <a href="{{ route('admin.reports.orders') }}">Pedidos</a>
+                        <a href="{{ route('admin.reports.customers') }}">Clientes</a>
                     </div>
                     <div class="reportes-actions">
-                        <a href="{{ route('admin.reports.inventory.pdf') }}" target="_blank" rel="noopener">PDF</a>
-                        <a href="{{ route('admin.reports.inventory.excel') }}">EXCEL</a>
+                        <a href="{{ route('admin.reports.inventory.pdf', request()->query()) }}" target="_blank" rel="noopener">PDF</a>
+                        <a href="{{ route('admin.reports.inventory.excel', request()->query()) }}">EXCEL</a>
                     </div>
                 </div>
             </header>
+
+            <form method="GET" class="reportes-filters">
+                <label>Categoría
+                    <select name="category_id" onchange="this.form.submit()">
+                        <option value="">Todas las categorías</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->getKey() }}" @selected($filters['category_id'] === $category->getKey())>{{ $category->nombre }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>Estado
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">Todos los productos</option>
+                        <option value="minimos" @selected($filters['status'] === 'minimos')>Stock mínimo</option>
+                        <option value="agotados" @selected($filters['status'] === 'agotados')>Agotados</option>
+                    </select>
+                </label>
+                <label class="reportes-checkbox">
+                    <input type="checkbox" name="recent" value="1" @checked($filters['recent']) onchange="this.form.submit()">
+                    Agregados en los últimos 30 días
+                </label>
+                <a href="{{ route('admin.reports.inventory') }}">LIMPIAR</a>
+            </form>
+            <div class="reportes-quick-filters" aria-label="Periodos rápidos">
+                <span>PRODUCTOS AGREGADOS:</span>
+                <a href="{{ route('admin.reports.inventory', array_merge(request()->except('period'), ['period' => 'today'])) }}" class="{{ request('period') === 'today' ? 'is-active' : '' }}">Hoy</a>
+                <a href="{{ route('admin.reports.inventory', array_merge(request()->except('period'), ['period' => 'yesterday'])) }}" class="{{ request('period') === 'yesterday' ? 'is-active' : '' }}">Ayer</a>
+                <a href="{{ route('admin.reports.inventory', array_merge(request()->except('period'), ['period' => 'last_week'])) }}" class="{{ request('period') === 'last_week' ? 'is-active' : '' }}">Semana pasada</a>
+                <a href="{{ route('admin.reports.inventory', array_merge(request()->except('period'), ['period' => 'last_month'])) }}" class="{{ request('period') === 'last_month' ? 'is-active' : '' }}">Último mes</a>
+            </div>
 
             <section class="reportes-metrics reportes-inventory-metrics" aria-label="Resumen de inventario">
                 <article><span>PRODUCTOS CON INVENTARIO</span><strong>{{ number_format($report['total_products']) }}</strong><small>Productos activos</small></article>
@@ -32,7 +64,7 @@
             <section class="reportes-card">
                 <div class="reportes-card__heading">
                     <div><span class="reportes-eyebrow">DETALLE</span><h2>Existencias por producto</h2></div>
-                    <span>Actualizado {{ now()->format('d/m/Y H:i') }}</span>
+                    <span>{{ $report['total_products'] }} producto(s) encontrado(s)</span>
                 </div>
                 <div class="reportes-table-wrap">
                     <table class="reportes-table">

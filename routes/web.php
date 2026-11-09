@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\ComprasController;
 use App\Http\Controllers\ConfigController;
+use App\Http\Controllers\CustomerReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DireccionClienteController;
 use App\Http\Controllers\ImgContoller;
 use App\Http\Controllers\InventarioContoller;
 use App\Http\Controllers\InventoryReportController;
 use App\Http\Controllers\KardexController;
+use App\Http\Controllers\OrderReportController;
 use App\Http\Controllers\PagosController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\PorductosController;
@@ -56,6 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/reportes/inventario', [InventoryReportController::class, 'index'])->name('admin.reports.inventory');
     Route::get('/admin/reportes/inventario/pdf', [InventoryReportController::class, 'pdf'])->name('admin.reports.inventory.pdf');
     Route::get('/admin/reportes/inventario/excel', [InventoryReportController::class, 'excel'])->name('admin.reports.inventory.excel');
+    Route::get('/admin/reportes/pedidos', [OrderReportController::class, 'index'])->name('admin.reports.orders');
+    Route::get('/admin/reportes/pedidos/pdf', [OrderReportController::class, 'pdf'])->name('admin.reports.orders.pdf');
+    Route::get('/admin/reportes/pedidos/excel', [OrderReportController::class, 'excel'])->name('admin.reports.orders.excel');
+    Route::get('/admin/reportes/clientes', [CustomerReportController::class, 'index'])->name('admin.reports.customers');
+    Route::get('/admin/reportes/clientes/pdf', [CustomerReportController::class, 'pdf'])->name('admin.reports.customers.pdf');
+    Route::get('/admin/reportes/clientes/excel', [CustomerReportController::class, 'excel'])->name('admin.reports.customers.excel');
 });
 
 Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);

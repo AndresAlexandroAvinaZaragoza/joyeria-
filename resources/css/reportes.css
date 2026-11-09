@@ -7,7 +7,7 @@
 .reportes-header h1 { margin: 8px 0; font-size: clamp(30px, 4vw, 46px); font-weight: 500; letter-spacing: -.04em; }
 .reportes-header h1 span { color: #aa7d3b; }
 .reportes-header p { color: #766f69; margin: 0; }
-.reportes-header-actions { display: flex; align-items: center; gap: 14px; align-self: end; }
+.reportes-header-actions { display: flex; align-items: center; gap: 14px; align-self: flex-start; margin-top: 38px; }
 .reportes-actions { display: flex; gap: 8px; }
 .reportes-actions a, .reportes-filters button { background: #282421; color: #fff; padding: 11px 16px; font-size: 11px; letter-spacing: .1em; font-weight: 700; }
 .reportes-actions a:last-child { background: #aa7d3b; }
@@ -17,8 +17,15 @@
 .reportes-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 34px 0 22px; }
 .reportes-filters label { color: #766f69; font-size: 12px; font-weight: 600; }
 .reportes-filters input { display: block; margin-top: 6px; border: 1px solid #ddd6cf; background: #fff; padding: 10px 12px; color: #282421; }
+.reportes-filters select { display: block; min-width: 190px; margin-top: 6px; border: 1px solid #ddd6cf; background: #fff; padding: 10px 12px; color: #282421; }
+.reportes-checkbox { display: flex; align-items: center; gap: 8px; padding: 11px 4px; }
+.reportes-checkbox input { margin: 0; accent-color: #aa7d3b; }
 .reportes-filters button { border: 0; cursor: pointer; }
 .reportes-filters > a { color: #8d672f; font-size: 11px; font-weight: 700; padding: 12px 4px; }
+.reportes-quick-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 24px 0 22px; }
+.reportes-quick-filters span { color: #938b84; font-size: 10px; font-weight: 700; letter-spacing: .12em; margin-right: 4px; }
+.reportes-quick-filters a { border: 1px solid #e3dbd2; background: #fff; color: #766f69; padding: 7px 12px; font-size: 11px; }
+.reportes-quick-filters a:hover, .reportes-quick-filters a.is-active { border-color: #aa7d3b; background: #aa7d3b; color: #fff; }
 .reportes-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
 .reportes-inventory-metrics { grid-template-columns: repeat(5, 1fr); }
 .reportes-metrics article, .reportes-card { background: #fff; border: 1px solid #ece6df; box-shadow: 0 8px 25px rgba(48, 36, 24, .04); }

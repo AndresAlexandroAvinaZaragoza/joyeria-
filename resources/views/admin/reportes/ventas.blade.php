@@ -13,6 +13,8 @@
                     <div class="reportes-type-switch" aria-label="Tipo de reporte">
                         <a href="{{ route('admin.reports.sales') }}" class="is-active">Ventas</a>
                         <a href="{{ route('admin.reports.inventory') }}">Inventario</a>
+                        <a href="{{ route('admin.reports.orders') }}">Pedidos</a>
+                        <a href="{{ route('admin.reports.customers') }}">Clientes</a>
                     </div>
                     <div class="reportes-actions">
                         <a href="{{ route('admin.reports.sales.pdf', request()->query()) }}" target="_blank" rel="noopener">PDF</a>
@@ -22,11 +24,17 @@
             </header>
 
             <form method="GET" class="reportes-filters">
-                <label>Desde <input type="date" name="start_date" value="{{ $startDate }}"></label>
-                <label>Hasta <input type="date" name="end_date" value="{{ $endDate }}"></label>
-                <button type="submit">APLICAR FILTRO</button>
+                <label>Desde <input type="date" name="start_date" value="{{ $startDate }}" onchange="this.form.submit()"></label>
+                <label>Hasta <input type="date" name="end_date" value="{{ $endDate }}" onchange="this.form.submit()"></label>
                 <a href="{{ route('admin.reports.sales') }}">LIMPIAR</a>
             </form>
+            <div class="reportes-quick-filters" aria-label="Periodos rápidos">
+                <span>PERIODOS:</span>
+                <a href="{{ route('admin.reports.sales', ['period' => 'today']) }}" class="{{ request('period') === 'today' ? 'is-active' : '' }}">Hoy</a>
+                <a href="{{ route('admin.reports.sales', ['period' => 'yesterday']) }}" class="{{ request('period') === 'yesterday' ? 'is-active' : '' }}">Ayer</a>
+                <a href="{{ route('admin.reports.sales', ['period' => 'last_week']) }}" class="{{ request('period') === 'last_week' ? 'is-active' : '' }}">Semana pasada</a>
+                <a href="{{ route('admin.reports.sales', ['period' => 'last_month']) }}" class="{{ request('period') === 'last_month' ? 'is-active' : '' }}">Último mes</a>
+            </div>
 
             <section class="reportes-metrics" aria-label="Resumen de ventas">
                 <article><span>INGRESOS TOTALES</span><strong>${{ number_format($report['total_revenue'], 2) }}</strong><small>MXN · ventas no canceladas</small></article>
