@@ -15,7 +15,7 @@ class Pago extends Model
 
     protected $fillable = [
         'metodo_pago', 'transaccion_id', 'monto', 'estado',
-        'comprobante_url', 'fecha_pago', 'pedido_id',
+        'comprobante_url', 'fecha_pago', 'paypal_order_id', 'paypal_capture_id', 'pedido_id',
     ];
 
     protected $casts = [

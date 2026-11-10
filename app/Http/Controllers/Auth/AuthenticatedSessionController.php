@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (! $request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('verification.notice', absolute: false));
+        }
+
         $role = strtolower((string) $request->user()->rol?->nombre);
         $destination = in_array($role, ['admin', 'administrador', 'empleado'], true)
             ? route('dashboard', absolute: false)

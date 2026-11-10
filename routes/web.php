@@ -29,9 +29,11 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pago', [PagosController::class, 'create'])->name('payments.create');
     Route::post('/pago', [PagosController::class, 'store'])->name('payments.store');
+    Route::post('/pago/paypal/orden', [PagosController::class, 'createPayPalOrder'])->name('payments.paypal.create');
+    Route::post('/pago/paypal/capturar', [PagosController::class, 'capturePayPalOrder'])->name('payments.paypal.capture');
     Route::get('/pedidos', [PedidosController::class, 'index'])->name('orders.index');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

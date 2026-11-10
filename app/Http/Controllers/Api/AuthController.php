@@ -31,6 +31,12 @@ class AuthController extends Controller
             ], 403);
         }
 
+        if (! $user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Debes verificar tu correo electrónico antes de iniciar sesión.',
+            ], 403);
+        }
+
         $user->tokens()->delete();
 
         $token = $user->createToken('app-movil')->plainTextToken;
