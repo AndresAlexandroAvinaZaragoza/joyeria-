@@ -6,6 +6,7 @@ use App\Models\MovimientoInventario;
 use App\Models\Pago;
 use App\Models\Pedido;
 use App\Services\PayPalService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,24 +37,6 @@ class PagosController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
-    {
-        $data = $request->validate([
-            'direccion_id' => ['required', 'integer', 'exists:direccion_clientes,id_direccion_clientes'],
-            'metodo_pago' => ['required', 'in:tarjeta_ficticia,transferencia_ficticia'],
-        ]);
-
-        $pedido = $this->createPendingOrder($request, (int) $data['direccion_id'], $data['metodo_pago']);
-        $pedido->pago()->update([
-            'transaccion_id' => 'FICT-'.Str::upper(Str::random(12)),
-            'estado' => 'completado',
-            'fecha_pago' => now(),
-        ]);
-        $this->completeOrder($pedido);
-
-        return redirect()->route('orders.index')->with('status', "Pedido {$pedido->numero_pedido} creado correctamente.");
-    }
-
     public function createPayPalOrder(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -76,8 +59,11 @@ class PagosController extends Controller
                 throw new RuntimeException('PayPal no devolvió un identificador de orden.');
             }
 
-            $pedido = $this->createPendingOrder($request, (int) $data['direccion_id'], 'paypal');
-            $pedido->pago()->update(['paypal_order_id' => $paypalOrderId]);
+            $request->session()->put('paypal.pending_order', [
+                'order_id' => $paypalOrderId,
+                'direccion_id' => (int) $data['direccion_id'],
+                'amount' => number_format((float) $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad), 2, '.', ''),
+            ]);
 
             return response()->json(['id' => $paypalOrderId]);
         } catch (\Throwable $exception) {
@@ -95,50 +81,70 @@ class PagosController extends Controller
             'order_id' => ['required', 'string', 'max:255'],
         ]);
 
-        $pago = Pago::query()
-            ->where('paypal_order_id', $data['order_id'])
-            ->whereHas('pedido', fn ($query) => $query->where('user_id', $request->user()->getKey()))
-            ->with('pedido')
-            ->firstOrFail();
-
-        if ($pago->estado === 'completado') {
-            return response()->json(['redirect' => route('orders.index')]);
+        $pendingOrder = $request->session()->get('paypal.pending_order');
+        if (! is_array($pendingOrder) || ($pendingOrder['order_id'] ?? null) !== $data['order_id']) {
+            return response()->json(['message' => 'La sesión de pago expiró. Inicia el pago nuevamente.'], 422);
         }
 
         try {
-            $capture = $this->paypal->captureOrder($data['order_id']);
-            $captureStatus = data_get($capture, 'status');
+            $cart = $request->user()->carrito()->with('items.producto')->first();
+            if (! $cart || $cart->items->isEmpty()) {
+                return response()->json(['message' => 'Tu carrito está vacío.'], 422);
+            }
+
+            try {
+                $capture = $this->paypal->captureOrder($data['order_id']);
+            } catch (RequestException $exception) {
+                $capture = $this->paypal->getOrder($data['order_id']);
+                if (data_get($capture, 'status') === 'APPROVED') {
+                    usleep(500000);
+                    try {
+                        $capture = $this->paypal->captureOrder($data['order_id']);
+                    } catch (RequestException $retryException) {
+                        $capture = $this->paypal->getOrder($data['order_id']);
+                        if (data_get($capture, 'status') !== 'COMPLETED') {
+                            throw $retryException;
+                        }
+                    }
+                } elseif (data_get($capture, 'status') !== 'COMPLETED') {
+                    throw $exception;
+                }
+            }
+            $captureStatus = data_get($capture, 'purchase_units.0.payments.captures.0.status');
             $captureId = data_get($capture, 'purchase_units.0.payments.captures.0.id');
             $capturedAmount = data_get($capture, 'purchase_units.0.payments.captures.0.amount.value');
             $capturedCurrency = data_get($capture, 'purchase_units.0.payments.captures.0.amount.currency_code');
+            $cartAmount = number_format((float) $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad), 2, '.', '');
+            $expectedAmount = number_format((float) $pendingOrder['amount'], 2, '.', '');
+            $actualAmount = is_numeric($capturedAmount) ? number_format((float) $capturedAmount, 2, '.', '') : null;
 
             if (
                 $captureStatus !== 'COMPLETED'
                 || ! is_string($captureId)
                 || $captureId === ''
-                || ! is_string($capturedAmount)
-                || number_format((float) $capturedAmount, 2, '.', '') !== number_format((float) $pago->monto, 2, '.', '')
+                || $actualAmount === null
+                || $actualAmount !== $expectedAmount
+                || $actualAmount !== $cartAmount
                 || $capturedCurrency !== config('services.paypal.currency')
             ) {
-                $pago->update(['estado' => 'fallido']);
-
                 return response()->json(['message' => 'PayPal no confirmó el pago.'], 422);
             }
 
-            DB::transaction(function () use ($pago, $captureId): void {
-                $lockedPago = Pago::query()->lockForUpdate()->findOrFail($pago->getKey());
-                if ($lockedPago->estado === 'completado') {
-                    return;
-                }
-
-                $lockedPago->update([
+            $pedido = DB::transaction(function () use ($request, $pendingOrder, $captureId): Pedido {
+                $pedido = $this->createPendingOrder($request, (int) $pendingOrder['direccion_id'], 'paypal');
+                $pedido->pago()->update([
+                    'paypal_order_id' => $pendingOrder['order_id'],
                     'paypal_capture_id' => $captureId,
                     'transaccion_id' => $captureId,
                     'estado' => 'completado',
                     'fecha_pago' => now(),
                 ]);
-                $this->completeOrder($lockedPago->pedido()->lockForUpdate()->firstOrFail());
+
+                $this->completeOrder($pedido);
+
+                return $pedido;
             });
+            $request->session()->forget('paypal.pending_order');
 
             return response()->json(['redirect' => route('orders.index')]);
         } catch (\Throwable $exception) {
@@ -219,7 +225,7 @@ class PagosController extends Controller
                 'tipo_movimiento' => 'SALIDA',
                 'cantidad' => $detail->cantidad,
                 'created_at' => now(),
-                'producto_id' => $product->getKey(),
+                'producto_id' => $detail->producto_id,
                 'user_id' => $pedido->user_id,
             ]);
         }

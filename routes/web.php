@@ -31,7 +31,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pago', [PagosController::class, 'create'])->name('payments.create');
-    Route::post('/pago', [PagosController::class, 'store'])->name('payments.store');
     Route::post('/pago/paypal/orden', [PagosController::class, 'createPayPalOrder'])->name('payments.paypal.create');
     Route::post('/pago/paypal/capturar', [PagosController::class, 'capturePayPalOrder'])->name('payments.paypal.capture');
     Route::get('/pedidos', [PedidosController::class, 'index'])->name('orders.index');

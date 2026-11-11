@@ -66,7 +66,7 @@
                             </div>
                         </article>
                     @endforeach
-                </div><aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>Custodia de tu seleccion</h2><div><span>Subtotal</span><strong x-text="money(subtotal())"></strong></div>@auth<a href="{{ route('payments.create') }}" class="primary-button" @click.prevent="proceedToPayment($el.href)">Proceder al pago</a>@else<a href="{{ route('login') }}" class="primary-button" @click.prevent="proceedToPayment($el.href)">Inicia sesión para pagar</a>@endauth<small>Pago ficticio seguro para completar tu pedido.</small></aside></div></form>
+                </div><aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>Custodia de tu seleccion</h2><div><span>Subtotal</span><strong x-text="money(subtotal())"></strong></div>@auth<a href="{{ route('payments.create') }}" class="primary-button" @click.prevent="proceedToPayment($el.href)">Proceder al pago</a>@else<a href="{{ route('login') }}" class="primary-button" @click.prevent="proceedToPayment($el.href)">Inicia sesión para pagar</a>@endauth<small>Pago seguro mediante PayPal Sandbox.</small></aside></div></form>
             @endif
         </main>
         <footer class="store-footer"><div class="footer-brand"><strong>Lesa Joyería</strong><p>Alta joyeria creada con oficio y atencion al detalle.</p></div><div><span class="footer-title">Asistencia</span><p>Consulta de certificados<br>Cita privada</p></div><div><span class="footer-title">La Gazette Privee</span><p>Proximamente: novedades y piezas de temporada.</p></div></footer>

@@ -8,7 +8,7 @@ return new class extends Migration
     public function up(): void
     {
         if (DB::connection()->getDriverName() !== 'mysql') {
-            throw new RuntimeException('Las funciones y procedimientos almacenados requieren una conexión MySQL.');
+            return;
         }
 
         $this->dropRoutines();

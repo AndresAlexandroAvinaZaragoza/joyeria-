@@ -28,8 +28,20 @@ class PayPalService
     public function captureOrder(string $orderId): array
     {
         return $this->client()
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->post("/v2/checkout/orders/{$orderId}/capture", [])
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->send('POST', "/v2/checkout/orders/{$orderId}/capture", [
+                'body' => '',
+            ])
+            ->throw()
+            ->json();
+    }
+
+    public function getOrder(string $orderId): array
+    {
+        return $this->client()
+            ->get("/v2/checkout/orders/{$orderId}")
             ->throw()
             ->json();
     }

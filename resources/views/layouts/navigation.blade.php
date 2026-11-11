@@ -25,9 +25,9 @@
                     <a href="{{ route('admin.purchases.index') }}" class="{{ request()->routeIs('admin.purchases.*') ? 'is-active' : '' }}">Compras</a>
                     <a href="{{ route('admin.kardex.index') }}" class="{{ request()->routeIs('admin.kardex.*') ? 'is-active' : '' }}">Kardex</a>
                     <a href="{{ route('imagenes.index') }}" class="{{ request()->routeIs('imagenes.*') ? 'is-active' : '' }}">Imagenes</a>
-                    <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}">Pedidos</a>
+                    <a href="{{ route('admin.orders.index') }}" class="store-admin-notification-link {{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}"><span>Pedidos</span>@if (($newOrdersCount ?? 0) > 0)<b class="store-notification-badge" title="{{ $newOrdersCount }} pedido(s) nuevo(s)" aria-label="{{ $newOrdersCount }} pedido(s) nuevo(s)">{{ $newOrdersCount }}</b>@endif</a>
                     <a href="{{ route('admin.orders.history') }}" class="{{ request()->routeIs('admin.orders.history') ? 'is-active' : '' }}">Historial</a>
-                    <a href="{{ route('admin.shipments.index') }}" class="{{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}">Envios</a>
+                    <a href="{{ route('admin.shipments.index') }}" class="store-admin-notification-link {{ request()->routeIs('admin.shipments.*') ? 'is-active' : '' }}"><span>Envios</span>@if (($pendingShipmentsCount ?? 0) > 0)<b class="store-notification-badge" title="{{ $pendingShipmentsCount }} envío(s) pendiente(s)" aria-label="{{ $pendingShipmentsCount }} envío(s) pendiente(s)">{{ $pendingShipmentsCount }}</b>@endif</a>
                     <a href="{{ route('admin.reports') }}" class="{{ request()->routeIs('admin.reports.*') || request()->routeIs('admin.reports') ? 'is-active' : '' }}">Reportes</a>
                     @if ($isAdmin)
                         <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'is-active' : '' }}">Usuarios</a>
@@ -89,9 +89,9 @@
             <a href="{{ route('admin.purchases.index') }}">Compras</a>
             <a href="{{ route('admin.kardex.index') }}">Kardex</a>
             <a href="{{ route('imagenes.index') }}">Imagenes</a>
-            <a href="{{ route('admin.orders.index') }}">Pedidos</a>
+            <a href="{{ route('admin.orders.index') }}" class="store-admin-notification-link"><span>Pedidos</span>@if (($newOrdersCount ?? 0) > 0)<b class="store-notification-badge">{{ $newOrdersCount }}</b>@endif</a>
             <a href="{{ route('admin.orders.history') }}">Historial</a>
-            <a href="{{ route('admin.shipments.index') }}">Envios</a>
+            <a href="{{ route('admin.shipments.index') }}" class="store-admin-notification-link"><span>Envios</span>@if (($pendingShipmentsCount ?? 0) > 0)<b class="store-notification-badge">{{ $pendingShipmentsCount }}</b>@endif</a>
             <a href="{{ route('admin.reports') }}">Reportes</a>
             @if ($isAdmin)
                 <a href="{{ route('usuarios.index') }}">Usuarios</a>
