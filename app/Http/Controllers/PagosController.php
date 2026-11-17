@@ -6,6 +6,7 @@ use App\Models\MovimientoInventario;
 use App\Models\Pago;
 use App\Models\Pedido;
 use App\Services\PayPalService;
+use App\Services\PedidoEmailService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -75,7 +76,7 @@ class PagosController extends Controller
         }
     }
 
-    public function capturePayPalOrder(Request $request): JsonResponse
+    public function capturePayPalOrder(Request $request, PedidoEmailService $emailService): JsonResponse
     {
         $data = $request->validate([
             'order_id' => ['required', 'string', 'max:255'],
@@ -145,6 +146,7 @@ class PagosController extends Controller
                 return $pedido;
             });
             $request->session()->forget('paypal.pending_order');
+            $emailService->sendStatusUpdate($pedido, 'confirmado', 'pago');
 
             return response()->json(['redirect' => route('orders.index')]);
         } catch (\Throwable $exception) {

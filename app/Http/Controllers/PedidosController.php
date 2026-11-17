@@ -6,6 +6,7 @@ use App\Models\Envio;
 use App\Models\Pedido;
 use App\Models\PedidoHistorial;
 use App\Services\JoyeriaService;
+use App\Services\PedidoEmailService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -151,7 +152,7 @@ class PedidosController extends Controller
         ]);
     }
 
-    public function updateShipment(Request $request, Envio $envio): RedirectResponse
+    public function updateShipment(Request $request, Envio $envio, PedidoEmailService $emailService): RedirectResponse
     {
         $this->ensureStaff($request);
 
@@ -161,25 +162,31 @@ class PedidosController extends Controller
             'numero_guia' => ['nullable', 'string', 'max:100'],
         ]);
 
+        $pedido = $envio->pedido()->with('usuario')->firstOrFail();
         abort_if(
-            in_array($envio->pedido->estado, ['cancelado', 'entregado'], true),
+            in_array($pedido->estado, ['cancelado', 'entregado'], true),
             422,
             'Este pedido ya está en el historial y no se puede modificar.'
         );
 
+        $previousStatus = $envio->estado;
         $envio->update($data + [
             'fecha_envio' => $data['estado'] === 'enviado' && ! $envio->fecha_envio ? now() : $envio->fecha_envio,
             'fecha_entrega' => $data['estado'] === 'entregado' && ! $envio->fecha_entrega ? now() : $envio->fecha_entrega,
         ]);
 
         if ($data['estado'] === 'entregado') {
-            $envio->pedido()->update(['estado' => 'entregado']);
+            $pedido->update(['estado' => 'entregado']);
             PedidoHistorial::create([
-                'pedido_id' => $envio->pedido->getKey(),
+                'pedido_id' => $pedido->getKey(),
                 'estado' => 'entregado',
                 'user_id' => $request->user()->getKey(),
                 'motivo' => 'Pedido marcado como entregado.',
             ]);
+        }
+
+        if ($previousStatus !== $data['estado']) {
+            $emailService->sendStatusUpdate($pedido, $data['estado'], 'envio');
         }
 
         return back()->with('status', 'El envío se actualizó correctamente.');
