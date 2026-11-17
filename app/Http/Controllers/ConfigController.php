@@ -25,6 +25,12 @@ class ConfigController extends Controller
                         ->orWhere('descripcion', 'like', "%{$search}%");
                 });
             })
+            ->when($request->input('roles_users') === 'with_users', function ($query): void {
+                $query->has('usuarios');
+            })
+            ->when($request->input('roles_users') === 'without_users', function ($query): void {
+                $query->doesntHave('usuarios');
+            })
             ->latest('id_rol')
             ->paginate(8, ['*'], 'roles_page')
             ->withQueryString();
@@ -38,6 +44,9 @@ class ConfigController extends Controller
                         ->orWhere('slug', 'like', "%{$search}%")
                         ->orWhere('descripcion', 'like', "%{$search}%");
                 });
+            })
+            ->when($request->filled('categorias_status'), function ($query) use ($request): void {
+                $query->where('status', $request->input('categorias_status') === 'active');
             })
             ->latest('id_categorias')
             ->paginate(8, ['*'], 'categorias_page')

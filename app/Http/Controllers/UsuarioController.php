@@ -32,7 +32,7 @@ class UsuarioController extends Controller
             $usuariosQuery->where('rol_id', $request->input('rol_id'));
         }
 
-        $usuarios = $usuariosQuery->paginate(5, ['*'], 'page')->withQueryString();
+        $usuarios = $usuariosQuery->paginate(10, ['*'], 'page')->withQueryString();
         $roles = Rol::orderBy('nombre')->get();
 
         return view('admin.user.usuario', compact('usuarios', 'roles'));

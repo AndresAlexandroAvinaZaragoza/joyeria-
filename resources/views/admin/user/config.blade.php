@@ -16,6 +16,13 @@
             editCategoryDescription: '',
             editCategoryStatus: false
         }"
+        x-init="
+            const scrollPosition = sessionStorage.getItem('config-scroll-y');
+            if (scrollPosition !== null) {
+                requestAnimationFrame(() => window.scrollTo(0, Number(scrollPosition)));
+                sessionStorage.removeItem('config-scroll-y');
+            }
+        "
         @keydown.escape.window="
             roleModalOpen = false;
             categoryModalOpen = false;
@@ -119,6 +126,7 @@
                     method="GET"
                     action="{{ route('config.index') }}"
                     class="productos-filtros"
+                    @submit="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
                     style="width: 100%; max-width: 760px; margin: 0 0 28px; border: 0; border-bottom: 1px solid #efede9; grid-template-columns: minmax(240px, 1fr) auto;"
                 >
                     <div class="productos-busqueda">
@@ -148,6 +156,18 @@
                         name="categorias_search"
                         value="{{ request('categorias_search') }}"
                     >
+                    <input
+                        type="hidden"
+                        name="categorias_status"
+                        value="{{ request('categorias_status') }}"
+                    >
+                    <div class="productos-select">
+                        <select name="roles_users" aria-label="Filtrar roles por usuarios" @change="$event.target.form.requestSubmit()">
+                            <option value="">Usuarios: Todos</option>
+                            <option value="with_users" @selected(request('roles_users') === 'with_users')>Con usuarios</option>
+                            <option value="without_users" @selected(request('roles_users') === 'without_users')>Sin usuarios</option>
+                        </select>
+                    </div>
                     <button
                         type="button"
                         class="productos-limpiar"
@@ -280,7 +300,7 @@
                             ANTERIOR
                         </button>
                     @else
-                        <a href="{{ $roles->previousPageUrl() }}">
+                        <a href="{{ $roles->previousPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
                             ANTERIOR
                         </a>
                     @endif
@@ -293,12 +313,13 @@
                         <a
                             href="{{ $url }}"
                             class="{{ $page == $roles->currentPage() ? 'pagina-activa' : '' }}"
+                            @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
                         >
                             {{ $page }}
                         </a>
                     @endforeach
                     @if ($roles->hasMorePages())
-                        <a href="{{ $roles->nextPageUrl() }}">
+                        <a href="{{ $roles->nextPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
                             SIGUIENTE
                         </a>
                     @else
@@ -321,6 +342,7 @@
                     method="GET"
                     action="{{ route('config.index') }}"
                     class="productos-filtros"
+                    @submit="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
                     style="width: 100%; max-width: 760px; margin: 0 0 28px; border: 0; border-bottom: 1px solid #efede9; grid-template-columns: minmax(240px, 1fr) auto;"
                 >
                     <div class="productos-busqueda">
@@ -350,6 +372,18 @@
                         name="roles_search"
                         value="{{ request('roles_search') }}"
                     >
+                    <input
+                        type="hidden"
+                        name="roles_users"
+                        value="{{ request('roles_users') }}"
+                    >
+                    <div class="productos-select">
+                        <select name="categorias_status" aria-label="Filtrar categorías por estado" @change="$event.target.form.requestSubmit()">
+                            <option value="">Estado: Todas</option>
+                            <option value="active" @selected(request('categorias_status') === 'active')>Activas</option>
+                            <option value="inactive" @selected(request('categorias_status') === 'inactive')>Inactivas</option>
+                        </select>
+                    </div>
                     <button
                         type="button"
                         class="productos-limpiar"
@@ -493,7 +527,7 @@
                             ANTERIOR
                         </button>
                     @else
-                        <a href="{{ $categorias->previousPageUrl() }}">
+                        <a href="{{ $categorias->previousPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
                             ANTERIOR
                         </a>
                     @endif
@@ -506,12 +540,13 @@
                         <a
                             href="{{ $url }}"
                             class="{{ $page == $categorias->currentPage() ? 'pagina-activa' : '' }}"
+                            @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
                         >
                             {{ $page }}
                         </a>
                     @endforeach
                     @if ($categorias->hasMorePages())
-                        <a href="{{ $categorias->nextPageUrl() }}">
+                        <a href="{{ $categorias->nextPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
                             SIGUIENTE
                         </a>
                     @else
