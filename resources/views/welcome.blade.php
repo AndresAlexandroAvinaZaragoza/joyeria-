@@ -20,10 +20,28 @@
                 <div class="section-heading"><div><p class="eyebrow">Coleccion disponible</p><h2 id="product-title">Piezas para llevar siempre</h2></div>@if (request('search') || request('categoria'))<a href="{{ route('home') }}" class="clear-filter">Ver todo</a>@endif</div>
                 <div class="product-grid">
                     @forelse ($productos as $producto)
-                        @php($image = $producto->imagenes->first()?->url_img)
+                        @php($images = $producto->imagenes)
                         <article class="product-card">
-                            <div class="product-card__image">
-                                @if ($image)<img src="{{ str_starts_with($image, 'http') ? $image : Storage::disk('public')->url($image) }}" alt="{{ $producto->nombre }}">@else<div class="product-placeholder" aria-hidden="true">Lesa</div>@endif
+                            <div class="product-card__image" @if ($images->isNotEmpty()) x-data="{ activeImage: 0, imageCount: {{ $images->count() }} }" @endif>
+                                @forelse ($images as $imageIndex => $image)
+                                    <img
+                                        src="{{ str_starts_with($image->url_img, 'http') ? $image->url_img : Storage::disk('public')->url($image->url_img) }}"
+                                        alt="{{ $producto->nombre }} - imagen {{ $imageIndex + 1 }}"
+                                        x-show="activeImage === {{ $imageIndex }}"
+                                        x-cloak
+                                    >
+                                @empty
+                                    <div class="product-placeholder" aria-hidden="true">Lesa</div>
+                                @endforelse
+                                @if ($images->count() > 1)
+                                    <button type="button" class="product-image-arrow product-image-arrow--previous" aria-label="Imagen anterior de {{ $producto->nombre }}" @click="activeImage = (activeImage - 1 + imageCount) % imageCount">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                    </button>
+                                    <button type="button" class="product-image-arrow product-image-arrow--next" aria-label="Siguiente imagen de {{ $producto->nombre }}" @click="activeImage = (activeImage + 1) % imageCount">
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                    </button>
+                                    <span class="product-image-counter" aria-live="polite" x-text="`${activeImage + 1} / ${imageCount}`"></span>
+                                @endif
                                 <span class="product-tag">Pieza de autor</span>
                             </div>
                             <div class="product-card__body"><p class="product-category">{{ $producto->categoria?->nombre ?? 'Alta joyeria' }}</p><h3>{{ $producto->nombre }}</h3><p class="product-description">{{ $producto->descripcion ?: 'Una pieza de presencia serena y acabado impecable.' }}</p><div class="product-specs">@if ($producto->material)<span><small>Material</small>{{ $producto->material }}</span>@endif @if ($producto->peso_gr)<span><small>Peso</small>{{ number_format($producto->peso_gr, 2) }} g</span>@endif @if ($producto->talla_medida)<span><small>Talla</small>{{ $producto->talla_medida }}</span>@endif <span class="product-stock"><small>Disponibles</small>{{ $producto->inventario?->stock_actual ?? 0 }}</span></div><div class="product-card__footer"><strong>${{ number_format($producto->precio_venta, 2) }}</strong><form method="POST" action="{{ route('cart.add', $producto) }}" class="add-to-cart-form">@csrf<button type="submit" class="add-button" @disabled(($producto->inventario?->stock_actual ?? 0) < 1)>{{ ($producto->inventario?->stock_actual ?? 0) > 0 ? '+ Anadir' : 'Agotado' }}</button></form></div></div>

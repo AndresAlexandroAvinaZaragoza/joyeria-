@@ -96,6 +96,13 @@
 .product-card { background: white; border: 1px solid #eeeae3; border-radius: 7px; }
 .product-card__image { position: relative; aspect-ratio: 1 / 1.05; overflow: hidden; background: #eeeeee; }
 .product-card__image img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+.product-image-arrow { position: absolute; top: 50%; display: grid; width: 30px; height: 30px; place-items: center; transform: translateY(-50%); border: 0; border-radius: 50%; background: rgba(255, 255, 255, .86); color: var(--store-ink); cursor: pointer; font-size: 24px; line-height: 1; opacity: .85; transition: opacity .2s ease, background .2s ease; }
+.product-card__image:hover .product-image-arrow, .product-image-arrow:focus-visible { opacity: 1; }
+.product-image-arrow:hover { background: white; }
+.product-image-arrow--previous { left: 10px; }
+.product-image-arrow--next { right: 10px; }
+.product-image-counter { position: absolute; right: 10px; bottom: 10px; padding: 4px 7px; border-radius: 10px; background: rgba(28, 27, 24, .65); color: white; font-size: 10px; opacity: .9; transition: opacity .2s ease; }
+.product-card__image:hover .product-image-counter { opacity: 1; }
 .product-stock { color: var(--store-gold) !important; }
 .add-button:disabled { background: #c8c5bf; cursor: not-allowed; }
 .product-card:hover img { transform: scale(1.04); }
