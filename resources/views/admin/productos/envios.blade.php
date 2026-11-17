@@ -4,6 +4,7 @@
         <div class="productos-container">
             <section class="productos-header">
                 <div><span class="productos-label">LOGÍSTICA</span><h1>Gestión de <span>Envíos</span></h1><p>Actualiza la paquetería, guía y estado de cada entrega.</p></div>
+                <a href="{{ route('admin.shipments.history') }}" class="productos-button">VER HISTORIAL</a>
             </section>
             @if (session('status'))<div class="store-notice">{{ session('status') }}</div>@endif
             <form method="GET" action="{{ route('admin.shipments.index') }}" class="productos-filtros" x-data>

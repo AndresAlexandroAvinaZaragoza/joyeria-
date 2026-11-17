@@ -152,6 +152,44 @@ class PedidosController extends Controller
         ]);
     }
 
+    public function shipmentHistory(Request $request): View
+    {
+        $this->ensureStaff($request);
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'period' => ['nullable', 'in:today,yesterday,this_week,last_month'],
+        ]);
+
+        $enviosQuery = Envio::whereHas('pedido', fn ($query) => $query->whereIn('estado', ['cancelado', 'entregado']))
+            ->with('pedido.usuario');
+
+        if (! empty($filters['search'])) {
+            $search = trim($filters['search']);
+            $enviosQuery->where(function ($query) use ($search) {
+                $query->where('paqueteria', 'like', "%{$search}%")
+                    ->orWhere('numero_guia', 'like', "%{$search}%")
+                    ->orWhere('estado', 'like', "%{$search}%")
+                    ->orWhereHas('pedido', function ($pedidoQuery) use ($search) {
+                        $pedidoQuery->where('numero_pedido', 'like', "%{$search}%")
+                            ->orWhereHas('usuario', function ($userQuery) use ($search) {
+                                $userQuery->where('name', 'like', "%{$search}%")
+                                    ->orWhere('email', 'like', "%{$search}%");
+                            });
+                    });
+            });
+        }
+
+        [$from, $to] = $this->periodBounds($filters['period'] ?? null);
+        if ($from && $to) {
+            $enviosQuery->whereBetween('created_at', [$from, $to]);
+        }
+
+        return view('admin.productos.historial-envios', [
+            'envios' => $enviosQuery->latest()->get(),
+            'period' => $filters['period'] ?? null,
+        ]);
+    }
+
     public function updateShipment(Request $request, Envio $envio, PedidoEmailService $emailService): RedirectResponse
     {
         $this->ensureStaff($request);

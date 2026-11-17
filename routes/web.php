@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/historial-pedidos', [PedidosController::class, 'history'])->name('admin.orders.history');
     Route::get('/admin/pedidos/{pedido}/pdf', [PedidosController::class, 'print'])->name('admin.orders.print');
     Route::get('/admin/envios', [PedidosController::class, 'shipments'])->name('admin.shipments.index');
+    Route::get('/admin/historial-envios', [PedidosController::class, 'shipmentHistory'])->name('admin.shipments.history');
     Route::patch('/admin/envios/{envio}', [PedidosController::class, 'updateShipment'])->name('admin.shipments.update');
     Route::patch('/admin/pedidos/{pedido}/cancelar', [PedidosController::class, 'cancel'])->name('admin.orders.cancel');
     Route::get('/admin/compras', [ComprasController::class, 'index'])->name('admin.purchases.index');

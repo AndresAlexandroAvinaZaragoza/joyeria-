@@ -4,6 +4,7 @@
         <div class="productos-container">
             <section class="productos-header">
                 <div><span class="productos-label">OPERACIÓN</span><h1>Gestión de <span>Pedidos</span></h1><p>Consulta los pedidos y el estado de pago de tus clientes.</p></div>
+                <a href="{{ route('admin.orders.history') }}" class="productos-button">VER HISTORIAL</a>
             </section>
             <form method="GET" action="{{ route('admin.orders.index') }}" class="productos-filtros" x-data>
                 <div class="productos-busqueda">

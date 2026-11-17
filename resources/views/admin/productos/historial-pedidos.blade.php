@@ -3,7 +3,8 @@
     <div class="productos-page">
         <div class="productos-container">
             <section class="productos-header">
-                <div><span class="productos-label">OPERACIÓN</span><h1>Historial de <span>Pedidos</span></h1><p>Consulta los pedidos entregados y cancelados.</p></div>
+                <div><span class="productos-label">OPERACIÓN</span><h1>Historial de <span>Pedidos</span></h1><p>Consulta los pedidos entregados y cancelados. Esta vista es solo de consulta.</p></div>
+                <a href="{{ route('admin.orders.index') }}" class="productos-button">PEDIDOS ACTUALES</a>
             </section>
             <form method="GET" action="{{ route('admin.orders.history') }}" class="productos-filtros" x-data>
                 <div class="productos-busqueda">
