@@ -24,7 +24,7 @@ class ComprasSeeder extends Seeder
 
         DB::transaction(function () use ($usuarios, &$insertadas, &$omitidas) {
 
-            for ($i = 1; $i <= 300; $i++) {
+            for ($i = 1; $i <= 1500; $i++) {
 
                 $numeroCompra = 'COMP-PRUEBA-' . str_pad(
                     $i,
