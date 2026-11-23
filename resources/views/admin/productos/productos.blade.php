@@ -145,21 +145,7 @@
                 </div>
 
                 <div class="productos-paginacion">
-                    @if ($productos->onFirstPage())
-                        <button type="button" disabled>ANTERIOR</button>
-                    @else
-                        <a href="{{ $productos->previousPageUrl() }}">ANTERIOR</a>
-                    @endif
-
-                    @foreach ($productos->getUrlRange(max(1, $productos->currentPage() - 2), min($productos->lastPage(), $productos->currentPage() + 2)) as $page => $url)
-                        <a href="{{ $url }}" class="{{ $page == $productos->currentPage() ? 'pagina-activa' : '' }}">{{ $page }}</a>
-                    @endforeach
-
-                    @if ($productos->hasMorePages())
-                        <a href="{{ $productos->nextPageUrl() }}">SIGUIENTE</a>
-                    @else
-                        <button type="button" disabled>SIGUIENTE</button>
-                    @endif
+                    @include('components.pagination-window', ['paginator' => $productos])
                 </div>
             </section>
         </div>

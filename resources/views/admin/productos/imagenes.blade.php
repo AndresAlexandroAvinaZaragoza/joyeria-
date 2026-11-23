@@ -71,9 +71,7 @@
                     </table>
                 </div>
                 <div class="productos-paginacion">
-                    @if ($productosConImagenes->onFirstPage()) <button type="button" disabled>ANTERIOR</button> @else <a href="{{ $productosConImagenes->previousPageUrl() }}">ANTERIOR</a> @endif
-                    @foreach ($productosConImagenes->getUrlRange(max(1, $productosConImagenes->currentPage() - 2), min($productosConImagenes->lastPage(), $productosConImagenes->currentPage() + 2)) as $page => $url)<a href="{{ $url }}" class="{{ $page == $productosConImagenes->currentPage() ? 'pagina-activa' : '' }}">{{ $page }}</a>@endforeach
-                    @if ($productosConImagenes->hasMorePages()) <a href="{{ $productosConImagenes->nextPageUrl() }}">SIGUIENTE</a> @else <button type="button" disabled>SIGUIENTE</button> @endif
+                    @include('components.pagination-window', ['paginator' => $productosConImagenes])
                 </div>
             </section>
         </div>

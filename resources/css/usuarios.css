@@ -588,29 +588,34 @@
 
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
 
-    gap: 5px;
+    gap: 6px;
 
     padding: 0 25px;
 
     border-top: 1px solid #efefef;
+    overflow-x: auto;
 }
 
 .paginacion button,
-.paginacion a {
-    min-width: 35px;
-    height: 35px;
+.paginacion a,
+.paginacion span.pagina-activa {
+    min-width: 38px;
+    height: 38px;
 
-    padding: 0 11px;
+    padding: 0 10px;
 
-    border: none;
+    border: 1px solid #d8d5cf;
+    border-radius: 4px;
 
-    background: #f7f7f7;
+    background: #fff;
 
-    color: #555;
+    color: #252522;
 
-    font-size: 9px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
 
     cursor: pointer;
 
@@ -618,22 +623,28 @@
 
     text-align: center;
     text-decoration: none;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .paginacion button:hover:not(:disabled),
 .paginacion a:hover {
-    background: #eeeeee;
-    color: #9b741d;
+    border-color: #252522;
+    background: #252522;
+    color: #fff;
 }
 
 .paginacion button.pagina-activa,
 .paginacion a.pagina-activa {
-    background: #333;
+    border-color: #252522;
+    background: #252522;
     color: white;
 }
 
 .paginacion button:disabled {
-    color: #bbb;
+    border-color: #d8d5cf;
+    background: #eceae6;
+    color: #777;
     cursor: not-allowed;
 }
 
@@ -641,6 +652,27 @@
     padding: 0 5px;
 
     color: #888;
+}
+.paginacion span.pagina-activa,
+.paginacion span.pagination-window__current {
+    height: 38px;
+    min-width: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    border: 1px solid #252522 !important;
+    border-radius: 4px;
+    background: #252522 !important;
+    color: #fff !important;
+}
+.paginacion span.pagination-window__ellipsis {
+    min-width: 20px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
 }
 
 
@@ -896,13 +928,6 @@
 .paginacion {
     min-height: 62px;
     padding: 0 20px;
-}
-
-.paginacion button,
-.paginacion a {
-    min-width: 34px;
-    height: 34px;
-    font-size: 9px;
 }
 
 @media (max-width: 768px) {

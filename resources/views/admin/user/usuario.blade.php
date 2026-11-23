@@ -220,22 +220,7 @@
                 {{-- PAGINACIÓN --}}
                 {{-- =============================  --}}
                 <div class="paginacion">
-                    @if ($usuarios->onFirstPage())
-                        <button type="button" disabled>ANTERIOR</button>
-                    @else
-                        <a href="{{ $usuarios->previousPageUrl() }}">ANTERIOR</a>
-                    @endif
-
-                    @foreach ($usuarios->getUrlRange(max(1, $usuarios->currentPage() - 2), min($usuarios->lastPage(), $usuarios->currentPage() + 2)) as $page => $url)
-                        <a href="{{ $url }}" class="{{ $page == $usuarios->currentPage() ? 'pagina-activa' : '' }}">{{ $page }}</a>
-                    @endforeach
-
-                    @if ($usuarios->hasMorePages())
-                        <a href="{{ $usuarios->nextPageUrl() }}">SIGUIENTE</a>
-                    @else
-                        <button type="button" disabled>SIGUIENTE</button>
-                    @endif
-
+                    @include('components.pagination-window', ['paginator' => $usuarios])
                 </div>
 
                 {{-- Modal para agregar usuario --}}

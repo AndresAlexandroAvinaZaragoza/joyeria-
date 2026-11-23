@@ -292,44 +292,7 @@
                 </div>
                 {{-- PAGINACIÓN DE ROLES --}}
                 <div class="productos-paginacion">
-                    @if ($roles->onFirstPage())
-                        <button
-                            type="button"
-                            disabled
-                        >
-                            ANTERIOR
-                        </button>
-                    @else
-                        <a href="{{ $roles->previousPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
-                            ANTERIOR
-                        </a>
-                    @endif
-                    @foreach (
-                        $roles->getUrlRange(
-                            max(1, $roles->currentPage() - 2),
-                            min($roles->lastPage(), $roles->currentPage() + 2)
-                        ) as $page => $url
-                    )
-                        <a
-                            href="{{ $url }}"
-                            class="{{ $page == $roles->currentPage() ? 'pagina-activa' : '' }}"
-                            @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
-                        >
-                            {{ $page }}
-                        </a>
-                    @endforeach
-                    @if ($roles->hasMorePages())
-                        <a href="{{ $roles->nextPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
-                            SIGUIENTE
-                        </a>
-                    @else
-                        <button
-                            type="button"
-                            disabled
-                        >
-                            SIGUIENTE
-                        </button>
-                    @endif
+                    @include('components.pagination-window', ['paginator' => $roles])
                 </div>
                 </div>
             </section>
@@ -519,44 +482,7 @@
                 </div>
                 {{-- PAGINACIÓN DE CATEGORÍAS --}}
                 <div class="productos-paginacion">
-                    @if ($categorias->onFirstPage())
-                        <button
-                            type="button"
-                            disabled
-                        >
-                            ANTERIOR
-                        </button>
-                    @else
-                        <a href="{{ $categorias->previousPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
-                            ANTERIOR
-                        </a>
-                    @endif
-                    @foreach (
-                        $categorias->getUrlRange(
-                            max(1, $categorias->currentPage() - 2),
-                            min($categorias->lastPage(), $categorias->currentPage() + 2)
-                        ) as $page => $url
-                    )
-                        <a
-                            href="{{ $url }}"
-                            class="{{ $page == $categorias->currentPage() ? 'pagina-activa' : '' }}"
-                            @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))"
-                        >
-                            {{ $page }}
-                        </a>
-                    @endforeach
-                    @if ($categorias->hasMorePages())
-                        <a href="{{ $categorias->nextPageUrl() }}" @click="sessionStorage.setItem('config-scroll-y', String(window.scrollY))">
-                            SIGUIENTE
-                        </a>
-                    @else
-                        <button
-                            type="button"
-                            disabled
-                        >
-                            SIGUIENTE
-                        </button>
-                    @endif
+                    @include('components.pagination-window', ['paginator' => $categorias])
                 </div>
                 </div>
             </section>

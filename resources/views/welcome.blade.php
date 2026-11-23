@@ -50,7 +50,11 @@
                         <div class="empty-products"><h3>No encontramos esa pieza</h3><p>Prueba con otro termino o vuelve a ver toda la coleccion.</p><a href="{{ route('home') }}" class="primary-button">Ver catalogo</a></div>
                     @endforelse
                 </div>
-                @if ($productos->hasPages())<div class="store-pagination">{{ $productos->links() }}</div>@endif
+                @if ($productos->hasPages())
+                    <nav class="store-pagination" aria-label="Paginación de productos">
+                        @include('components.pagination-window', ['paginator' => $productos])
+                    </nav>
+                @endif
             </section>
             <section class="collections-section"><div class="section-heading"><div><p class="eyebrow">Inspiracion Lesa</p><h2>Detalles que permanecen</h2></div></div><div class="collection-grid"><article><span>01</span><h3>Heritage</h3><p>Tradicion gemologica reinterpretada.</p></article><article><span>02</span><h3>Emerald Royale</h3><p>Color, luz y caracter en equilibrio.</p></article><article><span>03</span><h3>Constellation</h3><p>Diamantes para momentos irrepetibles.</p></article></div></section>
         </main>

@@ -18,7 +18,9 @@
                         <tr><td colspan="6" class="inventario-vacio">Aún no hay movimientos registrados.</td></tr>
                     @endforelse
                 </tbody></table></div>
-                <div class="productos-paginacion">{{ $movimientos->links() }}</div>
+                <div class="productos-paginacion">
+                    @include('components.pagination-window', ['paginator' => $movimientos])
+                </div>
             </section>
         </div>
     </div>

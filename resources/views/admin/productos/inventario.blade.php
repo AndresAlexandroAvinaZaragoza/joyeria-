@@ -60,9 +60,7 @@
                     </table>
                 </div>
                 <div class="productos-paginacion">
-                    @if ($inventarios->onFirstPage()) <button type="button" disabled>ANTERIOR</button> @else <a href="{{ $inventarios->previousPageUrl() }}">ANTERIOR</a> @endif
-                    @foreach ($inventarios->getUrlRange(max(1, $inventarios->currentPage() - 2), min($inventarios->lastPage(), $inventarios->currentPage() + 2)) as $page => $url)<a href="{{ $url }}" class="{{ $page == $inventarios->currentPage() ? 'pagina-activa' : '' }}">{{ $page }}</a>@endforeach
-                    @if ($inventarios->hasMorePages()) <a href="{{ $inventarios->nextPageUrl() }}">SIGUIENTE</a> @else <button type="button" disabled>SIGUIENTE</button> @endif
+                    @include('components.pagination-window', ['paginator' => $inventarios])
                 </div>
             </section>
         </div>

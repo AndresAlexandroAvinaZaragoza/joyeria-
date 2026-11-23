@@ -11,12 +11,14 @@
         </a>
 
         <div class="store-links">
-            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && ! request('categoria') ? 'is-active' : '' }}">Inicio</a>
-            @if (isset($categorias))
-                @foreach ($categorias as $categoria)
-                    <a href="{{ route('home', ['categoria' => $categoria->slug]) }}" class="{{ request('categoria') === $categoria->slug ? 'is-active' : '' }}">{{ $categoria->nombre }}</a>
-                @endforeach 
-            @endif
+            <div class="store-categories">
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && ! request('categoria') ? 'is-active' : '' }}">Inicio</a>
+                @if (isset($categorias))
+                    @foreach ($categorias as $categoria)
+                        <a href="{{ route('home', ['categoria' => $categoria->slug]) }}" class="{{ request('categoria') === $categoria->slug ? 'is-active' : '' }}">{{ $categoria->nombre }}</a>
+                    @endforeach
+                @endif
+            </div>
             @if ($isStaff)
                 <div class="store-admin-links">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'is-active' : '' }}">Panel</a>
