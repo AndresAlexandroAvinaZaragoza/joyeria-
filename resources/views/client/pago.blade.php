@@ -15,7 +15,7 @@
                     </section>
                     <section class="cart-summary"><p class="eyebrow">PayPal Sandbox</p><h2>Paga con PayPal</h2><p>Usa una cuenta de prueba de PayPal Developer para completar el pedido.</p><div id="paypal-button-container"></div><p id="paypal-error" class="store-notice" hidden></p></section>
                 </section>
-                <aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>{{ $items->sum('cantidad') }} pieza(s)</h2><div><span>Subtotal</span><strong>${{ number_format($subtotal, 2) }}</strong></div><div><span>Envío</span><strong>Gratis</strong></div><div><span>Total</span><strong>${{ number_format($subtotal, 2) }}</strong></div></aside>
+                <aside class="cart-summary"><p class="eyebrow">Resumen</p><h2>{{ $items->sum('cantidad') }} pieza(s)</h2><div><span>Subtotal</span><strong>${{ number_format($subtotal, 2) }}</strong></div><div><span>Envío</span><strong>${{ number_format($shippingCost, 2) }}</strong></div><div><span>Total</span><strong>${{ number_format($total, 2) }}</strong></div></aside>
             </div>
         @endif
     </main>

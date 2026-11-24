@@ -85,6 +85,9 @@ Route::resource('productos', PorductosController::class)
 Route::get('config', [ConfigController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('config.index');
+Route::put('config/costo-envio', [ConfigController::class, 'updateShippingCost'])
+    ->middleware(['auth', 'verified'])
+    ->name('config.shipping-cost.update');
 Route::post('config/roles', [ConfigController::class, 'storeRole'])
     ->middleware(['auth', 'verified'])
     ->name('config.roles.store');
@@ -110,4 +113,8 @@ Route::patch('config/imagenes-inicio/{homepageImage}/activar', [ConfigController
     ->middleware(['auth', 'verified'])
     ->whereNumber('homepageImage')
     ->name('config.homepage-images.activate');
+Route::delete('config/imagenes-inicio/{homepageImage}', [ConfigController::class, 'destroyHomepageImage'])
+    ->middleware(['auth', 'verified'])
+    ->whereNumber('homepageImage')
+    ->name('config.homepage-images.destroy');
 require __DIR__.'/auth.php';

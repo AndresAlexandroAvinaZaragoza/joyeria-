@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MovimientoInventario;
 use App\Models\Pago;
 use App\Models\Pedido;
+use App\Models\StoreSetting;
 use App\Services\PayPalService;
 use App\Services\PedidoEmailService;
 use Illuminate\Http\Client\RequestException;
@@ -29,9 +30,14 @@ class PagosController extends Controller
             return redirect()->route('cart.index')->with('cart_status', 'Agrega una pieza antes de continuar al pago.');
         }
 
+        $subtotal = $items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad);
+        $shippingCost = (float) StoreSetting::query()->findOrFail(1)->shipping_cost;
+
         return view('client.pago', [
             'items' => $items,
-            'subtotal' => $items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad),
+            'subtotal' => $subtotal,
+            'shippingCost' => $shippingCost,
+            'total' => $subtotal + $shippingCost,
             'direcciones' => $request->user()->direcciones()->latest()->get(),
             'paypalClientId' => config('services.paypal.client_id'),
             'paypalCurrency' => config('services.paypal.currency'),
@@ -50,8 +56,12 @@ class PagosController extends Controller
                 return response()->json(['message' => 'Tu carrito está vacío.'], 422);
             }
 
+            $subtotal = $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad);
+            $shippingCost = (float) StoreSetting::query()->findOrFail(1)->shipping_cost;
+            $total = number_format($subtotal + $shippingCost, 2, '.', '');
+
             $paypalOrder = $this->paypal->createOrder(
-                number_format((float) $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad), 2, '.', ''),
+                $total,
                 config('services.paypal.currency'),
             );
             $paypalOrderId = $paypalOrder['id'] ?? null;
@@ -63,7 +73,8 @@ class PagosController extends Controller
             $request->session()->put('paypal.pending_order', [
                 'order_id' => $paypalOrderId,
                 'direccion_id' => (int) $data['direccion_id'],
-                'amount' => number_format((float) $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad), 2, '.', ''),
+                'amount' => $total,
+                'shipping_cost' => number_format($shippingCost, 2, '.', ''),
             ]);
 
             return response()->json(['id' => $paypalOrderId]);
@@ -86,6 +97,12 @@ class PagosController extends Controller
         if (! is_array($pendingOrder) || ($pendingOrder['order_id'] ?? null) !== $data['order_id']) {
             return response()->json(['message' => 'La sesión de pago expiró. Inicia el pago nuevamente.'], 422);
         }
+
+        if (! is_numeric($pendingOrder['shipping_cost'] ?? null)) {
+            return response()->json(['message' => 'La sesión de pago expiró. Inicia el pago nuevamente.'], 422);
+        }
+
+        $shippingCost = (float) $pendingOrder['shipping_cost'];
 
         try {
             $cart = $request->user()->carrito()->with('items.producto')->first();
@@ -118,6 +135,7 @@ class PagosController extends Controller
             $cartAmount = number_format((float) $cart->items->sum(fn ($item) => $item->producto->precio_venta * $item->cantidad), 2, '.', '');
             $expectedAmount = number_format((float) $pendingOrder['amount'], 2, '.', '');
             $actualAmount = is_numeric($capturedAmount) ? number_format((float) $capturedAmount, 2, '.', '') : null;
+            $expectedCartAmount = number_format((float) $cartAmount + $shippingCost, 2, '.', '');
 
             if (
                 $captureStatus !== 'COMPLETED'
@@ -125,14 +143,19 @@ class PagosController extends Controller
                 || $captureId === ''
                 || $actualAmount === null
                 || $actualAmount !== $expectedAmount
-                || $actualAmount !== $cartAmount
+                || $actualAmount !== $expectedCartAmount
                 || $capturedCurrency !== config('services.paypal.currency')
             ) {
                 return response()->json(['message' => 'PayPal no confirmó el pago.'], 422);
             }
 
-            $pedido = DB::transaction(function () use ($request, $pendingOrder, $captureId): Pedido {
-                $pedido = $this->createPendingOrder($request, (int) $pendingOrder['direccion_id'], 'paypal');
+            $pedido = DB::transaction(function () use ($request, $pendingOrder, $captureId, $shippingCost): Pedido {
+                $pedido = $this->createPendingOrder(
+                    $request,
+                    (int) $pendingOrder['direccion_id'],
+                    'paypal',
+                    $shippingCost,
+                );
                 $pedido->pago()->update([
                     'paypal_order_id' => $pendingOrder['order_id'],
                     'paypal_capture_id' => $captureId,
@@ -158,7 +181,7 @@ class PagosController extends Controller
         }
     }
 
-    private function createPendingOrder(Request $request, int $addressId, string $paymentMethod): Pedido
+    private function createPendingOrder(Request $request, int $addressId, string $paymentMethod, float $shippingCost): Pedido
     {
         $address = $request->user()->direcciones()->findOrFail($addressId);
         $cart = $request->user()->carrito()->with('items.producto')->first();
@@ -167,7 +190,7 @@ class PagosController extends Controller
             abort(422, 'Tu carrito está vacío.');
         }
 
-        return DB::transaction(function () use ($cart, $address, $paymentMethod, $request): Pedido {
+        return DB::transaction(function () use ($cart, $address, $paymentMethod, $request, $shippingCost): Pedido {
             $items = $cart->items;
             $subtotal = 0;
 
@@ -182,8 +205,8 @@ class PagosController extends Controller
             $pedido = Pedido::create([
                 'numero_pedido' => 'LS-'.now()->format('ymdHis').'-'.Str::upper(Str::random(4)),
                 'subtotal' => $subtotal,
-                'costo_envio' => 0,
-                'total' => $subtotal,
+                'costo_envio' => $shippingCost,
+                'total' => $subtotal + $shippingCost,
                 'estado' => 'pendiente',
                 'user_id' => $request->user()->getKey(),
             ]);

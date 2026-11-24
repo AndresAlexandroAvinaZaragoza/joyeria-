@@ -68,7 +68,7 @@
                         Configuración del <span>Sistema</span>
                     </h1>
                     <p>
-                        Administra los roles, las categorías y la imagen de inicio.
+                        Administra los roles, las categorías, el costo de envío y la imagen de inicio.
                     </p>
                 </div>
                 <div class="productos-actions">
@@ -113,6 +113,25 @@
                         NUEVA CATEGORÍA
                     </button>
                 </div>
+            </section>
+            <section class="configuracion-seccion" style="margin-bottom: 28px;">
+                <div>
+                    <span class="productos-label">PAGOS Y ENVÍOS</span>
+                    <h2>Costo de envío</h2>
+                    <p>Este importe se agregará al total que pagan los clientes al finalizar su compra.</p>
+                </div>
+                <form method="POST" action="{{ route('config.shipping-cost.update') }}" class="productos-filtros" style="width: 100%; max-width: 760px; grid-template-columns: minmax(180px, 1fr) auto;">
+                    @csrf
+                    @method('PUT')
+                    <label class="productos-busqueda" for="shipping-cost">
+                        <span>$</span>
+                        <input id="shipping-cost" type="number" name="shipping_cost" min="0" max="99999999.99" step="0.01" value="{{ old('shipping_cost', $shippingCost) }}" aria-label="Costo de envío en pesos mexicanos" required>
+                    </label>
+                    <button type="submit" class="productos-guardar">GUARDAR COSTO</button>
+                    @error('shipping_cost')
+                        <div class="productos-error" role="alert">{{ $message }}</div>
+                    @enderror
+                </form>
             </section>
             {{-- ===================================================== --}}
             {{-- ROLES --}}
@@ -486,43 +505,72 @@
                 </div>
                 </div>
             </section>
-            <section class="configuracion-seccion" style="margin-bottom: 28px;">
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px;">
+            @php($homepageImageCount = $homepageImages->count())
+            <section class="configuracion-seccion home-images">
+                <header class="home-images__header">
                     <div>
-                        <span class="productos-label">APARIENCIA</span>
-                        <h2 style="margin: 0; color: #222; font: 500 24px Georgia, 'Times New Roman', serif;">Imagen de inicio</h2>
-                        <p style="margin: 8px 0 0; color: #777; font-size: 12px;">Sube imágenes JPG, PNG o WebP de hasta 1.8 MB y elige cuál aparece detrás del texto principal de la tienda.</p>
+                        <span class="productos-label">APARIENCIA DE LA TIENDA</span>
+                        <h2>Imágenes de inicio</h2>
+                        <p>Elige la imagen que acompaña el encabezado de la tienda. Puedes guardar hasta cuatro opciones.</p>
                     </div>
-                </div>
-                <form method="POST" action="{{ route('config.homepage-images.store') }}" enctype="multipart/form-data" style="display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                    <div class="home-images__count" aria-label="{{ $homepageImageCount }} de 4 imágenes">
+                        <strong>{{ $homepageImageCount }}</strong><span>/ 4</span>
+                    </div>
+                </header>
+                <form method="POST" action="{{ route('config.homepage-images.store') }}" enctype="multipart/form-data" class="home-images__upload">
                     @csrf
-                    <div class="productos-form-group" style="flex: 1 1 280px;">
-                        <label for="homepage-image">Subir una imagen nueva</label>
-                        <input id="homepage-image" type="file" name="image" accept="image/jpeg,image/png,image/webp" required style="width: 100%; border: 1px solid #ddd9d1; padding: 10px 11px; background: #fcfbf9; color: #333; font-size: 12px;" @change="$event.target.setCustomValidity($event.target.files[0]?.size > 1.8 * 1024 * 1024 ? 'La imagen debe pesar menos de 1.8 MB.' : ''); if ($event.target.validationMessage) { $event.target.reportValidity(); $event.target.value = ''; }">
+                    <div class="home-images__upload-copy">
+                        <span class="home-images__upload-icon" aria-hidden="true">+</span>
+                        <div>
+                            <label for="homepage-image">Agrega una imagen</label>
+                            <p>JPG, PNG o WebP · máximo 1.8 MB</p>
+                        </div>
+                    </div>
+                    <div class="home-images__upload-controls">
+                        <input id="homepage-image" type="file" name="image" accept="image/jpeg,image/png,image/webp" required @disabled($homepageImageCount >= 4) @change="$event.target.setCustomValidity($event.target.files[0]?.size > 1.8 * 1024 * 1024 ? 'La imagen debe pesar menos de 1.8 MB.' : ''); if ($event.target.validationMessage) { $event.target.reportValidity(); $event.target.value = ''; }">
                         @error('image')
-                            <div class="productos-error">{{ $message }}</div>
+                            <div class="productos-error" role="alert">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="productos-guardar" style="min-height: 40px;">SUBIR Y APLICAR</button>
+                    <button type="submit" class="productos-guardar home-images__submit" @disabled($homepageImageCount >= 4)>
+                        {{ $homepageImageCount >= 4 ? 'GALERÍA COMPLETA' : 'SUBIR Y APLICAR' }}
+                    </button>
+                    @if ($homepageImageCount >= 4)
+                        <p class="home-images__limit">Ya tienes cuatro imágenes. Elimina una para agregar otra.</p>
+                    @endif
                 </form>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
-                    @foreach ($homepageImages as $homepageImage)
-                        <article style="overflow: hidden; border: 1px solid #e5e5e5; border-radius: 6px; background: #fff;">
-                            <img src="{{ $homepageImage->url }}" alt="Vista previa de imagen de inicio" style="display: block; width: 100%; height: 145px; object-fit: cover;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px;">
-                                <span style="color: {{ $homepageImage->is_active ? '#658264' : '#777' }}; font-size: 10px; font-weight: 700;">
-                                    {{ $homepageImage->is_active ? 'ACTUAL' : 'DISPONIBLE' }}
-                                </span>
-                                @unless ($homepageImage->is_active)
-                                    <form method="POST" action="{{ route('config.homepage-images.activate', $homepageImage->id) }}">
+                <div class="home-images__grid">
+                    @forelse ($homepageImages as $homepageImage)
+                        <article class="home-image-card {{ $homepageImage->is_active ? 'home-image-card--active' : '' }}">
+                            <div class="home-image-card__preview">
+                                <img src="{{ $homepageImage->url }}" alt="Vista previa de imagen de inicio">
+                                @if ($homepageImage->is_active)
+                                    <span class="home-image-card__badge"><span aria-hidden="true">✓</span> En uso</span>
+                                @endif
+                            </div>
+                            <div class="home-image-card__footer">
+                                <span class="home-image-card__status">{{ $homepageImage->is_active ? 'Imagen actual' : 'Disponible' }}</span>
+                                <div class="home-image-card__actions">
+                                    @unless ($homepageImage->is_active)
+                                        <form method="POST" action="{{ route('config.homepage-images.activate', $homepageImage->id) }}">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="productos-guardar" style="min-height: 32px; padding: 0 10px; font-size: 9px;">USAR EN INICIO</button>
+                                            <button type="submit" class="productos-guardar home-image-card__select">USAR EN INICIO</button>
+                                        </form>
+                                    @endunless
+                                    <form method="POST" action="{{ route('config.homepage-images.destroy', $homepageImage->id) }}" onsubmit="return confirm('¿Eliminar esta imagen de inicio?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="home-image-card__delete" aria-label="Eliminar imagen de inicio" title="Eliminar imagen">
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
                                     </form>
-                                @endunless
+                                </div>
                             </div>
                         </article>
-                    @endforeach
+                    @empty
+                        <div class="home-images__empty">No hay imágenes guardadas todavía. Sube una para elegir el fondo de inicio.</div>
+                    @endforelse
                 </div>
             </section>
         </div>
