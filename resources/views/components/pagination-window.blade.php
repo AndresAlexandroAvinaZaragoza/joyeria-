@@ -28,7 +28,7 @@
     @endif
 
     @if ($page === $currentPage)
-        <span class="pagina-activa pagination-window__current" aria-current="page" aria-label="Página actual {{ $page }}">{{ $page }}</span>
+        <a href="{{ $paginator->url($page) }}" class="pagina-activa pagination-window__current" aria-current="page" aria-label="Página actual {{ $page }}" @click="if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('config-scroll-y', String(window.scrollY))">{{ $page }}</a>
     @else
         <a href="{{ $paginator->url($page) }}" @click="if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('config-scroll-y', String(window.scrollY))">{{ $page }}</a>
     @endif

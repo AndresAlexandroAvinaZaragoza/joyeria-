@@ -21,7 +21,7 @@
                 <a href="{{ route('admin.orders.history', array_merge(request()->except('period'), ['period' => 'last_month'])) }}" class="{{ $period === 'last_month' ? 'is-active' : '' }}">Último mes</a>
             </div>
             <section class="productos-table-card" x-data="{ openOrder: null }">
-                <div class="productos-tabla-info">{{ $historial->count() }} registros encontrados</div>
+                <div class="productos-tabla-info">Mostrando {{ $historial->firstItem() ?? 0 }} a {{ $historial->lastItem() ?? 0 }} de {{ $historial->total() }} registros</div>
                 <div class="productos-table-wrap">
                     <table class="productos-table">
                         <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>ESTADO</th><th>MOTIVO</th><th>FECHA</th><th>RESPONSABLE</th><th>ACCIONES</th></tr></thead>
@@ -88,6 +88,9 @@
                         </section>
                     </div>
                 @endforeach
+                <div class="productos-paginacion">
+                    @include('components.pagination-window', ['paginator' => $historial])
+                </div>
             </section>
         </div>
     </div>

@@ -22,7 +22,7 @@
                 <a href="{{ route('admin.shipments.index', array_merge(request()->except('period'), ['period' => 'last_month'])) }}" class="{{ $period === 'last_month' ? 'is-active' : '' }}">Último mes</a>
             </div>
             <section class="productos-table-card">
-                <div class="productos-tabla-info">{{ $envios->count() }} envíos encontrados</div>
+                <div class="productos-tabla-info">Mostrando {{ $envios->firstItem() ?? 0 }} a {{ $envios->lastItem() ?? 0 }} de {{ $envios->total() }} envíos</div>
                 <div class="productos-table-wrap">
                     <table class="productos-table">
                         <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>DIRECCIÓN</th><th>PAQUETERÍA / GUÍA</th><th>ESTADO</th><th>ACTUALIZAR</th></tr></thead>
@@ -41,6 +41,9 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+                <div class="productos-paginacion">
+                    @include('components.pagination-window', ['paginator' => $envios])
                 </div>
             </section>
         </div>

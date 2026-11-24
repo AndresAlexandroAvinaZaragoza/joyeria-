@@ -21,7 +21,7 @@
                 <a href="{{ route('admin.orders.index', array_merge(request()->except('period'), ['period' => 'last_month'])) }}" class="{{ $period === 'last_month' ? 'is-active' : '' }}">Último mes</a>
             </div>
             <section class="productos-table-card" x-data="{ openOrder: null }">
-                <div class="productos-tabla-info">{{ $pedidos->count() }} pedidos encontrados</div>
+                <div class="productos-tabla-info">Mostrando {{ $pedidos->firstItem() ?? 0 }} a {{ $pedidos->lastItem() ?? 0 }} de {{ $pedidos->total() }} pedidos</div>
                 <div class="productos-table-wrap">
                     <table class="productos-table">
                         <thead><tr><th>PEDIDO</th><th>CLIENTE</th><th>FECHA</th><th>PRODUCTOS</th><th>TOTAL</th><th>PAGO</th><th>ENVÍO</th><th>ACCIONES</th></tr></thead>
@@ -84,6 +84,9 @@
                         </section>
                     </div>
                 @endforeach
+                <div class="productos-paginacion">
+                    @include('components.pagination-window', ['paginator' => $pedidos])
+                </div>
             </section>
         </div>
     </div>

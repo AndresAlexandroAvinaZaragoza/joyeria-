@@ -58,7 +58,7 @@ class PedidosController extends Controller
         }
 
         return view('admin.productos.pedidos', [
-            'pedidos' => $pedidosQuery->latest()->get(),
+            'pedidos' => $pedidosQuery->latest()->paginate(10)->withQueryString(),
             'period' => $filters['period'] ?? null,
         ]);
     }
@@ -101,7 +101,7 @@ class PedidosController extends Controller
         }
 
         return view('admin.productos.historial-pedidos', [
-            'historial' => $historialQuery->latest()->get(),
+            'historial' => $historialQuery->latest()->paginate(10)->withQueryString(),
             'period' => $filters['period'] ?? null,
         ]);
     }
@@ -147,7 +147,7 @@ class PedidosController extends Controller
         }
 
         return view('admin.productos.envios', [
-            'envios' => $enviosQuery->latest()->get(),
+            'envios' => $enviosQuery->latest()->paginate(10)->withQueryString(),
             'period' => $filters['period'] ?? null,
         ]);
     }
@@ -185,7 +185,7 @@ class PedidosController extends Controller
         }
 
         return view('admin.productos.historial-envios', [
-            'envios' => $enviosQuery->latest()->get(),
+            'envios' => $enviosQuery->latest()->paginate(10)->withQueryString(),
             'period' => $filters['period'] ?? null,
         ]);
     }
