@@ -27,12 +27,37 @@
                 <div class="register-fields register-fields--two">
                     <div class="register-field">
                         <label for="name">Nombre</label>
-                        <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus autocomplete="given-name" placeholder="Tu nombre">
+                        <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            value="{{ old('name') }}"
+                            required
+                            maxlength="255"
+                            pattern="[\p{L}\s]+"
+                            oninput="this.value = this.value.replace(/[^\p{L}\s]/gu, '')"
+                            title="Solo se permiten letras y espacios."
+                            autofocus
+                            autocomplete="given-name"
+                            placeholder="Tu nombre"
+                        >
                         @error('name')<span class="register-error">{{ $message }}</span>@enderror
                     </div>
                     <div class="register-field">
                         <label for="apellidos">Apellidos</label>
-                        <input id="apellidos" name="apellidos" type="text" value="{{ old('apellidos') }}" required autocomplete="family-name" placeholder="Tus apellidos">
+                        <input
+                            id="apellidos"
+                            name="apellidos"
+                            type="text"
+                            value="{{ old('apellidos') }}"
+                            required
+                            maxlength="100"
+                            pattern="[\p{L}\s]+"
+                            oninput="this.value = this.value.replace(/[^\p{L}\s]/gu, '')"
+                            title="Solo se permiten letras y espacios."
+                            autocomplete="family-name"
+                            placeholder="Tus apellidos"
+                        >
                         @error('apellidos')<span class="register-error">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -40,12 +65,25 @@
                 <div class="register-fields register-fields--two">
                     <div class="register-field">
                         <label for="telefono">Teléfono</label>
-                        <input id="telefono" name="telefono" type="tel" value="{{ old('telefono') }}" required autocomplete="tel" placeholder="55 0000 0000">
+                        <input
+                            id="telefono"
+                            name="telefono"
+                            type="tel"
+                            value="{{ old('telefono') }}"
+                            required
+                            maxlength="10"
+                            pattern="[0-9]{10}"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                            inputmode="numeric"
+                            title="Ingresa exactamente 10 números."
+                            autocomplete="tel"
+                            placeholder="5500000000"
+                        >
                         @error('telefono')<span class="register-error">{{ $message }}</span>@enderror
                     </div>
                     <div class="register-field">
                         <label for="email">Correo electrónico</label>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" placeholder="cliente@correo.com">
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required maxlength="255" autocomplete="username" placeholder="cliente@correo.com">
                         @error('email')<span class="register-error">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -53,12 +91,12 @@
                 <div class="register-fields register-fields--two">
                     <div class="register-field">
                         <label for="password">Contraseña</label>
-                        <input id="password" name="password" type="password" required autocomplete="new-password" placeholder="Mínimo 8 caracteres">
+                        <input id="password" name="password" type="password" required maxlength="255" autocomplete="new-password" placeholder="Mínimo 8 caracteres">
                         @error('password')<span class="register-error">{{ $message }}</span>@enderror
                     </div>
                     <div class="register-field">
                         <label for="password_confirmation">Confirmar contraseña</label>
-                        <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" placeholder="Repite tu contraseña">
+                        <input id="password_confirmation" name="password_confirmation" type="password" required maxlength="255" autocomplete="new-password" placeholder="Repite tu contraseña">
                     </div>
                 </div>
 

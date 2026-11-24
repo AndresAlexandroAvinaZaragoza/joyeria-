@@ -56,10 +56,9 @@
                     </nav>
                 @endif
             </section>
-            <section class="collections-section"><div class="section-heading"><div><p class="eyebrow">Inspiracion Lesa</p><h2>Detalles que permanecen</h2></div></div><div class="collection-grid"><article><span>01</span><h3>Heritage</h3><p>Tradicion gemologica reinterpretada.</p></article><article><span>02</span><h3>Emerald Royale</h3><p>Color, luz y caracter en equilibrio.</p></article><article><span>03</span><h3>Constellation</h3><p>Diamantes para momentos irrepetibles.</p></article></div></section>
         </main>
 
-        <footer class="store-footer"><div class="footer-brand"><strong>Lesa Joyería</strong><p>Alta joyeria creada con oficio, calma y atencion al detalle.</p></div><div><span class="footer-title">Maison &amp; creacion</span><p>Grandes colecciones<br>Piezas unicas<br>Ediciones privadas</p></div><div><span class="footer-title">Asistencia</span><p>Consulta de certificados<br>Cita privada<br>Cuidado de joyas</p></div><div><span class="footer-title">La Gazette Privee</span><p>Proximamente: novedades y piezas de temporada.</p></div></footer>
+        <footer class="store-footer"><div class="footer-brand"><strong>Lesa Joyería</strong><p>&copy; {{ date('Y') }} Lesa Joyería. Todos los derechos reservados.</p></div></footer>
         <script>
             document.querySelectorAll('.add-to-cart-form').forEach((form) => {
             form.addEventListener('submit', async (event) => {

@@ -752,6 +752,7 @@ body {
 .register-login-link { margin: 26px 0 0; color: var(--text-gray); font-size: 12px; text-align: center; }
 .register-login-link a { color: var(--tertiary); font-weight: 700; text-decoration: none; }
 .register-login-link a:hover { color: var(--primary); }
+.register-login-link button { padding: 0; border: 0; background: transparent; font-family: inherit; cursor: pointer; }
 
 @media (max-width: 768px) {
     .register-page { display: block; width: min(100% - 20px, 620px); min-height: auto; }
