@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class TiendaController extends Controller
@@ -39,17 +40,29 @@ class TiendaController extends Controller
             });
         }
 
-        $productos = $productosQuery->latest()->paginate(8)->withQueryString();
+        $productos = $productosQuery
+            ->withCount('imagenes')
+            ->orderByDesc('imagenes_count')
+            ->latest()
+            ->paginate(8)
+            ->withQueryString();
         $categorias = Categoria::query()
             ->where('status', true)
             ->orderBy('nombre')
             ->get();
+        $heroImagePath = DB::table('homepage_images')
+            ->where('is_active', true)
+            ->value('path') ?? 'images/img-fondo-inicio.jpeg';
+        $heroImageUrl = str_starts_with($heroImagePath, 'images/')
+            ? asset($heroImagePath)
+            : Storage::disk('public')->url($heroImagePath);
 
         return view('welcome', [
             'productos' => $productos,
             'categorias' => $categorias,
             'cartCount' => $this->cartCount($request),
             'cartItems' => $this->cartItems($request),
+            'heroImageUrl' => $heroImageUrl,
         ]);
     }
 

@@ -15,7 +15,7 @@
         @if (session('cart_status'))<div class="store-notice">{{ session('cart_status') }}</div>@endif
 
         <main>
-            <section class="store-hero"><p class="eyebrow">Universo Lesa Joyería · Piezas con historia</p><h1>Obras maestras en pulseras<br>&amp; brazaletes</h1><p>Joyas seleccionadas para acompañar el pulso diario con discreta magnificencia.</p></section>
+            <section class="store-hero store-hero--image" style="--hero-image: url('{{ $heroImageUrl }}')"><p class="eyebrow">Universo Lesa Joyería · Piezas con historia</p><h1>Obras maestras en pulseras<br>&amp; brazaletes</h1><p>Joyas seleccionadas para acompañar el pulso diario con discreta magnificencia.</p></section>
             <section class="product-section" aria-labelledby="product-title">
                 <div class="section-heading"><div><p class="eyebrow">Coleccion disponible</p><h2 id="product-title">Piezas para llevar siempre</h2></div>@if (request('search') || request('categoria'))<a href="{{ route('home') }}" class="clear-filter">Ver todo</a>@endif</div>
                 <div class="product-grid">

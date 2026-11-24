@@ -7,6 +7,8 @@ use App\Models\Rol;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -52,7 +54,60 @@ class ConfigController extends Controller
             ->paginate(8, ['*'], 'categorias_page')
             ->withQueryString();
 
-        return view('admin.user.config', compact('roles', 'categorias'));
+        $homepageImages = DB::table('homepage_images')
+            ->orderByDesc('is_active')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function ($image) {
+                $image->url = $this->homepageImageUrl($image->path);
+
+                return $image;
+            });
+
+        return view('admin.user.config', compact('roles', 'categorias', 'homepageImages'));
+    }
+
+    public function storeHomepageImage(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1843'],
+        ], [
+            'image.uploaded' => 'El servidor rechazó la imagen. Reduce su tamaño a menos de 1.8 MB e inténtalo de nuevo.',
+            'image.max' => 'La imagen no debe superar los 1.8 MB.',
+        ]);
+
+        $path = $validated['image']->store('fondos-inicio', 'public');
+
+        if ($path === false) {
+            return to_route('config.index')->with('error', 'No se pudo guardar la imagen. Inténtalo de nuevo.');
+        }
+
+        DB::transaction(function () use ($path): void {
+            DB::table('homepage_images')->update(['is_active' => false, 'updated_at' => now()]);
+            DB::table('homepage_images')->insert([
+                'path' => $path,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
+
+        return to_route('config.index')->with('status', 'Imagen subida y aplicada al inicio correctamente.');
+    }
+
+    public function activateHomepageImage(int $homepageImage): RedirectResponse
+    {
+        DB::table('homepage_images')->where('id', $homepageImage)->firstOrFail();
+
+        DB::transaction(function () use ($homepageImage): void {
+            DB::table('homepage_images')->update(['is_active' => false, 'updated_at' => now()]);
+            DB::table('homepage_images')->where('id', $homepageImage)->update([
+                'is_active' => true,
+                'updated_at' => now(),
+            ]);
+        });
+
+        return to_route('config.index')->with('status', 'Imagen de inicio actualizada correctamente.');
     }
 
     public function storeRole(Request $request): RedirectResponse
@@ -135,5 +190,12 @@ class ConfigController extends Controller
         }
 
         return to_route('config.index')->with('status', 'Categoría eliminada correctamente.');
+    }
+
+    private function homepageImageUrl(string $path): string
+    {
+        return str_starts_with($path, 'images/')
+            ? asset($path)
+            : Storage::disk('public')->url($path);
     }
 }

@@ -19,10 +19,10 @@
 .store-brand__mark { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--store-gold); color: var(--store-gold); font-family: "Playfair Display", serif; font-size: 21px; }
 .store-brand strong { display: block; font-family: "Playfair Display", serif; font-size: 18px; letter-spacing: .14em; font-weight: 500; }
 .store-brand small { display: block; margin-top: 2px; color: var(--store-muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
-.store-links { display: flex; min-width: 0; align-self: stretch; flex: 1; flex-direction: column; justify-content: center; gap: 2px; overflow: hidden; }
-.store-categories { display: flex; min-width: 0; align-items: center; gap: 22px; overflow-x: auto; scrollbar-width: none; }
+.store-links { display: flex; min-width: 0; align-self: stretch; flex: 1; flex-direction: column; justify-content: center; gap: 2px; overflow: visible; }
+.store-categories { display: flex; min-width: 0; flex-wrap: wrap; align-content: center; align-items: center; gap: 0 22px; overflow: visible; }
 .store-categories::-webkit-scrollbar { display: none; }
-.store-categories a { min-height: 34px; }
+.store-categories a { min-height: 34px; flex: 0 0 auto; }
 .store-links a { display: flex; align-items: center; border-bottom: 2px solid transparent; color: #555047; font-size: 11px; letter-spacing: .09em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
 .store-links a:hover, .store-links a.is-active { border-color: var(--store-gold); color: var(--store-gold); }
 .store-admin-links { display: flex; min-height: 34px; align-items: stretch; gap: 15px; overflow-x: auto; scrollbar-width: thin; border-top: 1px solid var(--store-line); }
@@ -88,6 +88,7 @@
 }
 .store-hero, .product-section, .collections-section { max-width: 1360px; margin: 0 auto; padding-right: 40px; padding-left: 40px; }
 .store-hero { padding-top: 90px; padding-bottom: 76px; background: radial-gradient(circle at 84% 40%, #f1f1f1, transparent 31%); }
+.store-hero--image { background-image: linear-gradient(90deg, rgba(247, 245, 242, .96) 0%, rgba(247, 245, 242, .82) 48%, rgba(247, 245, 242, .25) 100%), var(--hero-image); background-position: center; background-repeat: no-repeat; background-size: cover; }
 .eyebrow, .product-category, .footer-title { color: var(--store-gold); font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
 .store-hero h1, .cart-page h1 { max-width: 720px; margin: 12px 0 15px; font: 400 clamp(38px, 5vw, 66px)/1.04 "Playfair Display", serif; }
 .store-hero > p:last-child { max-width: 510px; margin: 0; color: var(--store-muted); font-size: 15px; line-height: 1.7; }

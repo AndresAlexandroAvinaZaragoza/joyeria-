@@ -103,4 +103,11 @@ Route::put('config/categorias/{categoria}', [ConfigController::class, 'updateCat
 Route::delete('config/categorias/{categoria}', [ConfigController::class, 'destroyCategory'])
     ->middleware(['auth', 'verified'])
     ->name('config.categories.destroy');
+Route::post('config/imagenes-inicio', [ConfigController::class, 'storeHomepageImage'])
+    ->middleware(['auth', 'verified'])
+    ->name('config.homepage-images.store');
+Route::patch('config/imagenes-inicio/{homepageImage}/activar', [ConfigController::class, 'activateHomepageImage'])
+    ->middleware(['auth', 'verified'])
+    ->whereNumber('homepageImage')
+    ->name('config.homepage-images.activate');
 require __DIR__.'/auth.php';

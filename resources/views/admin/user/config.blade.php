@@ -65,10 +65,10 @@
                         ADMINISTRACIÓN
                     </span>
                     <h1>
-                        Configuración de <span>Catálogo</span>
+                        Configuración del <span>Sistema</span>
                     </h1>
                     <p>
-                        Administra los roles del equipo y las categorías de tus productos.
+                        Administra los roles, las categorías y la imagen de inicio.
                     </p>
                 </div>
                 <div class="productos-actions">
@@ -484,6 +484,45 @@
                 <div class="productos-paginacion">
                     @include('components.pagination-window', ['paginator' => $categorias])
                 </div>
+                </div>
+            </section>
+            <section class="configuracion-seccion" style="margin-bottom: 28px;">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 22px;">
+                    <div>
+                        <span class="productos-label">APARIENCIA</span>
+                        <h2 style="margin: 0; color: #222; font: 500 24px Georgia, 'Times New Roman', serif;">Imagen de inicio</h2>
+                        <p style="margin: 8px 0 0; color: #777; font-size: 12px;">Sube imágenes JPG, PNG o WebP de hasta 1.8 MB y elige cuál aparece detrás del texto principal de la tienda.</p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('config.homepage-images.store') }}" enctype="multipart/form-data" style="display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                    @csrf
+                    <div class="productos-form-group" style="flex: 1 1 280px;">
+                        <label for="homepage-image">Subir una imagen nueva</label>
+                        <input id="homepage-image" type="file" name="image" accept="image/jpeg,image/png,image/webp" required style="width: 100%; border: 1px solid #ddd9d1; padding: 10px 11px; background: #fcfbf9; color: #333; font-size: 12px;" @change="$event.target.setCustomValidity($event.target.files[0]?.size > 1.8 * 1024 * 1024 ? 'La imagen debe pesar menos de 1.8 MB.' : ''); if ($event.target.validationMessage) { $event.target.reportValidity(); $event.target.value = ''; }">
+                        @error('image')
+                            <div class="productos-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <button type="submit" class="productos-guardar" style="min-height: 40px;">SUBIR Y APLICAR</button>
+                </form>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
+                    @foreach ($homepageImages as $homepageImage)
+                        <article style="overflow: hidden; border: 1px solid #e5e5e5; border-radius: 6px; background: #fff;">
+                            <img src="{{ $homepageImage->url }}" alt="Vista previa de imagen de inicio" style="display: block; width: 100%; height: 145px; object-fit: cover;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px;">
+                                <span style="color: {{ $homepageImage->is_active ? '#658264' : '#777' }}; font-size: 10px; font-weight: 700;">
+                                    {{ $homepageImage->is_active ? 'ACTUAL' : 'DISPONIBLE' }}
+                                </span>
+                                @unless ($homepageImage->is_active)
+                                    <form method="POST" action="{{ route('config.homepage-images.activate', $homepageImage->id) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="productos-guardar" style="min-height: 32px; padding: 0 10px; font-size: 9px;">USAR EN INICIO</button>
+                                    </form>
+                                @endunless
+                            </div>
+                        </article>
+                    @endforeach
                 </div>
             </section>
         </div>
