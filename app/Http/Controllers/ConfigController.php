@@ -185,6 +185,10 @@ class ConfigController extends Controller
             'descripcion' => ['nullable', 'string', 'max:65535'],
         ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
 
+        if ($this->isProtectedRoleName($validated['nombre'])) {
+            return to_route('config.index')->with('error', 'No puedes crear roles llamados Cliente o ADMINISTRADOR.');
+        }
+
         Rol::create($validated);
 
         return to_route('config.index')->with('status', 'Rol creado correctamente.');
@@ -192,10 +196,24 @@ class ConfigController extends Controller
 
     public function updateRole(Request $request, Rol $rol): RedirectResponse
     {
+        if ($rol->isProtected()) {
+            $validated = $request->validate([
+                'descripcion' => ['nullable', 'string', 'max:65535'],
+            ]);
+
+            $rol->update($validated);
+
+            return to_route('config.index')->with('status', 'Rol actualizado correctamente.');
+        }
+
         $validated = $request->validate([
             'nombre' => ['required', 'string', 'max:30', 'regex:/^[\pL\s]+$/u', Rule::unique('rol', 'nombre')->ignore($rol->id_rol, 'id_rol')],
             'descripcion' => ['nullable', 'string', 'max:65535'],
         ], ['nombre.regex' => 'El nombre solo debe contener letras y espacios.']);
+
+        if ($this->isProtectedRoleName($validated['nombre'])) {
+            return to_route('config.index')->with('error', 'No puedes crear ni renombrar roles como Cliente o ADMINISTRADOR.');
+        }
 
         $rol->update($validated);
 
@@ -204,6 +222,10 @@ class ConfigController extends Controller
 
     public function destroyRole(Rol $rol): RedirectResponse
     {
+        if ($rol->isProtected()) {
+            return to_route('config.index')->with('error', 'El rol Cliente y el rol ADMINISTRADOR no se pueden eliminar.');
+        }
+
         try {
             $rol->delete();
         } catch (QueryException) {
@@ -211,6 +233,13 @@ class ConfigController extends Controller
         }
 
         return to_route('config.index')->with('status', 'Rol eliminado correctamente.');
+    }
+
+    private function isProtectedRoleName(string $name): bool
+    {
+        $name = mb_strtoupper(trim($name));
+
+        return in_array($name, ['CLIENTE', 'ADMINISTRADOR'], true);
     }
 
     public function storeCategory(Request $request): RedirectResponse

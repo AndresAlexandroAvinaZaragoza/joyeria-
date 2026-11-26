@@ -18,7 +18,29 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->get('/profile');
 
-        $response->assertOk();
+        $response->assertOk()
+            ->assertSee('Mi perfil')
+            ->assertSee('Información del perfil')
+            ->assertSee('Actualizar contraseña')
+            ->assertSee('Eliminar cuenta')
+            ->assertDontSee('Profile Information')
+            ->assertDontSee('Update Password');
+    }
+
+    public function test_profile_validation_errors_are_displayed_in_spanish(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->from('/profile')
+            ->followingRedirects()
+            ->patch('/profile', [
+                'name' => '',
+                'email' => 'invalid-email',
+            ])
+            ->assertOk()
+            ->assertSeeText('El campo nombre es obligatorio.')
+            ->assertSeeText('El campo correo electrónico debe ser una dirección de correo electrónico válida.');
     }
 
     public function test_profile_information_can_be_updated(): void
@@ -86,13 +108,14 @@ class ProfileTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->from('/profile')
+            ->followingRedirects()
             ->delete('/profile', [
                 'password' => 'wrong-password',
             ]);
 
         $response
-            ->assertSessionHasErrorsIn('userDeletion', 'password')
-            ->assertRedirect('/profile');
+            ->assertOk()
+            ->assertSeeText('La contraseña ingresada es incorrecta.');
 
         $this->assertNotNull($user->fresh());
     }

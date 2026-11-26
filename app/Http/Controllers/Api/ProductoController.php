@@ -122,8 +122,14 @@ class ProductoController extends Controller
         );
     }
 
-    public function destroy(Producto $producto)
+    public function destroy(Producto $producto): JsonResponse
     {
+        if ($producto->hasBlockingReferences()) {
+            return response()->json([
+                'message' => 'No se puede eliminar el producto porque está asociado a un carrito, pedido, compra o movimiento de inventario. Puedes desactivarlo en su lugar.',
+            ], 409);
+        }
+
         $producto->delete();
 
         return response()->json([

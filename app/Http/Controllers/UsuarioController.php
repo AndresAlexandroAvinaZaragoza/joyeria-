@@ -91,6 +91,11 @@ class UsuarioController extends Controller
     public function destroy($id): RedirectResponse
     {
         $user = User::findOrFail($id);
+
+        if ($user->rol?->isAdministrator()) {
+            return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar una cuenta con rol de administrador.');
+        }
+
         $user->delete();
 
         return redirect()->route('usuarios.index')->with('status', 'Usuario eliminado correctamente.');

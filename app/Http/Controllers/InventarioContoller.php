@@ -30,6 +30,13 @@ class InventarioContoller extends Controller
             });
         }
 
+        if ($request->input('stock') === 'stock_minimo') {
+            $inventarioQuery->where('stock_actual', '>', 0)
+                ->whereColumn('stock_actual', '<=', 'stock_minimo');
+        } elseif ($request->input('stock') === 'sin_stock') {
+            $inventarioQuery->where('stock_actual', 0);
+        }
+
         $inventarios = $inventarioQuery->paginate(10)->withQueryString();
         $productos = Producto::with('categoria')
             ->where('status', true)

@@ -86,8 +86,6 @@
                             <tr>
                                 <th>USUARIO</th>
                                 <th>ROL</th>
-                                <th>ÚLTIMA CONEXIÓN</th>
-                                <th>ESTADO</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -131,30 +129,6 @@
                                     </div>
                                 </td>
 
-
-                                <td>
-                                    <div class="conexion">
-
-                                        <span class="conexion-online">
-                                            <i></i>
-                                            En línea
-                                        </span>
-
-                                        <small>
-                                            Panel administrativo
-                                        </small>
-
-                                    </div>
-                                </td>
-
-
-                                <td>
-                                    <span class="estado {{ $usuario->status == 1 ? 'activo' : 'inactivo' }}">
-                                        {{ $usuario->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
-                                    </span>
-                                </td>
-
-
                                 <td>
                                     <div class="acciones">
 
@@ -192,19 +166,21 @@
 
 
                                         {{-- Eliminar --}}
-                                        <form method="POST" action="{{ route('usuarios.destroy', $usuario) }}" onsubmit="return confirm('¿Deseas eliminar este usuario?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" title="Eliminar usuario" aria-label="Eliminar usuario">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 fill="none"
-                                                 viewBox="0 0 24 24"
-                                                 stroke-width="1.7"
-                                                 stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12m-10 0v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7m-7 0V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2m-5 3v7m3-7v7"/>
-                                            </svg>
-                                            </button>
-                                        </form>
+                                        @unless($usuario->rol?->isAdministrator())
+                                            <form method="POST" action="{{ route('usuarios.destroy', $usuario) }}" onsubmit="return confirm('¿Deseas eliminar este usuario?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" title="Eliminar usuario" aria-label="Eliminar usuario">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     fill="none"
+                                                     viewBox="0 0 24 24"
+                                                     stroke-width="1.7"
+                                                     stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12m-10 0v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7m-7 0V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2m-5 3v7m3-7v7"/>
+                                                </svg>
+                                                </button>
+                                            </form>
+                                        @endunless
 
                                     </div>
                                 </td>

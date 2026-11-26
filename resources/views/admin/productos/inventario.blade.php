@@ -35,6 +35,13 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="productos-select">
+                    <select name="stock" aria-label="Filtrar por estado del stock" @change="$event.target.form.requestSubmit()">
+                        <option value="" @selected(request('stock') === null || request('stock') === '')>TODOS</option>
+                        <option value="stock_minimo" @selected(request('stock') === 'stock_minimo')>STOCK MÍNIMO</option>
+                        <option value="sin_stock" @selected(request('stock') === 'sin_stock')>SIN STOCK</option>
+                    </select>
+                </div>
                 <button type="button" class="productos-limpiar" @click="window.location = '{{ route('inventario.index') }}'">LIMPIAR</button>
             </form>
 

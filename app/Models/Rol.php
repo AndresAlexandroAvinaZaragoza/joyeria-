@@ -16,6 +16,20 @@ class Rol extends Model
         'descripcion',
     ];
 
+    public function isProtected(): bool
+    {
+        $nombre = mb_strtoupper(trim($this->nombre));
+
+        return in_array($nombre, ['CLIENTE', 'ADMINISTRADOR'], true);
+    }
+
+    public function isAdministrator(): bool
+    {
+        $nombre = mb_strtoupper(trim($this->nombre));
+
+        return in_array($nombre, ['ADMIN', 'ADMINISTRADOR'], true);
+    }
+
     public function usuarios(): HasMany
     {
         return $this->hasMany(User::class, 'rol_id', 'id_rol');

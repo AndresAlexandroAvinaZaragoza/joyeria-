@@ -8,6 +8,7 @@
             editRoleModalOpen: false,
             editCategoryModalOpen: false,
             editRoleAction: '',
+            editRoleProtected: false,
             editCategoryAction: '',
             editRoleName: '',
             editRoleDescription: '',
@@ -252,7 +253,8 @@
                                                     editRoleModalOpen = true;
                                                     editRoleAction = '{{ route('config.roles.update', $rol) }}';
                                                     editRoleName = @js($rol->nombre);
-                                                    editRoleDescription = @js($rol->descripcion)
+                                                    editRoleDescription = @js($rol->descripcion);
+                                                    editRoleProtected = {{ $rol->isProtected() ? 'true' : 'false' }}
                                                 "
                                             >
                                                 <svg
@@ -269,33 +271,35 @@
                                                     />
                                                 </svg>
                                             </button>
-                                            <form
-                                                method="POST"
-                                                action="{{ route('config.roles.destroy', $rol) }}"
-                                                onsubmit="return confirm('¿Deseas eliminar este rol?');"
-                                            >
-                                                @csrf
-                                                @method('DELETE')
-                                                <button
-                                                    type="submit"
-                                                    title="Eliminar rol"
-                                                    aria-label="Eliminar rol"
+                                            @unless($rol->isProtected())
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route('config.roles.destroy', $rol) }}"
+                                                    onsubmit="return confirm('¿Deseas eliminar este rol?');"
                                                 >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke-width="1.7"
-                                                        stroke="currentColor"
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button
+                                                        type="submit"
+                                                        title="Eliminar rol"
+                                                        aria-label="Eliminar rol"
                                                     >
-                                                        <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            d="M6 7h12m-10 0v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7m-7 0V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2m-5 3v7m3-7v7"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke-width="1.7"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                d="M6 7h12m-10 0v11a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7m-7 0V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2m-5 3v7m3-7v7"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endunless
                                         </div>
                                     </td>
                                 </tr>
@@ -816,6 +820,7 @@
                             pattern="[\p{L}\s]+"
                             title="Solo se permiten letras y espacios."
                             x-model="editRoleName"
+                            :readonly="editRoleProtected"
                             required
                         >
                     </div>

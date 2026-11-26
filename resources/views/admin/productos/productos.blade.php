@@ -6,16 +6,16 @@
         x-data="{ modalOpen: {{ $errors->any() && old('_method') !== 'PUT' ? 'true' : 'false' }}, editModalOpen: {{ $errors->any() && old('_method') === 'PUT' ? 'true' : 'false' }}, editAction: '', editSku: '', editName: '', editDescription: '', editCategory: '', editMaterial: '', editWeight: '', editSize: '', editCost: '', editPrice: '' }"
         @keydown.escape.window="modalOpen = false; editModalOpen = false"
     >
-        @if (session('status'))
+        @if (session('status') || session('error'))
             <div
                 x-data="{ visible: true }"
                 x-init="setTimeout(() => visible = false, 4000)"
                 x-show="visible"
                 x-transition.opacity
-                class="fixed right-6 top-24 z-[60] flex max-w-sm items-center gap-3 border border-green-200 bg-white px-5 py-4 text-sm text-green-800 shadow-lg"
-                role="status"
+                class="fixed right-6 top-24 z-[60] flex max-w-sm items-center gap-3 border bg-white px-5 py-4 text-sm shadow-lg {{ session('error') ? 'border-red-200 text-red-800' : 'border-green-200 text-green-800' }}"
+                role="{{ session('error') ? 'alert' : 'status' }}"
             >
-                <span>{{ session('status') }}</span>
+                <span>{{ session('error') ?? session('status') }}</span>
                 <button type="button" class="ml-auto text-lg leading-none" aria-label="Cerrar notificación" @click="visible = false">&times;</button>
             </div>
         @endif
@@ -85,11 +85,24 @@
                         </thead>
                         <tbody>
                             @foreach ($productos as $producto)
+                                @php($imagenPrincipal = $producto->imagenes->first()?->url_img)
                                 <tr>
                                     <td>{{ $producto->sku }}</td>
                                     <td>
                                         <div class="producto-identidad">
-                                            <div class="producto-thumb oro">✦</div>
+                                            <div class="producto-thumb">
+                                                @if ($imagenPrincipal)
+                                                    <img
+                                                        src="{{ str_starts_with($imagenPrincipal, 'http') ? $imagenPrincipal : Storage::disk('public')->url($imagenPrincipal) }}"
+                                                        alt="{{ $producto->nombre }}"
+                                                    >
+                                                @else
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                                        <circle cx="12" cy="12" r="6.5"/>
+                                                        <circle cx="12" cy="12" r="2.5"/>
+                                                    </svg>
+                                                @endif
+                                            </div>
                                             <div>
                                                 <strong>{{ $producto->nombre }}</strong>
                                                 <small>{{ $producto->descripcion }}</small>

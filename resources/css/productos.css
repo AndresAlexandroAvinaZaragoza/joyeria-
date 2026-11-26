@@ -577,12 +577,22 @@
     width: 44px;
     height: 38px;
     display: grid;
+    overflow: hidden;
     place-items: center;
     flex-shrink: 0;
     background: #eee9df;
     color: #9b741d;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 18px;
+}
+
+.producto-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.producto-thumb svg {
+    width: 20px;
+    height: 20px;
 }
 
 .producto-thumb.verde { background: #e8eee7; color: #658264; }

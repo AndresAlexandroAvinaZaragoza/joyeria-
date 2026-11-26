@@ -46,4 +46,32 @@ class Producto extends Model
     {
         return $this->hasOne(Inventario::class, 'producto_id', 'id_productos');
     }
+
+    public function carritoItems(): HasMany
+    {
+        return $this->hasMany(CarritoItem::class, 'producto_id', 'id_productos');
+    }
+
+    public function pedidoDetalles(): HasMany
+    {
+        return $this->hasMany(PedidoDetalle::class, 'producto_id', 'id_productos');
+    }
+
+    public function compraDetalles(): HasMany
+    {
+        return $this->hasMany(CompraDetalle::class, 'producto_id', 'id_productos');
+    }
+
+    public function movimientosInventario(): HasMany
+    {
+        return $this->hasMany(MovimientoInventario::class, 'producto_id', 'id_productos');
+    }
+
+    public function hasBlockingReferences(): bool
+    {
+        return $this->carritoItems()->exists()
+            || $this->pedidoDetalles()->exists()
+            || $this->compraDetalles()->exists()
+            || $this->movimientosInventario()->exists();
+    }
 }

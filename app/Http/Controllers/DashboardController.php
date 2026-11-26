@@ -25,7 +25,9 @@ class DashboardController extends Controller
                 ->latest()
                 ->limit(5)
                 ->get(),
-            'lowStockItems' => Inventario::with('producto')
+            'lowStockItems' => Inventario::with([
+                'producto.imagenes' => fn ($query) => $query->orderByDesc('es_principal')->orderBy('orden'),
+            ])
                 ->whereColumn('stock_actual', '<=', 'stock_minimo')
                 ->orderBy('stock_actual')
                 ->limit(4)

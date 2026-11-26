@@ -14,7 +14,10 @@ class PorductosController extends Controller
 {
     public function index(Request $request): View
     {
-        $productosQuery = Producto::with('categoria');
+        $productosQuery = Producto::with([
+            'categoria',
+            'imagenes' => fn ($query) => $query->orderByDesc('es_principal')->orderBy('orden'),
+        ]);
 
         if ($request->filled('search')) {
             $search = $request->string('search')->trim()->toString();
@@ -104,7 +107,16 @@ class PorductosController extends Controller
 
     public function destroy(int $producto): RedirectResponse
     {
-        Producto::findOrFail($producto)->delete();
+        $productoModel = Producto::findOrFail($producto);
+
+        if ($productoModel->hasBlockingReferences()) {
+            return redirect()->route('productos.index')->with(
+                'error',
+                'No se puede eliminar el producto porque está asociado a un carrito, pedido, compra o movimiento de inventario. Puedes desactivarlo en su lugar.'
+            );
+        }
+
+        $productoModel->delete();
 
         return redirect()->route('productos.index')->with('status', 'Producto eliminado correctamente.');
     }
