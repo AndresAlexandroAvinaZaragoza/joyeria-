@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
@@ -117,6 +118,32 @@ class ProfileTest extends TestCase
             ->assertOk()
             ->assertSeeText('La contraseña ingresada es incorrecta.');
 
+        $this->assertNotNull($user->fresh());
+    }
+
+    public function test_user_with_orders_cannot_delete_their_account(): void
+    {
+        $user = User::factory()->create();
+
+        DB::table('pedidos')->insert([
+            'numero_pedido' => 'PED-TEST-1',
+            'subtotal' => 100,
+            'total' => 100,
+            'user_id' => $user->getKey(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->from('/profile')
+            ->followingRedirects()
+            ->delete('/profile', [
+                'password' => 'password',
+            ])
+            ->assertOk()
+            ->assertSeeText('No puedes eliminar tu cuenta porque tienes pedidos asociados.');
+
+        $this->assertAuthenticatedAs($user);
         $this->assertNotNull($user->fresh());
     }
 }

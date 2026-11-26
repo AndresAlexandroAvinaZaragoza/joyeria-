@@ -49,6 +49,13 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        if ($user->pedidos()->exists()) {
+            return Redirect::route('profile.edit')
+                ->withErrors([
+                    'account' => 'No puedes eliminar tu cuenta porque tienes pedidos asociados.',
+                ], 'userDeletion');
+        }
+
         Auth::logout();
 
         $user->delete();

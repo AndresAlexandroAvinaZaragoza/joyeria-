@@ -27,6 +27,8 @@
                 Al eliminar tu cuenta, todos sus datos y recursos se borrarán permanentemente. Ingresa tu contraseña para confirmar la eliminación.
             </p>
 
+            <x-input-error :messages="$errors->userDeletion->get('account')" class="mt-2" />
+
             <div class="mt-6">
                 <x-input-label for="password" value="Contraseña" class="sr-only" />
 
