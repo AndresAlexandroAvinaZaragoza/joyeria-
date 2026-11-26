@@ -31,6 +31,23 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 6.05 6.05a7.5 7.5 0 0 0 10.6 10.6Z" /></svg>
                     <input type="search" name="search" value="{{ request('search') }}" placeholder="Buscar por SKU o nombre..." @input.debounce.400ms="$event.target.form.requestSubmit()">
                 </div>
+                <div class="productos-select">
+                    <select name="photo_count" aria-label="Filtrar por cantidad de fotografías" @change="$event.target.form.requestSubmit()">
+                        <option value="" @selected(request('photo_count', '') === '')>TODAS LAS FOTOGRAFÍAS</option>
+                        <option value="0" @selected(request('photo_count') === '0')>SIN FOTOGRAFÍAS</option>
+                        <option value="1" @selected(request('photo_count') === '1')>1 FOTO</option>
+                        <option value="2" @selected(request('photo_count') === '2')>2 FOTOS</option>
+                        <option value="3" @selected(request('photo_count') === '3')>3 FOTOS</option>
+                        <option value="4" @selected(request('photo_count') === '4')>4 FOTOS</option>
+                        <option value="more_than_5" @selected(request('photo_count') === 'more_than_5')>5 FOTOS O MÁS</option>
+                    </select>
+                </div>
+                <div class="productos-select">
+                    <select name="sort" aria-label="Ordenar productos" @change="$event.target.form.requestSubmit()">
+                        <option value="name" @selected(request('sort', 'name') === 'name')>ORDENAR POR NOMBRE</option>
+                        <option value="recent" @selected(request('sort') === 'recent')>RECIENTEMENTE AGREGADOS</option>
+                    </select>
+                </div>
                 <button type="button" class="productos-limpiar" @click="window.location = '{{ route('imagenes.index') }}'">LIMPIAR</button>
             </form>
 
@@ -59,7 +76,7 @@
                                             @endforelse
                                         </div>
                                     </td>
-                                    <td><span class="imagenes-contador">{{ $producto->imagenes->count() }} {{ $producto->imagenes->count() === 1 ? 'imagen' : 'imágenes' }}</span></td>
+                                    <td><span class="imagenes-contador">{{ $producto->imagenes_count }} {{ $producto->imagenes_count === 1 ? 'imagen' : 'imágenes' }}</span></td>
                                     <td>
                                         <button type="button" class="imagenes-administrar" @click="activeProduct = {{ $producto->id_productos }}; manageModalOpen = true">ADMINISTRAR IMÁGENES</button>
                                     </td>

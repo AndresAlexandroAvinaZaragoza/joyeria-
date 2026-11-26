@@ -14,9 +14,23 @@ class ImgContoller extends Controller
 {
     public function index(Request $request): View
     {
-        $productosQuery = Producto::with(['imagenes' => function ($query) {
-            $query->orderByDesc('es_principal')->orderBy('orden');
-        }])->where('status', true);
+        $validated = $request->validate([
+            'photo_count' => ['nullable', 'in:0,1,2,3,4,more_than_5'],
+            'sort' => ['nullable', 'in:name,recent'],
+        ]);
+
+        $productosQuery = Producto::withCount('imagenes')
+            ->with(['imagenes' => function ($query) {
+                $query->orderByDesc('es_principal')->orderBy('orden');
+            }])->where('status', true);
+
+        if (isset($validated['photo_count'])) {
+            if ($validated['photo_count'] === 'more_than_5') {
+                $productosQuery->has('imagenes', '>=', 5);
+            } else {
+                $productosQuery->has('imagenes', '=', (int) $validated['photo_count']);
+            }
+        }
 
         if ($request->filled('search')) {
             $search = $request->string('search')->trim()->toString();
@@ -26,10 +40,13 @@ class ImgContoller extends Controller
             });
         }
 
-        $productosConImagenes = $productosQuery
-            ->orderBy('nombre')
-            ->paginate(10)
-            ->withQueryString();
+        $productosQuery->when(
+            ($validated['sort'] ?? 'name') === 'recent',
+            fn ($query) => $query->orderByDesc('created_at')->orderBy('nombre'),
+            fn ($query) => $query->orderBy('nombre')
+        );
+
+        $productosConImagenes = $productosQuery->paginate(10)->withQueryString();
         $productos = Producto::where('status', true)->orderBy('nombre')->get(['id_productos', 'sku', 'nombre']);
 
         return view('admin.productos.imagenes', compact('productosConImagenes', 'productos'));
