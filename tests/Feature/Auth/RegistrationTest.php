@@ -19,6 +19,11 @@ class RegistrationTest extends TestCase
 
         Rol::forceCreate([
             'id_rol' => 4,
+            'nombre' => 'Empleado',
+            'descripcion' => 'Empleado del sistema',
+        ]);
+        Rol::forceCreate([
+            'id_rol' => 9,
             'nombre' => 'Cliente',
             'descripcion' => 'Cliente registrado',
         ]);
@@ -48,8 +53,13 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertFalse($user->hasVerifiedEmail());
+        $this->assertSame('Cliente', $user->rol->nombre);
         Notification::assertSentTo($user, VerifyEmail::class);
         $response->assertRedirect(route('verification.notice', absolute: false));
+
+        $this->get(route('verification.notice'))
+            ->assertOk()
+            ->assertSee('Verifica tu correo');
     }
 
     public function test_name_must_contain_only_letters(): void

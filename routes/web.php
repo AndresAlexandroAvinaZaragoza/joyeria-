@@ -26,7 +26,7 @@ Route::patch('/carrito', [TiendaController::class, 'updateCart'])->name('cart.up
 Route::delete('/carrito/{producto}', [TiendaController::class, 'removeFromCart'])->name('cart.remove');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile/direcciones/{direccion}', [DireccionClienteController::class, 'destroy'])->whereNumber('direccion')->name('profile.addresses.destroy');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'staff'])->group(function () {
     Route::get('/admin/pedidos', [PedidosController::class, 'adminIndex'])->name('admin.orders.index');
     Route::get('/admin/historial-pedidos', [PedidosController::class, 'history'])->name('admin.orders.history');
     Route::get('/admin/pedidos/{pedido}/pdf', [PedidosController::class, 'print'])->name('admin.orders.print');
@@ -68,53 +68,53 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/reportes/clientes/excel', [CustomerReportController::class, 'excel'])->name('admin.reports.customers.excel');
 });
 
-Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified']);
-Route::resource('inventario', InventarioContoller::class)->only(['index', 'store', 'update'])->middleware(['auth', 'verified']);
+Route::resource('usuarios', UsuarioController::class)->middleware(['auth', 'verified', 'staff']);
+Route::resource('inventario', InventarioContoller::class)->only(['index', 'store', 'update'])->middleware(['auth', 'verified', 'staff']);
 Route::resource('imagenes', ImgContoller::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->parameters(['imagenes' => 'imagen'])
-    ->middleware(['auth', 'verified']);
+    ->middleware(['auth', 'verified', 'staff']);
 Route::patch('productos/{producto}/status', [PorductosController::class, 'toggleStatus'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->whereNumber('producto')
     ->name('productos.toggle-status');
 Route::resource('productos', PorductosController::class)
     ->only(['index', 'store', 'update', 'destroy'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->whereNumber('producto');
 Route::get('config', [ConfigController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.index');
 Route::put('config/costo-envio', [ConfigController::class, 'updateShippingCost'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.shipping-cost.update');
 Route::post('config/roles', [ConfigController::class, 'storeRole'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.roles.store');
 Route::put('config/roles/{rol}', [ConfigController::class, 'updateRole'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.roles.update');
 Route::delete('config/roles/{rol}', [ConfigController::class, 'destroyRole'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.roles.destroy');
 Route::post('config/categorias', [ConfigController::class, 'storeCategory'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.categories.store');
 Route::put('config/categorias/{categoria}', [ConfigController::class, 'updateCategory'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.categories.update');
 Route::delete('config/categorias/{categoria}', [ConfigController::class, 'destroyCategory'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.categories.destroy');
 Route::post('config/imagenes-inicio', [ConfigController::class, 'storeHomepageImage'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->name('config.homepage-images.store');
 Route::patch('config/imagenes-inicio/{homepageImage}/activar', [ConfigController::class, 'activateHomepageImage'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->whereNumber('homepageImage')
     ->name('config.homepage-images.activate');
 Route::delete('config/imagenes-inicio/{homepageImage}', [ConfigController::class, 'destroyHomepageImage'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'staff'])
     ->whereNumber('homepageImage')
     ->name('config.homepage-images.destroy');
 require __DIR__.'/auth.php';

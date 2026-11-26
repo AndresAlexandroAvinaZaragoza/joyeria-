@@ -35,6 +35,16 @@
             <p style="margin:0;font-size:20px;font-weight:bold;">{{ $pedido->numero_pedido }}</p>
             <p style="margin:16px 0 8px;color:#756f66;font-size:12px;text-transform:uppercase;">Estado</p>
             <p style="margin:0;color:#9b7534;font-size:18px;font-weight:bold;">{{ $statusLabel }}</p>
+            @if ($tipo === 'envio' && ($pedido->envio?->paqueteria || $pedido->envio?->numero_guia))
+                <div style="margin-top:24px;padding:16px;background:#f7f5f2;">
+                    @if ($pedido->envio?->paqueteria)
+                        <p style="margin:0 0 8px;"><strong>Paquetería:</strong> {{ $pedido->envio->paqueteria }}</p>
+                    @endif
+                    @if ($pedido->envio?->numero_guia)
+                        <p style="margin:0;"><strong>Número de guía:</strong> {{ $pedido->envio->numero_guia }}</p>
+                    @endif
+                </div>
+            @endif
             <div style="margin-top:24px;border-top:1px solid #e2e2e2;">
                 @foreach ($pedido->detalles as $detalle)
                     <p style="margin:14px 0 0;">

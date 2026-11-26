@@ -20,39 +20,36 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/productos', [ProductoController::class, 'index']);
+    Route::get('/categorias', [ProductoController::class, 'categorias']);
     Route::get('/productos/{producto}', [ProductoController::class, 'show']);
-    Route::post('/productos', [ProductoController::class, 'store']);
-    Route::put('/productos/{producto}', [ProductoController::class, 'update']);
-    Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
 
-    Route::post('/productos/{producto}/imagenes', [ProductoImagenController::class, 'store']);
-    Route::post(
-        '/productos/{producto}/imagenes/{imagen}',
-        [ProductoImagenController::class, 'update']
-    );
+    Route::middleware('staff')->group(function () {
+        Route::post('/productos', [ProductoController::class, 'store']);
+        Route::put('/productos/{producto}', [ProductoController::class, 'update']);
+        Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
 
-    Route::delete(
-        '/productos/{producto}/imagenes/{imagen}',
-        [ProductoImagenController::class, 'destroy']
-    );
-    // ruta de inventario
-    Route::get('/inventario', [InventarioController::class, 'index']);
-    Route::get('/inventario/{inventario}', [InventarioController::class, 'show']);
-    Route::post('/inventario', [InventarioController::class, 'store']);
-    Route::put('/inventario/{inventario}', [InventarioController::class, 'update']);
+        Route::post('/productos/{producto}/imagenes', [ProductoImagenController::class, 'store']);
+        Route::post(
+            '/productos/{producto}/imagenes/{imagen}',
+            [ProductoImagenController::class, 'update']
+        );
 
-    // Consultar todos los pedidos
+        Route::delete(
+            '/productos/{producto}/imagenes/{imagen}',
+            [ProductoImagenController::class, 'destroy']
+        );
+
+        Route::get('/inventario', [InventarioController::class, 'index']);
+        Route::get('/inventario/{inventario}', [InventarioController::class, 'show']);
+        Route::post('/inventario', [InventarioController::class, 'store']);
+        Route::put('/inventario/{inventario}', [InventarioController::class, 'update']);
+    });
+
     Route::get('/pedidos', [PedidoController::class, 'index']);
 
-    // Consultar un pedido específico
     Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
 
-    // Consultar todos los envíos
     Route::get('/envios', [EnvioController::class, 'index']);
-
-    // Consultar un envío específico
     Route::get('/envios/{envio}', [EnvioController::class, 'show']);
-
-    // Actualizar un envío
     Route::patch('/envios/{envio}', [EnvioController::class, 'update']);
 });

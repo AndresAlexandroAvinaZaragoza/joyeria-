@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,11 @@ class InventarioFilterTest extends TestCase
 
     public function test_inventory_can_be_filtered_by_stock_minimum_no_stock_or_all(): void
     {
-        $user = User::factory()->create();
+        $role = Rol::create([
+            'nombre' => 'Empleado',
+            'descripcion' => 'Empleado del sistema',
+        ]);
+        $user = User::factory()->create(['rol_id' => $role->id_rol]);
         $categoryId = DB::table('categorias')->insertGetId([
             'nombre' => 'Anillos',
             'slug' => 'anillos',

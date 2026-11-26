@@ -18,6 +18,7 @@ class MovimientosInventarioSeeder extends Seeder
 
         if (empty($usuarios)) {
             $this->command->error('No hay usuarios activos disponibles.');
+
             return;
         }
 
@@ -47,6 +48,7 @@ class MovimientosInventarioSeeder extends Seeder
 
                 if ($yaTieneMovimientos) {
                     $omitidos++;
+
                     return;
                 }
 
@@ -56,8 +58,9 @@ class MovimientosInventarioSeeder extends Seeder
                     ->lockForUpdate()
                     ->first();
 
-                if (!$inventario) {
+                if (! $inventario) {
                     $omitidos++;
+
                     return;
                 }
 

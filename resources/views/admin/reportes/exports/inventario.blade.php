@@ -8,7 +8,7 @@
         h1 { color: #8d672f; margin-bottom: 4px; }
         .periodo { color: #777; margin-bottom: 20px; }
         .metricas { width: 100%; margin-bottom: 22px; }
-        .metricas td { background: #f5efe7; padding: 10px; width: 25%; }
+        .metricas td { background: #f5efe7; padding: 10px; width: 20%; }
         .etiqueta { color: #8d672f; font-size: 8px; text-transform: uppercase; }
         .valor { display: block; font-size: 16px; font-weight: bold; margin-top: 5px; }
         table { border-collapse: collapse; width: 100%; }
@@ -25,6 +25,7 @@
             <td><span class="etiqueta">Productos</span><span class="valor">{{ number_format($report['total_products']) }}</span></td>
             <td><span class="etiqueta">Existencias</span><span class="valor">{{ number_format($report['total_units']) }}</span></td>
             <td><span class="etiqueta">Valor total</span><span class="valor">${{ number_format($report['total_value'], 2) }}</span></td>
+            <td><span class="etiqueta">Stock mínimo</span><span class="valor">{{ number_format($report['low_stock_count']) }}</span></td>
             <td><span class="etiqueta">Agotados</span><span class="valor">{{ number_format($report['out_of_stock_count']) }}</span></td>
         </tr>
     </table>

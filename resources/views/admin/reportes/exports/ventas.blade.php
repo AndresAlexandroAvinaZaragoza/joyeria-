@@ -8,7 +8,7 @@
         h1 { color: #8d672f; margin-bottom: 4px; }
         .periodo { color: #777; margin-bottom: 20px; }
         .metricas { width: 100%; margin-bottom: 22px; }
-        .metricas td { background: #f5efe7; padding: 12px; width: 50%; }
+        .metricas td { background: #f5efe7; padding: 12px; width: 33.333%; }
         .etiqueta { color: #8d672f; font-size: 9px; text-transform: uppercase; }
         .valor { display: block; font-size: 18px; font-weight: bold; margin-top: 5px; }
         table { border-collapse: collapse; width: 100%; }
@@ -21,7 +21,11 @@
     <h1>Reporte de ventas</h1>
     <p class="periodo">Periodo: {{ $report['from']->format('d/m/Y') }} al {{ $report['to']->format('d/m/Y') }}</p>
     <table class="metricas">
-        <tr><td><span class="etiqueta">Ingresos totales</span><span class="valor">${{ number_format($report['total_revenue'], 2) }} MXN</span></td><td><span class="etiqueta">Ventas realizadas</span><span class="valor">{{ number_format($report['sales_count']) }}</span></td></tr>
+        <tr>
+            <td><span class="etiqueta">Ingresos totales</span><span class="valor">${{ number_format($report['total_revenue'], 2) }} MXN</span></td>
+            <td><span class="etiqueta">Ventas realizadas</span><span class="valor">{{ number_format($report['sales_count']) }}</span></td>
+            <td><span class="etiqueta">Ticket promedio</span><span class="valor">${{ number_format($report['sales_count'] ? $report['total_revenue'] / $report['sales_count'] : 0, 2) }} MXN</span></td>
+        </tr>
     </table>
     <h2>Productos más vendidos</h2>
     <table>

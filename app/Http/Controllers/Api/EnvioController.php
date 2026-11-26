@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Envio;
 use App\Models\PedidoHistorial;
+use App\Services\PedidoEmailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -53,11 +54,12 @@ class EnvioController extends Controller
     }
 
     // Actualizar envío
-    public function update(Request $request, int $envio): JsonResponse
+    public function update(Request $request, int $envio, PedidoEmailService $emailService): JsonResponse
     {
         $this->ensureStaff($request);
 
         $envioModel = Envio::findOrFail($envio);
+        $previousStatus = $envioModel->estado;
 
         $data = $request->validate([
             'estado' => [
@@ -76,7 +78,8 @@ class EnvioController extends Controller
         ]);
 
         abort_if(
-            in_array($envioModel->pedido->estado, ['cancelado', 'entregado'], true),
+            $envioModel->estado === 'entregado'
+                || in_array($envioModel->pedido->estado, ['cancelado', 'entregado'], true),
             422,
             'Este pedido ya está en el historial y no se puede modificar.'
         );
@@ -86,8 +89,8 @@ class EnvioController extends Controller
 
             $envioModel->update([
                 'estado' => $estado,
-                'paqueteria' => $data['paqueteria'] ?? null,
-                'numero_guia' => $data['numero_guia'] ?? null,
+                'paqueteria' => array_key_exists('paqueteria', $data) ? $data['paqueteria'] : $envioModel->paqueteria,
+                'numero_guia' => array_key_exists('numero_guia', $data) ? $data['numero_guia'] : $envioModel->numero_guia,
                 'fecha_envio' => (
                     $estado === 'enviado' && ! $envioModel->fecha_envio
                 ) ? now() : $envioModel->fecha_envio,
@@ -108,6 +111,10 @@ class EnvioController extends Controller
                 ]);
             }
         });
+
+        if ($previousStatus !== $data['estado']) {
+            $emailService->sendStatusUpdate($envioModel->pedido, $data['estado'], 'envio');
+        }
 
         return response()->json([
             'message' => 'Envío actualizado correctamente.',

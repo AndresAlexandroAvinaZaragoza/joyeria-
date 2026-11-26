@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -23,7 +24,7 @@ class HomepageImageConfigurationTest extends TestCase
 
     public function test_configuration_page_shows_background_image_management(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         $response = $this->actingAs($user)->get(route('config.index'));
 
@@ -36,7 +37,7 @@ class HomepageImageConfigurationTest extends TestCase
     public function test_admin_can_upload_a_background_image_under_1_8_mb(): void
     {
         Storage::fake('public');
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         $response = $this->actingAs($user)->post(route('config.homepage-images.store'), [
             'image' => UploadedFile::fake()->image('inicio.jpg')->size(1800),
@@ -54,7 +55,7 @@ class HomepageImageConfigurationTest extends TestCase
 
     public function test_admin_can_select_an_existing_background_image(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
         $existingImage = DB::table('homepage_images')->insertGetId([
             'path' => 'fondos-inicio/otra.jpg',
             'is_active' => false,
@@ -73,7 +74,7 @@ class HomepageImageConfigurationTest extends TestCase
     public function test_admin_cannot_upload_a_background_image_over_1_8_mb(): void
     {
         Storage::fake('public');
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         $response = $this->actingAs($user)->from(route('config.index'))->post(route('config.homepage-images.store'), [
             'image' => UploadedFile::fake()->image('inicio.jpg')->size(1900),
@@ -86,7 +87,7 @@ class HomepageImageConfigurationTest extends TestCase
     public function test_admin_cannot_upload_more_than_four_homepage_images(): void
     {
         Storage::fake('public');
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         foreach (range(1, 3) as $number) {
             DB::table('homepage_images')->insert([
@@ -114,7 +115,7 @@ class HomepageImageConfigurationTest extends TestCase
     public function test_admin_can_delete_an_inactive_uploaded_image(): void
     {
         Storage::fake('public');
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
         $path = UploadedFile::fake()->image('opcion.jpg')->store('fondos-inicio', 'public');
         $imageId = DB::table('homepage_images')->insertGetId([
             'path' => $path,
@@ -134,7 +135,7 @@ class HomepageImageConfigurationTest extends TestCase
     public function test_deleting_the_active_image_activates_another_image(): void
     {
         Storage::fake('public');
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
         DB::table('homepage_images')->update(['is_active' => false]);
         $path = UploadedFile::fake()->image('actual.jpg')->store('fondos-inicio', 'public');
         $activeImageId = DB::table('homepage_images')->insertGetId([
@@ -154,7 +155,7 @@ class HomepageImageConfigurationTest extends TestCase
 
     public function test_admin_cannot_delete_the_only_homepage_image(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
         $imageId = DB::table('homepage_images')->where('is_active', true)->value('id');
 
         $response = $this->actingAs($user)->from(route('config.index'))->delete(route('config.homepage-images.destroy', $imageId));
@@ -162,5 +163,15 @@ class HomepageImageConfigurationTest extends TestCase
         $response->assertRedirect(route('config.index'))
             ->assertSessionHas('error', 'Debes conservar al menos una imagen de inicio.');
         $this->assertDatabaseHas('homepage_images', ['id' => $imageId, 'is_active' => true]);
+    }
+
+    private function createAdministrator(): User
+    {
+        $role = Rol::create([
+            'nombre' => 'Administrador',
+            'descripcion' => 'Administradores del sistema',
+        ]);
+
+        return User::factory()->create(['rol_id' => $role->id_rol]);
     }
 }

@@ -16,6 +16,7 @@ class ComprasSeeder extends Seeder
 
         if ($usuarios->isEmpty()) {
             $this->command->error('No hay administradores o empleados activos.');
+
             return;
         }
 
@@ -26,7 +27,7 @@ class ComprasSeeder extends Seeder
 
             for ($i = 1; $i <= 1500; $i++) {
 
-                $numeroCompra = 'COMP-PRUEBA-' . str_pad(
+                $numeroCompra = 'COMP-PRUEBA-'.str_pad(
                     $i,
                     6,
                     '0',
@@ -39,6 +40,7 @@ class ComprasSeeder extends Seeder
 
                 if ($existe) {
                     $omitidas++;
+
                     continue;
                 }
 

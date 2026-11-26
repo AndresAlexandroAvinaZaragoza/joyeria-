@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -21,7 +22,7 @@ class InventoryReportController extends Controller
         $filters = $this->validatedFilters($request);
 
         return view('admin.reportes.inventario', [
-            'report' => $service->generate($filters),
+            'report' => $this->paginateItems($service->generate($filters), $request),
             'categories' => Categoria::where('status', true)->orderBy('nombre')->get(),
             'filters' => $filters,
         ]);
@@ -86,6 +87,31 @@ class InventoryReportController extends Controller
             'last_month' => [$today->subMonth()->startOfMonth(), $today->subMonth()->endOfMonth()],
             default => [null, null],
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $report
+     * @return array<string, mixed>
+     */
+    private function paginateItems(array $report, Request $request): array
+    {
+        $pageName = 'inventory_page';
+        $perPage = 10;
+        $page = LengthAwarePaginator::resolveCurrentPage($pageName);
+
+        $report['items'] = new LengthAwarePaginator(
+            array_slice($report['items'], ($page - 1) * $perPage, $perPage),
+            count($report['items']),
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+                'pageName' => $pageName,
+            ],
+        );
+
+        return $report;
     }
 
     private function ensureStaff(Request $request): void

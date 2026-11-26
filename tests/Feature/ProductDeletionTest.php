@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class ProductDeletionTest extends TestCase
 
     public function test_product_with_cart_items_cannot_be_deleted_from_admin(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $productId = $this->createProduct();
         $this->createCartItem($productId);
 
@@ -34,7 +35,7 @@ class ProductDeletionTest extends TestCase
 
     public function test_product_with_order_details_cannot_be_deleted_from_admin(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $productId = $this->createProduct();
         DB::table('inventario')->where('producto_id', $productId)->update(['stock_actual' => 1]);
         $orderId = DB::table('pedidos')->insertGetId([
@@ -66,7 +67,7 @@ class ProductDeletionTest extends TestCase
 
     public function test_product_without_transactional_references_can_be_deleted(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $productId = $this->createProduct();
 
         $this->actingAs($user)
@@ -79,7 +80,7 @@ class ProductDeletionTest extends TestCase
 
     public function test_api_returns_conflict_when_product_has_cart_items(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $productId = $this->createProduct();
         $this->createCartItem($productId);
 
@@ -129,5 +130,15 @@ class ProductDeletionTest extends TestCase
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    private function createEmployee(): User
+    {
+        $role = Rol::create([
+            'nombre' => 'Empleado',
+            'descripcion' => 'Empleado del sistema',
+        ]);
+
+        return User::factory()->create(['rol_id' => $role->id_rol]);
     }
 }

@@ -18,6 +18,7 @@ class CarritoItemsSeeder extends Seeder
 
         if ($productos->isEmpty()) {
             $this->command->error('No se encontraron productos de prueba activos.');
+
             return;
         }
 
@@ -43,6 +44,7 @@ class CarritoItemsSeeder extends Seeder
 
             if ($disponibles->isEmpty()) {
                 $omitidos++;
+
                 continue;
             }
 

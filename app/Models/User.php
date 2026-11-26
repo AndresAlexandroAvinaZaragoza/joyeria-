@@ -41,12 +41,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_superuser' => 'boolean',
         ];
     }
 
     public function rol(): BelongsTo
     {
         return $this->belongsTo(Rol::class, 'rol_id', 'id_rol');
+    }
+
+    public function hasStaffAccess(): bool
+    {
+        $role = mb_strtolower(trim((string) $this->rol?->nombre));
+
+        return in_array($role, ['admin', 'administrador', 'empleado'], true);
     }
 
     public function direcciones(): HasMany

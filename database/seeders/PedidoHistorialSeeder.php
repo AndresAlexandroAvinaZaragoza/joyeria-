@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Throwable;
 
 class PedidoHistorialSeeder extends Seeder
@@ -78,7 +78,7 @@ class PedidoHistorialSeeder extends Seeder
 
         foreach ($pedidos as $pedido) {
 
-            if (!isset($secuencias[$pedido->estado])) {
+            if (! isset($secuencias[$pedido->estado])) {
                 $this->command->warn(
                     "Estado desconocido en pedido {$pedido->numero_pedido}: {$pedido->estado}"
                 );
@@ -97,6 +97,7 @@ class PedidoHistorialSeeder extends Seeder
 
                 if ($existe) {
                     $omitidos++;
+
                     continue;
                 }
 

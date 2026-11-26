@@ -87,6 +87,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="reportes-paginacion">
+                    @include('components.pagination-window', ['paginator' => $report['items']])
+                </div>
             </section>
         </div>
     </div>

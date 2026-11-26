@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,7 +20,11 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $role = Rol::create([
+            'nombre' => 'Empleado',
+            'descripcion' => 'Empleado del sistema',
+        ]);
+        $user = User::factory()->create(['rol_id' => $role->id_rol]);
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -28,6 +33,23 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_cliente_is_redirected_to_the_store_after_login(): void
+    {
+        $role = Rol::create([
+            'nombre' => 'Cliente',
+            'descripcion' => 'Cliente registrado',
+        ]);
+        $user = User::factory()->create(['rol_id' => $role->id_rol]);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_unverified_users_are_sent_to_email_verification(): void

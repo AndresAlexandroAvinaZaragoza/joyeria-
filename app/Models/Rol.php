@@ -30,6 +30,11 @@ class Rol extends Model
         return in_array($nombre, ['ADMIN', 'ADMINISTRADOR'], true);
     }
 
+    public function isCustomer(): bool
+    {
+        return mb_strtoupper(trim($this->nombre)) === 'CLIENTE';
+    }
+
     public function usuarios(): HasMany
     {
         return $this->hasMany(User::class, 'rol_id', 'id_rol');

@@ -68,11 +68,25 @@ class UsuarioController extends Controller
     {
         $user = User::findOrFail($id);
 
+        if ($user->rol?->isCustomer()) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No puedes editar cuentas con rol de Cliente.');
+        }
+
+        if ($user->is_superuser
+            && $request->filled('rol_id')
+            && (int) $request->input('rol_id') !== (int) $user->rol_id) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No puedes cambiar el rol de la cuenta superusuario.');
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'rol_id' => ['required', 'exists:rol,id_rol'],
+            'rol_id' => $user->is_superuser
+                ? ['sometimes', 'exists:rol,id_rol']
+                : ['required', 'exists:rol,id_rol'],
         ], [
             'name.regex' => 'El nombre solo debe contener letras y espacios.',
         ]);
@@ -82,7 +96,9 @@ class UsuarioController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
-        $user->rol_id = $request->rol_id;
+        if (! $user->is_superuser) {
+            $user->rol_id = $request->rol_id;
+        }
         $user->save();
 
         return redirect()->route('usuarios.index')->with('status', 'Usuario actualizado correctamente.');
@@ -92,7 +108,12 @@ class UsuarioController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if ($user->rol?->isAdministrator()) {
+        if ($user->is_superuser || $user->rol?->isAdministrator()) {
+            if ($user->is_superuser) {
+                return redirect()->route('usuarios.index')
+                    ->with('error', 'No puedes eliminar la cuenta superusuario.');
+            }
+
             return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar una cuenta con rol de administrador.');
         }
 

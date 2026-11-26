@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Throwable;
 
 class PedidoDetallesSeeder extends Seeder
@@ -26,6 +26,7 @@ class PedidoDetallesSeeder extends Seeder
             // No generar detalles para pedidos cancelados.
             if ($pedido->estado === 'cancelado') {
                 $omitidos++;
+
                 continue;
             }
 
@@ -36,6 +37,7 @@ class PedidoDetallesSeeder extends Seeder
 
             if ($tieneDetalles) {
                 $omitidos++;
+
                 continue;
             }
 

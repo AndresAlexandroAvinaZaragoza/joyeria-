@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 use App\Models\Producto;
 use Closure;
 use Illuminate\Http\JsonResponse;
@@ -48,7 +49,7 @@ class ProductoController extends Controller
 
             'stock_actual' => ['required', 'integer', 'min:0', 'max:2147483647'],
             'stock_minimo' => ['required', 'integer', 'min:0', 'max:2147483647'],
-        ]);
+        ], $this->productValidationMessages());
 
         $producto = Producto::create([
             'sku' => $datos['sku'],
@@ -109,7 +110,7 @@ class ProductoController extends Controller
             'precio_venta' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'status' => ['required', 'boolean'],
             'id_categoria' => ['required', 'integer', 'exists:categorias,id_categorias'],
-        ]);
+        ], $this->productValidationMessages());
 
         $producto->update($datos);
 
@@ -137,6 +138,18 @@ class ProductoController extends Controller
         ]);
     }
 
+    public function categorias(): JsonResponse
+    {
+        $categorias = Categoria::where('status', true)
+            ->orderBy('nombre')
+            ->get();
+
+        return response()->json([
+            'message' => 'Categorías activas obtenidas correctamente.',
+            'categorias' => $categorias,
+        ]);
+    }
+
     private function descriptionWordLimitRule(): Closure
     {
         return function (string $attribute, mixed $value, Closure $fail): void {
@@ -150,5 +163,44 @@ class ProductoController extends Controller
                 $fail('La descripción no puede superar 150 palabras.');
             }
         };
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function productValidationMessages(): array
+    {
+        return [
+            'sku.required' => 'El código SKU es obligatorio.',
+            'sku.max' => 'El SKU no puede superar los 50 caracteres.',
+            'sku.regex' => 'El SKU solo puede contener letras, números y guiones (ej. JOY-001).',
+            'sku.unique' => 'Este SKU ya está registrado en otro producto. Debe ser único.',
+            'nombre.required' => 'El nombre del producto es obligatorio.',
+            'nombre.max' => 'El nombre no puede superar los 100 caracteres.',
+            'nombre.regex' => 'El nombre del producto solo debe contener letras y espacios (sin números ni símbolos).',
+            'descripcion.max' => 'La descripción no puede superar los 1000 caracteres.',
+            'id_categoria.required' => 'Debe seleccionar una categoría.',
+            'id_categoria.integer' => 'La categoría seleccionada no es válida.',
+            'id_categoria.exists' => 'La categoría seleccionada no existe o está inactiva.',
+            'material.required' => 'El material es obligatorio.',
+            'material.max' => 'El material no puede superar los 100 caracteres.',
+            'material.regex' => 'El material solo puede contener letras, números y espacios.',
+            'peso_gr.numeric' => 'El peso debe ser un valor numérico.',
+            'peso_gr.min' => 'El peso no puede ser negativo.',
+            'talla_medida.max' => 'La talla o medida no puede superar los 30 caracteres.',
+            'talla_medida.regex' => 'La talla o medida contiene caracteres no válidos.',
+            'precio_costo.required' => 'El precio de costo es obligatorio.',
+            'precio_costo.numeric' => 'El precio de costo debe ser numérico.',
+            'precio_costo.min' => 'El precio de costo no puede ser negativo.',
+            'precio_venta.required' => 'El precio de venta es obligatorio.',
+            'precio_venta.numeric' => 'El precio de venta debe ser numérico.',
+            'precio_venta.min' => 'El precio de venta no puede ser negativo.',
+            'stock_actual.required' => 'El stock actual es obligatorio.',
+            'stock_actual.integer' => 'El stock actual debe ser un número entero.',
+            'stock_minimo.required' => 'El stock mínimo es obligatorio.',
+            'stock_minimo.integer' => 'El stock mínimo debe ser un número entero.',
+            'status.required' => 'El estado del producto es obligatorio.',
+            'status.boolean' => 'El estado debe ser verdadero o falso.',
+        ];
     }
 }

@@ -120,10 +120,26 @@ class PedidosController extends Controller
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'period' => ['nullable', 'in:today,yesterday,this_week,last_month'],
+            'status' => ['nullable', 'in:pendiente,por_enviar,en_transito,entregado,enviado'],
         ]);
 
-        $enviosQuery = Envio::whereHas('pedido', fn ($query) => $query->whereNotIn('estado', ['cancelado', 'entregado']))
+        $enviosQuery = Envio::whereHas('pedido', function ($query) use ($filters) {
+            $excludedOrderStatuses = ($filters['status'] ?? null) === 'entregado'
+                ? ['cancelado']
+                : ['cancelado', 'entregado'];
+
+            $query->whereNotIn('estado', $excludedOrderStatuses);
+        })
             ->with('pedido.usuario');
+
+        if (isset($filters['status'])) {
+            match ($filters['status']) {
+                'pendiente', 'en_transito', 'entregado', 'enviado' => $enviosQuery->where('estado', $filters['status']),
+                'por_enviar' => $enviosQuery
+                    ->where(fn ($query) => $query->whereNull('paqueteria')->orWhere('paqueteria', ''))
+                    ->where(fn ($query) => $query->whereNull('numero_guia')->orWhere('numero_guia', '')),
+            };
+        }
 
         if (! empty($filters['search'])) {
             $search = trim($filters['search']);
@@ -202,7 +218,8 @@ class PedidosController extends Controller
 
         $pedido = $envio->pedido()->with('usuario')->firstOrFail();
         abort_if(
-            in_array($pedido->estado, ['cancelado', 'entregado'], true),
+            $envio->estado === 'entregado'
+                || in_array($pedido->estado, ['cancelado', 'entregado'], true),
             422,
             'Este pedido ya está en el historial y no se puede modificar.'
         );

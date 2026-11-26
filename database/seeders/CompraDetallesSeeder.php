@@ -25,6 +25,7 @@ class CompraDetallesSeeder extends Seeder
 
         if ($productos->isEmpty()) {
             $this->command->error('No hay productos de prueba con inventario.');
+
             return;
         }
 
@@ -39,6 +40,7 @@ class CompraDetallesSeeder extends Seeder
 
             if ($tieneDetalles) {
                 $omitidas++;
+
                 continue;
             }
 

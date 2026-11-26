@@ -71,6 +71,7 @@ class DireccionClientesSeeder extends Seeder
 
             if ($existe) {
                 $omitidas++;
+
                 continue;
             }
 
@@ -78,7 +79,7 @@ class DireccionClientesSeeder extends Seeder
 
             DB::table('direccion_clientes')->insert([
                 'calle_numero' => $calles[array_rand($calles)]
-                    . ' #' . rand(10, 999),
+                    .' #'.rand(10, 999),
 
                 'colonia' => $colonias[array_rand($colonias)],
 

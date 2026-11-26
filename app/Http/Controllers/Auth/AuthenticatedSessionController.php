@@ -32,8 +32,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('verification.notice', absolute: false));
         }
 
-        $role = strtolower((string) $request->user()->rol?->nombre);
-        $destination = in_array($role, ['admin', 'administrador', 'empleado'], true)
+        $destination = $request->user()->hasStaffAccess()
             ? route('dashboard', absolute: false)
             : route('home', absolute: false);
 

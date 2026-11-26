@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Rol;
 use App\Models\User;
 use DateTimeInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +15,7 @@ class ImageFilterTest extends TestCase
 
     public function test_products_can_be_filtered_by_photo_count(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $categoryId = $this->createCategory();
 
         for ($photoCount = 0; $photoCount <= 6; $photoCount++) {
@@ -44,7 +45,7 @@ class ImageFilterTest extends TestCase
 
     public function test_products_can_be_sorted_by_recently_added(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createEmployee();
         $categoryId = $this->createCategory();
         $this->createProductWithPhotos($categoryId, 1, 0, now()->subDay());
         $this->createProductWithPhotos($categoryId, 2, 0, now());
@@ -65,6 +66,16 @@ class ImageFilterTest extends TestCase
             'created_at' => now(),
             'updated_at' => now(),
         ], 'id_categorias');
+    }
+
+    private function createEmployee(): User
+    {
+        $role = Rol::create([
+            'nombre' => 'Empleado',
+            'descripcion' => 'Empleado del sistema',
+        ]);
+
+        return User::factory()->create(['rol_id' => $role->id_rol]);
     }
 
     private function createProductWithPhotos(int $categoryId, int $productNumber, int $photoCount, ?DateTimeInterface $createdAt = null): void

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CarritoSeeder extends Seeder
 {
@@ -27,6 +26,7 @@ class CarritoSeeder extends Seeder
 
             if ($existe) {
                 $omitidos++;
+
                 continue;
             }
 

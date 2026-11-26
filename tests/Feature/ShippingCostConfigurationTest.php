@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Rol;
 use App\Models\StoreSetting;
 use App\Models\User;
 use App\Services\PayPalService;
@@ -17,7 +18,7 @@ class ShippingCostConfigurationTest extends TestCase
 
     public function test_admin_can_update_the_shipping_cost(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         $response = $this->actingAs($user)->put(route('config.shipping-cost.update'), [
             'shipping_cost' => '45.50',
@@ -35,7 +36,7 @@ class ShippingCostConfigurationTest extends TestCase
 
     public function test_shipping_cost_must_be_nonnegative_and_have_at_most_two_decimal_places(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createAdministrator();
 
         $this->actingAs($user)
             ->from(route('config.index'))
@@ -178,5 +179,15 @@ class ShippingCostConfigurationTest extends TestCase
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+    }
+
+    private function createAdministrator(): User
+    {
+        $role = Rol::create([
+            'nombre' => 'Administrador',
+            'descripcion' => 'Administradores del sistema',
+        ]);
+
+        return User::factory()->create(['rol_id' => $role->id_rol]);
     }
 }

@@ -11,7 +11,7 @@ class PedidoEmailService
 {
     public function sendStatusUpdate(Pedido $pedido, string $estado, string $tipo): void
     {
-        $pedido->loadMissing(['usuario', 'detalles.producto']);
+        $pedido->loadMissing(['usuario', 'detalles.producto', 'envio']);
 
         $email = $pedido->usuario?->email;
         if (! is_string($email) || $email === '') {

@@ -12,10 +12,11 @@ class ProductoImgSeeder extends Seeder
     {
         $ruta = 'productos/imagen-generica.jpeg';
 
-        if (!Storage::disk('public')->exists($ruta)) {
+        if (! Storage::disk('public')->exists($ruta)) {
             $this->command->error(
-                'No existe la imagen: storage/app/public/' . $ruta
+                'No existe la imagen: storage/app/public/'.$ruta
             );
+
             return;
         }
 

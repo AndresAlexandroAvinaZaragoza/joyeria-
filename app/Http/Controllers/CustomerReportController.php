@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -18,8 +19,14 @@ class CustomerReportController extends Controller
     {
         $this->ensureStaff($request);
         [$from, $to, $period] = $this->periodBounds($request);
+        $report = $service->generate($from, $to);
+        $report['history'] = $this->paginateRows(
+            $report['history'],
+            $request,
+            'customer_history_page',
+        );
 
-        return view('admin.reportes.clientes', ['report' => $service->generate($from, $to), 'period' => $period]);
+        return view('admin.reportes.clientes', ['report' => $report, 'period' => $period]);
     }
 
     public function pdf(Request $request, CustomerReportService $service): Response
@@ -54,6 +61,28 @@ class CustomerReportController extends Controller
         };
 
         return [$from, $to, $period];
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $rows
+     * @return LengthAwarePaginator<array<string, mixed>>
+     */
+    private function paginateRows(array $rows, Request $request, string $pageName): LengthAwarePaginator
+    {
+        $perPage = 10;
+        $page = LengthAwarePaginator::resolveCurrentPage($pageName);
+
+        return new LengthAwarePaginator(
+            array_slice($rows, ($page - 1) * $perPage, $perPage),
+            count($rows),
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+                'pageName' => $pageName,
+            ],
+        );
     }
 
     private function ensureStaff(Request $request): void

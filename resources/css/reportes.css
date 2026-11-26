@@ -45,6 +45,11 @@
 .reportes-table td:last-child, .reportes-table th:last-child { text-align: right; }
 .reportes-table td strong { font-weight: 600; }
 .reportes-empty { color: #938b84; text-align: center !important; padding: 30px !important; }
+.reportes-paginacion { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin: 18px -24px -24px; padding: 14px 20px; border-top: 1px solid #eee9e4; }
+.reportes-paginacion button, .reportes-paginacion a { min-width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid #d8d5cf; border-radius: 4px; background: #fff; color: #282421; font-size: 12px; font-weight: 700; text-decoration: none; box-sizing: border-box; }
+.reportes-paginacion a:hover, .reportes-paginacion .pagination-window__current { border-color: #282421; background: #282421; color: #fff; }
+.reportes-paginacion button:disabled { background: #eceae6; color: #777; cursor: not-allowed; }
+.reportes-paginacion .pagination-window__ellipsis { display: inline-flex; align-items: center; padding: 0 5px; color: #777; }
 .reportes-badge { display: inline-block; border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 700; }
 .reportes-badge--normal { background: #e7f2e7; color: #397044; }
 .reportes-badge--stock_minimo { background: #fff1d7; color: #96651d; }

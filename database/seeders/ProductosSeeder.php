@@ -16,6 +16,7 @@ class ProductosSeeder extends Seeder
 
         if (empty($categorias)) {
             $this->command->error('No existen categorías activas.');
+
             return;
         }
 
@@ -74,11 +75,12 @@ class ProductosSeeder extends Seeder
 
         for ($i = 1; $i <= $total; $i++) {
 
-            $sku = 'JOY-PRUEBA-' . str_pad($i, 6, '0', STR_PAD_LEFT);
+            $sku = 'JOY-PRUEBA-'.str_pad($i, 6, '0', STR_PAD_LEFT);
 
             // Evitar duplicar productos al ejecutar nuevamente el seeder.
             if (isset($existentes[$sku])) {
                 $omitidos++;
+
                 continue;
             }
 
@@ -111,7 +113,7 @@ class ProductosSeeder extends Seeder
         }
 
         $this->command->info('Seeder de productos ejecutado.');
-        $this->command->info('Productos nuevos: ' . count($registros));
-        $this->command->info('Productos omitidos por SKU existente: ' . $omitidos);
+        $this->command->info('Productos nuevos: '.count($registros));
+        $this->command->info('Productos omitidos por SKU existente: '.$omitidos);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class EnviosSeeder extends Seeder
 {
@@ -40,16 +40,18 @@ class EnviosSeeder extends Seeder
 
             if ($existe) {
                 $omitidos++;
+
                 continue;
             }
 
             $direccion = $direcciones->get($pedido->user_id);
 
-            if (!$direccion) {
+            if (! $direccion) {
                 $this->command->warn(
                     "Pedido {$pedido->numero_pedido} sin dirección predeterminada."
                 );
                 $omitidos++;
+
                 continue;
             }
 
@@ -87,7 +89,7 @@ class EnviosSeeder extends Seeder
             ])) {
                 $paqueteria = $paqueterias[array_rand($paqueterias)];
 
-                $numeroGuia = 'GUIA-' .
+                $numeroGuia = 'GUIA-'.
                     str_pad($pedido->id_pedidos, 8, '0', STR_PAD_LEFT);
 
                 $fechaEnvio = $fechaPedido->copy()->addDay();

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class PedidosSeeder extends Seeder
 {
@@ -19,6 +19,7 @@ class PedidosSeeder extends Seeder
 
         if (empty($clientes)) {
             $this->command->error('No se encontraron clientes de prueba.');
+
             return;
         }
 
@@ -41,12 +42,13 @@ class PedidosSeeder extends Seeder
 
         for ($i = 1; $i <= 1500; $i++) {
 
-            $numero = 'PED-PRUEBA-' . str_pad($i, 6, '0', STR_PAD_LEFT);
+            $numero = 'PED-PRUEBA-'.str_pad($i, 6, '0', STR_PAD_LEFT);
 
             if (DB::table('pedidos')
                 ->where('numero_pedido', $numero)
                 ->exists()) {
                 $omitidos++;
+
                 continue;
             }
 
